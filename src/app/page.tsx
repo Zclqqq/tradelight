@@ -10,26 +10,9 @@ import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { MotivationCard } from "@/components/motivation-card";
-import { TradepathScore } from "@/components/tradepath-score";
-import { trades } from "@/lib/data";
 
 
 export default function Home() {
-
-  const totalTrades = trades.length;
-  const winningTrades = trades.filter((trade) => trade.profitOrLoss > 0).length;
-  const losingTrades = totalTrades - winningTrades;
-  const tradeWinPercentage = totalTrades > 0 ? Math.round((winningTrades / totalTrades) * 100) : 0;
-  
-  const totalProfit = trades.filter((trade) => trade.profitOrLoss > 0).reduce((acc, trade) => acc + trade.profitOrLoss, 0);
-  const totalLoss = trades.filter((trade) => trade.profitOrLoss < 0).reduce((acc, trade) => acc + trade.profitOrLoss, 0);
-
-  const avgWin = winningTrades > 0 ? totalProfit / winningTrades : 0;
-  const avgLoss = losingTrades > 0 ? Math.abs(totalLoss / losingTrades) : 0;
-  const avgWinLoss = avgLoss > 0 ? Math.round((avgWin / avgLoss) * 100) / 100 : 0;
-
-  const tradepathScore = Math.round((tradeWinPercentage * 0.4) + (avgWinLoss * 0.4) + (totalTrades * 0.2));
-
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -52,9 +35,9 @@ export default function Home() {
               <div className="lg:col-span-2 grid grid-cols-1 gap-4">
                 <RecentTrades />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <StatCard title="Win Rate" value={`${tradeWinPercentage}%`} />
-                    <StatCard title="Avg Win/Loss" value={`${avgWinLoss.toFixed(2)}R`} />
-                    <TradepathScore score={tradepathScore} />
+                    <StatCard title="Win Rate" value="67%" />
+                    <StatCard title="Avg Win/Loss" value="2.1R" />
+                    <StatCard title="Progress On" value="100%" />
                     <MotivationCard />
                 </div>
               </div>
