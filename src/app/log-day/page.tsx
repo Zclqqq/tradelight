@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
-  pnl: z.coerce.number().min(1, "PNL is required."),
+  pnl: z.coerce.number(),
 });
 
 const dayLogSchema = z.object({
@@ -192,4 +192,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
