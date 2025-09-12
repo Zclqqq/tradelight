@@ -80,6 +80,7 @@ export default function LogDayPage() {
     
     React.useEffect(() => {
         if (isEditingPnl && pnlInputRef.current) {
+            pnlInputRef.current.focus();
             pnlInputRef.current.select();
         }
     }, [isEditingPnl]);
