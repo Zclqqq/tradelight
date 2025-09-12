@@ -86,7 +86,7 @@ export default function LogDayPage() {
             const newPnl = parseFloat(event.currentTarget.value);
             if (!isNaN(newPnl)) {
                 // Replace all trades with a single one for simplicity
-                replace([{ instrument: "Summary", pnl: newPnl }]);
+                replace([{ instrument: "Summary", pnl: newPnl, date: format(new Date(), "yyyy-MM-dd") }]);
             }
             setIsEditingPnl(false);
         } else if (event.key === 'Escape') {
@@ -165,7 +165,7 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                 <FormControl>
-                                                    <Textarea className="bg-transparent border-0 p-0 focus-visible:ring-0 text-base" rows={6} placeholder="General notes for the day..." {...field} />
+                                                    <Textarea className="bg-transparent border-0 p-0 focus-visible:ring-0 text-base min-h-[100px]" placeholder="General notes for the day..." {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                                 </FormItem>
@@ -186,57 +186,57 @@ export default function LogDayPage() {
                             <CardContent>
                                <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                    <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto pr-4">
+                                    <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto -mr-4 pr-4">
                                         {fields.map((field, index) => (
                                         <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
-                                            <FormField
-                                                control={form.control}
-                                                name={`trades.${index}.date`}
-                                                render={({ field }) => (
-                                                    <FormItem className="flex items-center justify-between">
-                                                    <FormLabel>Date</FormLabel>
-                                                    <div className="flex items-center gap-2">
+                                            <div className="flex items-center justify-between">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`trades.${index}.date`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
                                                         <FormControl>
-                                                            <Input type="date" className="text-right w-auto" {...field} />
+                                                            <Input type="date" className="w-auto" {...field} />
                                                         </FormControl>
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => remove(index)}
-                                                            disabled={fields.length <= 1}
-                                                            className="h-6 w-6"
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                    <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
+                                                        <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => fields.length > 1 && remove(index)}
+                                                    disabled={fields.length <= 1}
+                                                    className="h-6 w-6"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+
                                             <FormField
                                                 control={form.control}
                                                 name={`trades.${index}.instrument`}
                                                 render={({ field }) => (
-                                                    <FormItem className="flex items-center justify-between">
-                                                    <FormLabel>Instrument</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="e.g. NQ" className="text-right w-32" {...field} />
+                                                    <FormItem className="grid grid-cols-3 items-center">
+                                                    <FormLabel className="col-span-1">Instrument</FormLabel>
+                                                    <FormControl className="col-span-2">
+                                                        <Input placeholder="e.g. NQ" {...field} />
                                                     </FormControl>
-                                                    <FormMessage />
+                                                    <FormMessage className="col-span-3" />
                                                     </FormItem>
                                                 )}
                                             />
-                                            <div className="flex items-center justify-between">
-                                                <FormLabel>Entry / Exit Time</FormLabel>
-                                                <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-3 items-center">
+                                                <FormLabel className="col-span-1">Entry / Exit</FormLabel>
+                                                <div className="col-span-2 grid grid-cols-2 gap-2">
                                                     <FormField
                                                         control={form.control}
                                                         name={`trades.${index}.entryTime`}
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="time" className="text-right" {...field} />
+                                                                <Input type="time" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -248,7 +248,7 @@ export default function LogDayPage() {
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="time" className="text-right" {...field} />
+                                                                <Input type="time" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -260,25 +260,25 @@ export default function LogDayPage() {
                                                 control={form.control}
                                                 name={`trades.${index}.contracts`}
                                                 render={({ field }) => (
-                                                    <FormItem className="flex items-center justify-between">
-                                                    <FormLabel>Contracts</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="number" placeholder="e.g. 10" className="text-right w-32" {...field} />
+                                                    <FormItem className="grid grid-cols-3 items-center">
+                                                    <FormLabel className="col-span-1">Contracts</FormLabel>
+                                                    <FormControl className="col-span-2">
+                                                        <Input type="number" placeholder="e.g. 10" {...field} />
                                                     </FormControl>
-                                                    <FormMessage />
+                                                    <FormMessage className="col-span-3"/>
                                                     </FormItem>
                                                 )}
                                             />
-                                            <div className="flex items-center justify-between">
-                                                <FormLabel>TP / SL</FormLabel>
-                                                <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-3 items-center">
+                                                <FormLabel className="col-span-1">TP / SL</FormLabel>
+                                                <div className="col-span-2 grid grid-cols-2 gap-2">
                                                     <FormField
                                                         control={form.control}
                                                         name={`trades.${index}.tradeTp`}
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="number" placeholder="e.g. 4500.50" className="text-right" {...field} />
+                                                                <Input type="number" placeholder="e.g. 4500.50" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -290,7 +290,7 @@ export default function LogDayPage() {
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="number" placeholder="e.g. 4400" className="text-right" {...field} />
+                                                                <Input type="number" placeholder="e.g. 4400" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -298,16 +298,16 @@ export default function LogDayPage() {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <FormLabel>Total Points / PNL ($)</FormLabel>
-                                                <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-3 items-center">
+                                                <FormLabel className="col-span-1">Points/PNL</FormLabel>
+                                                <div className="col-span-2 grid grid-cols-2 gap-2">
                                                     <FormField
                                                         control={form.control}
                                                         name={`trades.${index}.totalPoints`}
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="number" className="text-right" {...field} />
+                                                                <Input type="number" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -319,7 +319,7 @@ export default function LogDayPage() {
                                                         render={({ field }) => (
                                                             <FormItem>
                                                             <FormControl>
-                                                                <Input type="number" placeholder="e.g. 250.75" className="text-right" {...field} />
+                                                                <Input type="number" placeholder="e.g. 250.75" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -361,5 +361,6 @@ export default function LogDayPage() {
         </main>
     </div>
   );
+}
 
     
