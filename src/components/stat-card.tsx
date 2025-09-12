@@ -11,11 +11,11 @@ interface StatCardProps {
 export function StatCard({ title, value, children }: StatCardProps) {
   return (
     <Card className="text-center">
-      <CardHeader>
-        <CardTitle className="font-headline text-lg text-muted-foreground">{title}</CardTitle>
+      <CardHeader className="p-4">
+        <CardTitle className="font-headline text-base text-muted-foreground">{title}</CardTitle>
       </CardHeader>
-      <CardContent>
-        {value && <p className="text-4xl font-bold font-headline">{value}</p>}
+      <CardContent className="p-4 pt-0">
+        {value && <p className="text-3xl font-bold font-headline">{value}</p>}
         {children}
       </CardContent>
     </Card>

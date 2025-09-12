@@ -56,23 +56,23 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm h-full">
+    <div className="bg-card p-4 rounded-lg shadow-sm h-full">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold font-headline">
+        <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={prevMonth}>
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={nextMonth}>
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={nextMonth}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
       <div className="grid grid-cols-7 gap-px text-xs border-t border-l border-border bg-border">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 font-semibold text-center bg-card text-muted-foreground">
+          <div key={day} className="py-1 text-xs font-semibold text-center bg-card text-muted-foreground">
             {day}
           </div>
         ))}
@@ -86,14 +86,14 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-1 h-20 sm:h-24 flex flex-col justify-start",
+                "relative bg-card p-1 h-16 flex flex-col justify-start text-xs",
                 !isCurrentMonth && "bg-muted/50 text-muted-foreground",
               )}
             >
               <div
                 className={cn(
                   "font-semibold self-end",
-                   isToday(day) && "flex items-center justify-center h-6 w-6 rounded-full bg-primary text-primary-foreground"
+                   isToday(day) && "flex items-center justify-center h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs"
                 )}
               >
                 {format(day, "d")}
@@ -102,7 +102,7 @@ export function TradeCalendar() {
               {pnlData && isCurrentMonth ? (
                 <div
                   className={cn(
-                    "font-bold text-xs sm:text-sm mt-1",
+                    "font-bold text-xs mt-1",
                     pnlData.pnl > 0 && "text-green-400",
                     pnlData.pnl < 0 && "text-red-400"
                   )}
