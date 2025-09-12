@@ -56,7 +56,7 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="bg-card p-4 rounded-lg shadow-sm h-full">
+    <div className="bg-card p-4 rounded-lg shadow-sm h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -70,13 +70,14 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-px text-xs border-t border-l border-border bg-border">
+      <div className="grid grid-cols-7 grid-rows-1 text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-1 text-xs font-semibold text-center bg-card text-muted-foreground">
+          <div key={day} className="py-2">
             {day}
           </div>
         ))}
-
+      </div>
+      <div className="grid grid-cols-7 grid-rows-5 gap-2 flex-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -86,32 +87,31 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-1 h-16 flex flex-col justify-start text-xs",
+                "relative bg-card p-2 rounded-md flex flex-col justify-start text-xs border border-transparent",
                 !isCurrentMonth && "bg-muted/50 text-muted-foreground",
+                pnlData && pnlData.pnl > 0 && "border-green-400/50",
+                pnlData && pnlData.pnl < 0 && "border-red-400/50",
               )}
             >
-              <div
+              <time
+                dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "font-semibold self-end",
+                  "font-semibold",
                    isToday(day) && "flex items-center justify-center h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs"
                 )}
               >
                 {format(day, "d")}
-              </div>
+              </time>
 
               {pnlData && isCurrentMonth ? (
-                <div
-                  className={cn(
-                    "font-bold text-xs mt-1",
-                    pnlData.pnl > 0 && "text-green-400",
-                    pnlData.pnl < 0 && "text-red-400"
-                  )}
-                >
-                  {pnlData.pnl.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    maximumFractionDigits: 0,
-                  })}
+                <div className="mt-1 font-bold text-xs">
+                  <span className={cn(pnlData.pnl > 0 && "text-green-400", pnlData.pnl < 0 && "text-red-400")}>
+                      {pnlData.pnl.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                        maximumFractionDigits: 0,
+                      })}
+                  </span>
                 </div>
               ) : null}
             </div>
