@@ -3,13 +3,21 @@
 import * as React from "react";
 import {
   TrendingUp,
+  BookOpen,
+  PlusCircle
 } from "lucide-react";
 
 import { AddTradeDialog } from "@/components/add-trade-dialog";
 import { TradeCalendar } from "@/components/trade-calendar";
+import { RecentTrades } from "@/components/recent-trades";
+import { StatCard } from "@/components/stat-card";
+import { MotivationCard } from "@/components/motivation-card";
 
 
 export default function Home() {
+  const tradeWinPercentage = 53;
+  const avgWinLoss = 53;
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm">
@@ -23,7 +31,26 @@ export default function Home() {
       </header>
 
       <main className="flex-1 p-4 md:p-8">
-        <TradeCalendar />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <TradeCalendar />
+          </div>
+          <div className="lg:col-span-1">
+            <RecentTrades />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:col-span-3 gap-6">
+            <StatCard title="Trade Win" value={`${tradeWinPercentage}%`} />
+            <StatCard title="Avg Win/Loss" value={`${avgWinLoss}%`} />
+            <StatCard title="Progress On">
+                <ul className="text-2xl font-bold font-headline text-center">
+                    <li>X</li>
+                    <li>Y</li>
+                    <li>Z</li>
+                </ul>
+            </StatCard>
+            <MotivationCard />
+          </div>
+        </div>
       </main>
     </div>
   );
