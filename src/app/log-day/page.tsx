@@ -117,7 +117,7 @@ export default function LogDayPage() {
                                         defaultValue={totalPnl}
                                         onBlur={handlePnlBlur}
                                         onKeyDown={handlePnlKeyDown}
-                                        className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0"
+                                        className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent"
                                      />
                                 ) : (
                                     <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
