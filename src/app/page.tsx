@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -5,11 +6,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-import { AddTradeDialog } from "@/components/add-trade-dialog";
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { MotivationCard } from "@/components/motivation-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -23,7 +25,9 @@ export default function Home() {
             TradeLog
           </h1>
         </div>
-        <AddTradeDialog />
+        <Button asChild>
+          <Link href="/log-day">Log Day</Link>
+        </Button>
       </header>
 
       <main className="flex-1 p-4 md:p-6">
