@@ -12,7 +12,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
@@ -166,7 +165,7 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                 <FormControl>
-                                                    <Textarea rows={6} placeholder="General notes for the day..." {...field} />
+                                                    <Textarea className="bg-transparent border-0 p-0 focus-visible:ring-0 text-base" rows={6} placeholder="General notes for the day..." {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                                 </FormItem>
@@ -187,16 +186,16 @@ export default function LogDayPage() {
                             <CardContent>
                                <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                    <div className="space-y-4">
+                                    <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto pr-4">
                                         {fields.map((field, index) => (
-                                        <div key={field.id} className="space-y-4 relative">
+                                        <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
                                              <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => remove(index)}
                                                 disabled={fields.length <= 1}
-                                                className="absolute top-0 right-0"
+                                                className="absolute top-2 right-2"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
@@ -357,4 +356,3 @@ export default function LogDayPage() {
         </main>
     </div>
   );
-}
