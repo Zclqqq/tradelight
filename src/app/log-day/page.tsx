@@ -189,25 +189,27 @@ export default function LogDayPage() {
                                     <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto pr-4">
                                         {fields.map((field, index) => (
                                         <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
-                                             <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => remove(index)}
-                                                disabled={fields.length <= 1}
-                                                className="absolute top-2 right-2"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
                                             <FormField
                                                 control={form.control}
                                                 name={`trades.${index}.date`}
                                                 render={({ field }) => (
-                                                    <FormItem>
+                                                    <FormItem className="flex items-center justify-between">
                                                     <FormLabel>Date</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="date" {...field} />
-                                                    </FormControl>
+                                                    <div className="flex items-center gap-2">
+                                                        <FormControl>
+                                                            <Input type="date" className="text-right w-auto" {...field} />
+                                                        </FormControl>
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => remove(index)}
+                                                            disabled={fields.length <= 1}
+                                                            className="h-6 w-6"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
                                                     <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -216,111 +218,114 @@ export default function LogDayPage() {
                                                 control={form.control}
                                                 name={`trades.${index}.instrument`}
                                                 render={({ field }) => (
-                                                    <FormItem>
+                                                    <FormItem className="flex items-center justify-between">
                                                     <FormLabel>Instrument</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="e.g. NQ" {...field} />
+                                                        <Input placeholder="e.g. NQ" className="text-right w-32" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.entryTime`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Entry Time</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="time" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.exitTime`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Exit Time</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="time" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                                            <div className="flex items-center justify-between">
+                                                <FormLabel>Entry / Exit Time</FormLabel>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.entryTime`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="time" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.exitTime`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="time" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
                                             </div>
                                              <FormField
                                                 control={form.control}
                                                 name={`trades.${index}.contracts`}
                                                 render={({ field }) => (
-                                                    <FormItem>
+                                                    <FormItem className="flex items-center justify-between">
                                                     <FormLabel>Contracts</FormLabel>
                                                     <FormControl>
-                                                        <Input type="number" placeholder="e.g. 10" {...field} />
+                                                        <Input type="number" placeholder="e.g. 10" className="text-right w-32" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.tradeTp`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Take Profit</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" placeholder="e.g. 4500.50" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.tradeSl`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Stop Loss</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" placeholder="e.g. 4400" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                                            <div className="flex items-center justify-between">
+                                                <FormLabel>TP / SL</FormLabel>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.tradeTp`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="number" placeholder="e.g. 4500.50" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.tradeSl`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="number" placeholder="e.g. 4400" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.totalPoints`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Total Points</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.pnl`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>PNL ($)</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" placeholder="e.g. 250.75" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                                            <div className="flex items-center justify-between">
+                                                <FormLabel>Total Points / PNL ($)</FormLabel>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.totalPoints`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="number" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`trades.${index}.pnl`}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                            <FormControl>
+                                                                <Input type="number" placeholder="e.g. 250.75" className="text-right" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
                                             </div>
 
                                             {index < fields.length - 1 && <hr className="my-4 border-border" />}
@@ -356,3 +361,5 @@ export default function LogDayPage() {
         </main>
     </div>
   );
+
+    
