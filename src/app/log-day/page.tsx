@@ -74,7 +74,54 @@ export default function LogDayPage() {
             <div className="mx-auto w-full max-w-7xl">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Column */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-2 space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline text-base">PNL</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                </p>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline text-base">Chart</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-48 flex items-center justify-center bg-muted/50 rounded-none text-muted-foreground">
+                                    Chart Placeholder
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline text-base">Notes</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                               <Form {...form}>
+                                    <form>
+                                        <FormField
+                                            control={form.control}
+                                            name="notes"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                <FormControl>
+                                                    <Textarea rows={6} placeholder="General notes for the day..." {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </form>
+                               </Form>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Right Column */}
+                     <div className="lg:col-span-1">
                          <Card className="h-full">
                             <CardHeader>
                                 <CardTitle className="font-headline">Trade Data Entry</CardTitle>
@@ -135,53 +182,6 @@ export default function LogDayPage() {
                                         Add Trade
                                     </Button>
                                 </form>
-                               </Form>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">PNL</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                    {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                </p>
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">Chart</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="h-48 flex items-center justify-center bg-muted/50 rounded-none text-muted-foreground">
-                                    Chart Placeholder
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">Notes</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                               <Form {...form}>
-                                    <form>
-                                        <FormField
-                                            control={form.control}
-                                            name="notes"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                <FormControl>
-                                                    <Textarea rows={6} placeholder="General notes for the day..." {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </form>
                                </Form>
                             </CardContent>
                         </Card>
