@@ -31,14 +31,14 @@ export default function Home() {
       </header>
 
       <main className="flex-1 p-4 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="lg:col-span-1">
             <TradeCalendar />
           </div>
           <div className="lg:col-span-1">
             <RecentTrades />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:col-span-3 gap-6">
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             <StatCard title="Trade Win" value={`${tradeWinPercentage}%`} />
             <StatCard title="Avg Win/Loss" value={`${avgWinLoss}%`} />
             <StatCard title="Progress On">
