@@ -31,6 +31,8 @@ const dayLogSchema = z.object({
 
 export default function LogDayPage() {
     const { toast } = useToast();
+    const [isEditingPnl, setIsEditingPnl] = React.useState(false);
+    const pnlInputRef = React.useRef<HTMLInputElement>(null);
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -40,7 +42,7 @@ export default function LogDayPage() {
         },
     });
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, replace } = useFieldArray({
         control: form.control,
         name: "trades",
     });
@@ -54,6 +56,33 @@ export default function LogDayPage() {
     };
 
     const totalPnl = form.watch("trades").reduce((acc, trade) => acc + Number(trade.pnl || 0), 0);
+
+    const handlePnlDoubleClick = () => {
+        setIsEditingPnl(true);
+    };
+
+    const handlePnlBlur = () => {
+        setIsEditingPnl(false);
+    };
+
+    const handlePnlKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            const newPnl = parseFloat(event.currentTarget.value);
+            if (!isNaN(newPnl)) {
+                // Replace all trades with a single one for simplicity
+                replace([{ instrument: "Summary", pnl: newPnl }]);
+            }
+            setIsEditingPnl(false);
+        } else if (event.key === 'Escape') {
+            setIsEditingPnl(false);
+        }
+    };
+    
+    React.useEffect(() => {
+        if (isEditingPnl && pnlInputRef.current) {
+            pnlInputRef.current.select();
+        }
+    }, [isEditingPnl]);
 
 
   return (
@@ -79,10 +108,21 @@ export default function LogDayPage() {
                             <CardHeader>
                                 <CardTitle className="font-headline text-base">PNL</CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                    {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                </p>
+                            <CardContent onDoubleClick={handlePnlDoubleClick}>
+                                {isEditingPnl ? (
+                                     <Input
+                                        ref={pnlInputRef}
+                                        type="number"
+                                        defaultValue={totalPnl}
+                                        onBlur={handlePnlBlur}
+                                        onKeyDown={handlePnlKeyDown}
+                                        className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0"
+                                     />
+                                ) : (
+                                    <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                    </p>
+                                )}
                             </CardContent>
                         </Card>
                          <Card>
