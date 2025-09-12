@@ -191,20 +191,32 @@ export default function LogDayPage() {
                                         {fields.map((field, index) => (
                                         <div key={field.id} className="flex flex-col gap-4 p-4 border rounded-none">
                                             <div className="flex items-end gap-2">
-                                                <div className="flex-1 space-y-2">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name={`trades.${index}.date`}
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                            <FormLabel>Date</FormLabel>
-                                                            <FormControl>
-                                                                <Input type="date" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
+                                                <div className="flex-1 space-y-4">
+                                                    <div className="relative">
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`trades.${index}.date`}
+                                                            render={({ field }) => (
+                                                                <FormItem>
+                                                                <FormLabel>Date</FormLabel>
+                                                                <FormControl>
+                                                                    <Input type="date" {...field} />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                         <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => remove(index)}
+                                                            disabled={fields.length <= 1}
+                                                            className="absolute top-6 right-0"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
                                                     <FormField
                                                         control={form.control}
                                                         name={`trades.${index}.instrument`}
@@ -212,7 +224,7 @@ export default function LogDayPage() {
                                                             <FormItem>
                                                             <FormLabel>Instrument</FormLabel>
                                                             <FormControl>
-                                                                <Input placeholder="e.g. AAPL" {...field} />
+                                                                <Input placeholder="e.g. NQ" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                             </FormItem>
@@ -317,16 +329,6 @@ export default function LogDayPage() {
                                                     </div>
 
                                                 </div>
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="icon"
-                                                    onClick={() => remove(index)}
-                                                    disabled={fields.length <= 1}
-                                                    className="self-start"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
                                             </div>
                                         </div>
                                         ))}
