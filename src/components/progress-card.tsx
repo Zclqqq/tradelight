@@ -63,7 +63,7 @@ export function ProgressCard() {
       </CardHeader>
       <CardContent className="p-4 pt-0 flex-1 flex flex-col items-center justify-center gap-2">
         <div className="relative flex items-center justify-center">
-            <CircularProgress progress={progress} />
+            <CircularProgress progress={progress} strokeWidth={12} size={100} />
             <Button 
                 onClick={handleLogDay}
                 className="absolute h-20 w-20 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-sm"
