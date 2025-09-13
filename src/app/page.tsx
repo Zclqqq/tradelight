@@ -34,10 +34,10 @@ export default function Home() {
       <main className="flex-1 p-6 overflow-hidden">
         <div className="mx-auto w-full max-w-7xl h-full">
           <div className="grid grid-cols-4 grid-rows-3 gap-6 h-full">
-            <div className="col-span-2 row-span-2">
+            <div className="col-span-3 row-span-2">
               <TradeCalendar />
             </div>
-            <div className="col-span-2 row-span-2">
+            <div className="col-span-1 row-span-2">
               <RecentTrades />
             </div>
             <div className="col-span-1 row-span-1">
