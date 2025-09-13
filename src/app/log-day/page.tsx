@@ -58,7 +58,6 @@ export default function LogDayPage() {
         name: "trades",
     });
 
-    // Initialize with one default trade entry if none exist
     React.useEffect(() => {
         if (fields.length === 0) {
             append({ 
@@ -96,8 +95,6 @@ export default function LogDayPage() {
         if (event.key === 'Enter') {
             const newPnl = parseFloat(event.currentTarget.value);
             if (!isNaN(newPnl)) {
-                // For simplicity, we create a single summary trade. 
-                // You might want a more sophisticated way to handle this.
                 form.setValue('trades', [{ 
                     instrument: "Summary", 
                     pnl: newPnl,
@@ -143,7 +140,6 @@ export default function LogDayPage() {
         <main className="flex-1 p-4 md:p-6">
             <div className="mx-auto w-full max-w-6xl">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
                         <Card>
                             <CardHeader>
@@ -180,7 +176,7 @@ export default function LogDayPage() {
                             <CardHeader>
                                 <CardTitle className="font-headline text-base">Notes</CardTitle>
                             </CardHeader>
-                            <CardContent>
+                           <CardContent className="p-4">
                                <Form {...form}>
                                     <form>
                                         <FormField
@@ -201,7 +197,6 @@ export default function LogDayPage() {
                         </Card>
                     </div>
 
-                    {/* Right Column */}
                      <div className="lg:col-span-1">
                         <Card className="bg-card">
                             <CardContent className="p-4">
@@ -211,7 +206,7 @@ export default function LogDayPage() {
                                         control={form.control}
                                         name="date"
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-col space-y-2">
+                                            <FormItem className="flex flex-col space-y-2 mb-4">
                                             <FormLabel>Date</FormLabel>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -249,7 +244,7 @@ export default function LogDayPage() {
                                         )}
                                         />
                                     
-                                    <div className="pt-2">
+                                    <div className="pt-2 space-y-2">
                                         <TradeDataField label="Time" />
                                         <TradeDataField label="Contracts" />
                                         <TradeDataField label="TP / SL" />
