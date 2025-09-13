@@ -189,7 +189,7 @@ export default function LogDayPage() {
                                     <CardHeader>
                                         <CardTitle className="font-headline text-base">Notes</CardTitle>
                                     </CardHeader>
-                                <CardContent className="p-4">
+                                    <CardContent className="p-4">
                                         <FormField
                                             control={form.control}
                                             name="notes"
@@ -316,7 +316,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
 
     
