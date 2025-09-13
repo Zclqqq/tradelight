@@ -189,30 +189,30 @@ export default function LogDayPage() {
                                     <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto -mr-4 pr-4">
                                         {fields.map((field, index) => (
                                         <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
-                                            <div className="flex items-center justify-between">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.date`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormControl>
-                                                            <Input type="date" className="w-auto" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => fields.length > 1 && remove(index)}
-                                                    disabled={fields.length <= 1}
-                                                    className="h-6 w-6"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => fields.length > 1 && remove(index)}
+                                                disabled={fields.length <= 1}
+                                                className="h-6 w-6 absolute top-2 right-2"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+
+                                            <FormField
+                                                control={form.control}
+                                                name={`trades.${index}.date`}
+                                                render={({ field }) => (
+                                                    <FormItem className="grid grid-cols-3 items-center">
+                                                    <FormLabel className="col-span-1">Date</FormLabel>
+                                                    <FormControl className="col-span-2">
+                                                        <Input type="date" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className="col-span-3"/>
+                                                    </FormItem>
+                                                )}
+                                            />
 
                                             <FormField
                                                 control={form.control}
@@ -362,5 +362,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
