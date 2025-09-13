@@ -207,8 +207,8 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem className="grid grid-cols-3 items-center">
                                                     <FormLabel className="col-span-1">Date</FormLabel>
-                                                    <FormControl className="col-span-2">
-                                                        <Input type="date" {...field} />
+                                                    <FormControl>
+                                                        <Input type="date" {...field} className="col-span-2"/>
                                                     </FormControl>
                                                     <FormMessage className="col-span-3"/>
                                                     </FormItem>
@@ -221,8 +221,8 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem className="grid grid-cols-3 items-center">
                                                     <FormLabel className="col-span-1">Instrument</FormLabel>
-                                                    <FormControl className="col-span-2">
-                                                        <Input placeholder="e.g. NQ" {...field} />
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. NQ" {...field} className="col-span-2"/>
                                                     </FormControl>
                                                     <FormMessage className="col-span-3" />
                                                     </FormItem>
@@ -263,8 +263,8 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem className="grid grid-cols-3 items-center">
                                                     <FormLabel className="col-span-1">Contracts</FormLabel>
-                                                    <FormControl className="col-span-2">
-                                                        <Input type="number" placeholder="e.g. 10" {...field} />
+                                                    <FormControl>
+                                                        <Input type="number" placeholder="e.g. 10" {...field} className="col-span-2"/>
                                                     </FormControl>
                                                     <FormMessage className="col-span-3"/>
                                                     </FormItem>
@@ -362,3 +362,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
