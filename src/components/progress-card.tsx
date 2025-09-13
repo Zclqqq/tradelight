@@ -51,7 +51,7 @@ const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id
     };
 
     return (
-        <div className="flex items-center gap-4 py-2">
+        <div className="flex items-center gap-2 py-1">
             <div className="flex-1 flex items-center gap-2">
                 {isEditing ? (
                     <Input 
@@ -59,27 +59,27 @@ const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id
                         onChange={handleTitleChange} 
                         onBlur={handleSave} 
                         onKeyDown={handleKeyDown}
-                        className="h-8" 
+                        className="h-7 text-xs" 
                     />
                 ) : (
-                    <span className="font-medium text-sm flex-1 truncate">{goal.title}</span>
+                    <span className="font-medium text-xs flex-1 truncate">{goal.title}</span>
                 )}
-                 <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => setIsEditing(!isEditing)}>
+                 <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={() => setIsEditing(!isEditing)}>
                     <Edit className="h-3 w-3" />
                 </Button>
             </div>
-            <div className="flex items-center gap-2 w-48">
-                <Progress value={(goal.progress / 7) * 100} className="h-2 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
-                <span className="text-xs font-mono w-10 text-right">{goal.progress}/7</span>
+            <div className="flex items-center gap-2 w-28">
+                <Progress value={(goal.progress / 7) * 100} className="h-1.5 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
+                <span className="text-xs font-mono w-8 text-right">{goal.progress}/7</span>
             </div>
             <Button 
                 size="sm" 
                 variant={canComplete ? "default" : "secondary"}
                 onClick={() => canComplete && onComplete(goal.id)}
-                className="w-24 gap-1"
+                className="w-20 h-7 text-xs gap-1"
                 disabled={!canComplete}
             >
-                {canComplete ? <Plus className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                {canComplete ? <Plus className="h-3 w-3" /> : <Check className="h-3 w-3" />}
                 <span>{canComplete ? 'Done' : 'Done'}</span>
             </Button>
         </div>
@@ -113,7 +113,7 @@ export function ProgressCard() {
           Weekly Goals
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-2">
+      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-1">
         {goals.map(goal => (
             <GoalTracker 
                 key={goal.id} 
