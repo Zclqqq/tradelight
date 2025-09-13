@@ -30,8 +30,8 @@ export function TradeCalendar() {
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 
   const days = eachDayOfInterval({
-    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 0 }), // Sunday
-    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 0 }),
+    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 1 }), // Monday
+    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 1 }),
   });
 
   const dailyPnl: Record<string, DailyPnl> = React.useMemo(() => {
@@ -62,16 +62,16 @@ export function TradeCalendar() {
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={prevMonth}>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={nextMonth}>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={nextMonth}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 grid-rows-1 text-xs text-center font-semibold text-muted-foreground">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
           <div key={day} className="py-2">
             {day}
           </div>
@@ -87,11 +87,12 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-2 rounded-md flex flex-col justify-start text-xs border",
-                !isCurrentMonth && "bg-muted/50 text-muted-foreground",
-                pnlData && pnlData.pnl > 0 && "border-green-400/50",
-                pnlData && pnlData.pnl < 0 && "border-red-400/50",
-                !pnlData && "border-border"
+                "relative bg-card p-2 rounded-md flex flex-col justify-between text-xs border h-24",
+                !isCurrentMonth && "bg-muted/30 text-muted-foreground/50",
+                 isCurrentMonth && "bg-muted/20",
+                pnlData && pnlData.pnl > 0 && "border-green-400/50 shadow-[0_0_8px_0px_rgba(74,222,128,0.5)]",
+                pnlData && pnlData.pnl < 0 && "border-red-400/50 shadow-[0_0_8px_0px_rgba(248,113,113,0.5)]",
+                !pnlData && "border-border/50"
               )}
             >
               <time
@@ -105,7 +106,7 @@ export function TradeCalendar() {
               </time>
 
               {pnlData && isCurrentMonth ? (
-                <div className="mt-1 font-bold text-xs">
+                <div className="flex-1 flex items-center justify-center font-bold text-base">
                   <span className={cn(pnlData.pnl > 0 && "text-green-400", pnlData.pnl < 0 && "text-red-400")}>
                       {pnlData.pnl.toLocaleString("en-US", {
                         style: "currency",
