@@ -166,7 +166,7 @@ export default function LogDayPage() {
                                                 defaultValue={totalPnl}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
-                                                className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent"
+                                                className={`text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}
                                             />
                                         ) : (
                                             <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -217,7 +217,7 @@ export default function LogDayPage() {
                                                 name="date"
                                                 render={({ field }) => (
                                                     <FormItem className="flex flex-col space-y-2 py-3 border-b border-muted-foreground/20">
-                                                        <FormLabel className="text-sm font-medium">Date</FormLabel>
+                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                             <FormControl>
