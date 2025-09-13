@@ -179,14 +179,14 @@ export default function LogDayPage() {
 
                     {/* Right Column */}
                      <div className="lg:col-span-1">
-                         <Card className="h-full">
+                         <Card>
                             <CardHeader>
                                 <CardTitle className="font-headline">Trade Data Entry</CardTitle>
                             </CardHeader>
                             <CardContent>
                                <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                    <div className="space-y-4 max-h-[calc(100vh-20rem)] overflow-y-auto -mr-4 pr-4">
+                                    <div className="space-y-4">
                                         {fields.map((field, index) => (
                                         <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
                                             <Button
