@@ -217,14 +217,14 @@ export default function LogDayPage() {
                                                 name="date"
                                                 render={({ field }) => (
                                                     <FormItem className="flex flex-col space-y-2 py-3 border-b border-muted-foreground/20">
-                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                        <FormLabel className="text-sm font-medium">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                             <FormControl>
                                                                 <Button
                                                                 variant={"ghost"}
                                                                 className={cn(
-                                                                    "w-full justify-start text-left font-headline font-bold p-0 h-auto text-base",
+                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent",
                                                                     !field.value && "text-muted-foreground"
                                                                 )}
                                                                 >
@@ -316,7 +316,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
