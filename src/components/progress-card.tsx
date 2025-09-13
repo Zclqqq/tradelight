@@ -62,10 +62,10 @@ export function ProgressCard() {
           </p>
         )}
         <div className="flex items-center gap-3">
-            <Button size="icon" className="rounded-full h-8 w-8 bg-green-500/20 hover:bg-green-500/30 text-green-400" onClick={handleCheckIn}>
+            <Button size="icon" className="rounded-full h-8 w-8 bg-[hsl(var(--chart-1))] bg-opacity-20 hover:bg-opacity-30 text-[hsl(var(--chart-1))]" onClick={handleCheckIn}>
                 <Check className="h-5 w-5"/>
             </Button>
-            <Progress value={progress} className="h-2 w-full"/>
+            <Progress value={progress} className="h-2 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]"/>
         </div>
       </CardContent>
     </Card>

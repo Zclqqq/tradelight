@@ -4,12 +4,16 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const quotes = [
-    "The goal of a successful trader is to make the best trades. Money is secondary.",
-    "The four most dangerous words in investing are: 'This time it's different.'",
-    "In investing, what is comfortable is rarely profitable.",
-    "The stock market is a device for transferring money from the impatient to the patient.",
-    "An investment in knowledge pays the best interest."
+    "The secret to getting ahead is getting started.",
+    "The only way to do great work is to love what you do.",
+    "Believe you can and you're halfway there.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "It does not matter how slowly you go as long as you do not stop.",
+    "The best way to predict the future is to create it."
 ];
+
 
 export function MotivationCard() {
     const [quote, setQuote] = React.useState('');

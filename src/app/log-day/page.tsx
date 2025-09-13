@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +19,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 
 
 const tradeSchema = z.object({
@@ -83,14 +83,8 @@ export default function LogDayPage() {
     React.useEffect(() => {
         if (fields.length === 0) {
             append({ 
-                instrument: "", 
+                instrument: "Summary", 
                 pnl: 0,
-                entryTime: "",
-                exitTime: "",
-                contracts: undefined,
-                tradeTp: undefined,
-                tradeSl: undefined,
-                totalPoints: undefined,
             });
         }
     }, [fields, append]);
@@ -103,9 +97,10 @@ export default function LogDayPage() {
         });
     };
     
-    const summaryTrade = form.watch("trades")?.[0] ?? {};
-    const totalPnl = summaryTrade.pnl || 0;
+    const allTrades = form.watch("trades");
+    const totalPnl = allTrades.reduce((sum, trade) => sum + trade.pnl, 0);
 
+    const chartData = [{ name: 'PNL', value: totalPnl }];
 
     const handlePnlDoubleClick = () => {
         setIsEditingPnl(true);
@@ -166,10 +161,10 @@ export default function LogDayPage() {
                                                 defaultValue={totalPnl}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
-                                                className={`text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                                                className={`text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-[hsl(var(--chart-2))]'}`}
                                             />
                                         ) : (
-                                            <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-[hsl(var(--chart-2))]'}`}>
                                                 {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                             </p>
                                         )}
@@ -177,11 +172,17 @@ export default function LogDayPage() {
                                 </Card>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">Chart</CardTitle>
+                                        <CardTitle className="font-headline text-base">Performance</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg text-muted-foreground">
-                                            Chart Placeholder
+                                        <div className="h-48">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
+                                                    <XAxis type="number" hide />
+                                                    <YAxis type="category" dataKey="name" hide />
+                                                    <Bar dataKey="value" barSize={40} fill={totalPnl >= 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--chart-2))'} radius={[0, 4, 4, 0]} />
+                                                </BarChart>
+                                            </ResponsiveContainer>
                                         </div>
                                     </CardContent>
                                 </Card>

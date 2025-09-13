@@ -41,7 +41,7 @@ export default function Home() {
               <RecentTrades />
             </div>
             <div className="col-span-1 row-span-1">
-              <StatCard title="Trade Win" value="53%" />
+              <StatCard title="Trade Win %" value="53%" />
             </div>
             <div className="col-span-1 row-span-1">
               <StatCard title="Avg Win/Loss" value="$210" />
