@@ -2,75 +2,126 @@
 "use client";
 
 import * as React from "react";
+import { Check, Edit, Plus } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
-const CircularProgress = ({
-  progress,
-  size = 120,
-  strokeWidth = 10,
-}: {
+const isSameDay = (date1: Date, date2: Date) => {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+};
+
+type Goal = {
+  id: number;
+  title: string;
   progress: number;
-  size?: number;
-  strokeWidth?: number;
-}) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
+  lastCompleted: Date | null;
+};
 
-  return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      <circle
-        className="text-muted/30"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        fill="transparent"
-        r={radius}
-        cx={size / 2}
-        cy={size / 2}
-      />
-      <circle
-        className="text-[hsl(var(--chart-1))] transition-all duration-300"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        fill="transparent"
-        r={radius}
-        cx={size / 2}
-        cy={size / 2}
-      />
-    </svg>
-  );
+const initialGoals: Goal[] = [
+    { id: 1, title: 'Review Trades', progress: 4, lastCompleted: new Date('2024-07-20T10:00:00Z') },
+    { id: 2, title: 'Journaling', progress: 5, lastCompleted: new Date('2024-07-21T10:00:00Z') },
+    { id: 3, title: 'Backtesting', progress: 2, lastCompleted: new Date('2024-07-18T10:00:00Z') },
+];
+
+const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id: number, title: string) => void, onComplete: (id: number) => void }) => {
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [title, setTitle] = React.useState(goal.title);
+
+    const today = new Date();
+    const canComplete = !goal.lastCompleted || !isSameDay(goal.lastCompleted, today);
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    };
+
+    const handleSave = () => {
+        onUpdate(goal.id, title);
+        setIsEditing(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSave();
+        }
+    };
+
+    return (
+        <div className="flex items-center gap-4 py-2">
+            <div className="flex-1 flex items-center gap-2">
+                {isEditing ? (
+                    <Input 
+                        value={title} 
+                        onChange={handleTitleChange} 
+                        onBlur={handleSave} 
+                        onKeyDown={handleKeyDown}
+                        className="h-8" 
+                    />
+                ) : (
+                    <span className="font-medium text-sm flex-1 truncate">{goal.title}</span>
+                )}
+                 <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => setIsEditing(!isEditing)}>
+                    <Edit className="h-3 w-3" />
+                </Button>
+            </div>
+            <div className="flex items-center gap-2 w-48">
+                <Progress value={(goal.progress / 7) * 100} className="h-2 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
+                <span className="text-xs font-mono w-10 text-right">{goal.progress}/7</span>
+            </div>
+            <Button 
+                size="sm" 
+                variant={canComplete ? "default" : "secondary"}
+                onClick={() => canComplete && onComplete(goal.id)}
+                className="w-24 gap-1"
+                disabled={!canComplete}
+            >
+                {canComplete ? <Plus className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                <span>{canComplete ? 'Done' : 'Done'}</span>
+            </Button>
+        </div>
+    );
 };
 
 export function ProgressCard() {
-  const [progress, setProgress] = React.useState(20); // Example starting progress
+  const [goals, setGoals] = React.useState<Goal[]>(initialGoals);
 
-  const handleLogDay = () => {
-    // This would typically be tied to a successful day log action
-    setProgress((prev) => Math.min(prev + 10, 100));
+  const handleUpdateGoal = (id: number, title: string) => {
+    setGoals(goals.map(g => g.id === id ? { ...g, title } : g));
   };
 
-
+  const handleCompleteGoal = (id: number) => {
+    setGoals(goals.map(g => {
+        if (g.id === id) {
+            const today = new Date();
+            const canComplete = !g.lastCompleted || !isSameDay(g.lastCompleted, today);
+            if(canComplete) {
+                return { ...g, progress: Math.min(g.progress + 1, 7), lastCompleted: today };
+            }
+        }
+        return g;
+    }));
+  };
+  
   return (
-    <Card className="h-full flex flex-col text-center">
+    <Card className="h-full flex flex-col">
       <CardHeader className="p-4 pb-2">
         <CardTitle className="font-headline text-sm font-medium text-muted-foreground">
-          Daily Goal
+          Weekly Goals
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 flex flex-col items-center justify-center gap-2">
-        <div className="relative flex items-center justify-center">
-            <CircularProgress progress={progress} strokeWidth={12} size={100} />
-            <Button 
-                onClick={handleLogDay}
-                className="absolute h-20 w-20 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-sm"
-            >
-                Log Day
-            </Button>
-        </div>
+      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-2">
+        {goals.map(goal => (
+            <GoalTracker 
+                key={goal.id} 
+                goal={goal} 
+                onUpdate={handleUpdateGoal} 
+                onComplete={handleCompleteGoal}
+            />
+        ))}
       </CardContent>
     </Card>
   );

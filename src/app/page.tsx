@@ -46,11 +46,8 @@ export default function Home() {
             <div className="col-span-1 row-span-1">
               <StatCard title="Avg Win/Loss" value="$210" />
             </div>
-            <div className="col-span-1 row-span-1">
+            <div className="col-span-2 row-span-1">
               <ProgressCard />
-            </div>
-            <div className="col-span-1 row-span-1">
-              <MotivationCard />
             </div>
           </div>
         </div>

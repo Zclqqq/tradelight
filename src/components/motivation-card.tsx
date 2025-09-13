@@ -1,17 +1,18 @@
+
 "use client";
 
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const quotes = [
-    "The secret to getting ahead is getting started.",
-    "The only way to do great work is to love what you do.",
-    "Believe you can and you're halfway there.",
-    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-    "The future belongs to those who believe in the beauty of their dreams.",
-    "Don't watch the clock; do what it does. Keep going.",
-    "It does not matter how slowly you go as long as you do not stop.",
-    "The best way to predict the future is to create it."
+    "The secret of getting ahead is getting started.",
+    "It's not whether you get knocked down, it's whether you get up.",
+    "The goal of a successful trader is to make the best trades. Money is secondary.",
+    "The stock market is a device for transferring money from the impatient to the patient.",
+    "In investing, what is comfortable is rarely profitable.",
+    "I will not be a rock star. I will be a legend.",
+    "The four most dangerous words in investing are: 'This time it's different.'",
+    "Don't be afraid to take a big step. You can't cross a chasm in two small jumps."
 ];
 
 
