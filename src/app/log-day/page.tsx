@@ -62,7 +62,7 @@ export default function LogDayPage() {
     React.useEffect(() => {
         if (fields.length === 0) {
             append({ 
-                instrument: "", 
+                instrument: "Summary", 
                 pnl: 0,
                 entryTime: "",
                 exitTime: "",
@@ -116,6 +116,15 @@ export default function LogDayPage() {
         }
     }, [isEditingPnl]);
 
+    const TradeDataField = ({ label }: { label: string }) => (
+        <div className="flex items-center justify-between py-4 border-b border-muted-foreground/20">
+            <span className="text-sm font-medium tracking-widest uppercase">{label}</span>
+             <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary">
+                <Plus className="h-4 w-4 mr-2" />
+                Add
+            </Button>
+        </div>
+    );
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -126,7 +135,7 @@ export default function LogDayPage() {
                 </Link>
             </Button>
             <h1 className="text-xl font-bold font-headline text-center">
-                Today Recap {format(form.watch("date"), "M/d/yy")}
+                Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
             <Button onClick={form.handleSubmit(onSubmit)}>Save Recap</Button>
         </header>
@@ -194,18 +203,15 @@ export default function LogDayPage() {
 
                     {/* Right Column */}
                      <div className="lg:col-span-1">
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline">Trade Data Entry</CardTitle>
-                            </CardHeader>
-                            <CardContent>
+                        <Card className="bg-card">
+                            <CardContent className="p-4">
                                <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                                      <FormField
                                         control={form.control}
                                         name="date"
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-col">
+                                            <FormItem className="flex flex-col space-y-2">
                                             <FormLabel>Date</FormLabel>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -213,7 +219,7 @@ export default function LogDayPage() {
                                                     <Button
                                                     variant={"outline"}
                                                     className={cn(
-                                                        "w-full pl-3 text-left font-normal",
+                                                        "w-full pl-3 text-left font-normal bg-background h-11",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                     >
@@ -242,162 +248,14 @@ export default function LogDayPage() {
                                             </FormItem>
                                         )}
                                         />
-                                        <Separator/>
-
-                                    <div className="space-y-6">
-                                        {fields.map((field, index) => (
-                                        <div key={field.id} className="space-y-4 relative">
-                                            
-                                            <div className="flex justify-between items-center">
-                                                <h3 className="font-medium">
-                                                    {fields.length > 1 ? `Trade ${index + 1}`: 'Daily Summary'}
-                                                </h3>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => remove(index)}
-                                                    disabled={fields.length < 1}
-                                                    className="h-6 w-6"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-
-                                            <FormField
-                                                control={form.control}
-                                                name={`trades.${index}.instrument`}
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Instrument</FormLabel>
-                                                        <FormControl>
-                                                            <Input placeholder="e.g. NQ" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.entryTime`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Entry Time</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="time" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.exitTime`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Exit Time</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="time" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                             <FormField
-                                                control={form.control}
-                                                name={`trades.${index}.contracts`}
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                    <FormLabel>Contracts</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="number" placeholder="0" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.tradeTp`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>TP</FormLabel>
-                                                            <FormControl>
-                                                                <Input type="number" placeholder="0" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.tradeSl`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>SL</FormLabel>
-                                                            <FormControl>
-                                                                <Input type="number" placeholder="0" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                 <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.totalPoints`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>Points</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" placeholder="0" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`trades.${index}.pnl`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                        <FormLabel>PNL</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" placeholder="0.00" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-
-                                            {index < fields.length - 1 && <Separator className="!mt-6" />}
-                                        </div>
-                                        ))}
+                                    
+                                    <div className="pt-2">
+                                        <TradeDataField label="Time" />
+                                        <TradeDataField label="Contracts" />
+                                        <TradeDataField label="TP / SL" />
+                                        <TradeDataField label="Points" />
                                     </div>
-                                     <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => append({ 
-                                            instrument: "", 
-                                            pnl: 0,
-                                            entryTime: "",
-                                            exitTime: "",
-                                            contracts: 0,
-                                            tradeTp: 0,
-                                            tradeSl: 0,
-                                            totalPoints: 0,
-                                        })}
-                                        className="w-full"
-                                        >
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add Trade
-                                    </Button>
+
                                 </form>
                                </Form>
                             </CardContent>
@@ -409,5 +267,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
