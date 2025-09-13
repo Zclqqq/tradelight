@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
@@ -15,7 +16,7 @@ export function StatCard({ title, value, children }: StatCardProps) {
         <CardTitle className="font-headline text-sm font-medium text-muted-foreground">{title}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        {value && <p className="text-4xl font-bold font-headline">{value}</p>}
+        {value && <p className="text-4xl font-bold font-headline text-foreground">{value}</p>}
         {children}
       </CardContent>
     </Card>

@@ -12,6 +12,7 @@ import { StatCard } from "@/components/stat-card";
 import { MotivationCard } from "@/components/motivation-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ProgressCard } from "@/components/progress-card";
 
 
 export default function Home() {
@@ -32,8 +33,8 @@ export default function Home() {
 
       <main className="flex-1 p-6 overflow-hidden">
         <div className="mx-auto w-full max-w-7xl h-full">
-          <div className="grid grid-cols-5 grid-rows-3 gap-6 h-full">
-            <div className="col-span-3 row-span-2">
+          <div className="grid grid-cols-4 grid-rows-3 gap-6 h-full">
+            <div className="col-span-2 row-span-2">
               <TradeCalendar />
             </div>
             <div className="col-span-2 row-span-2">
@@ -43,10 +44,10 @@ export default function Home() {
               <StatCard title="Trade Win" value="53%" />
             </div>
             <div className="col-span-1 row-span-1">
-              <StatCard title="Avg Win/Loss" value="53%" />
+              <StatCard title="Avg Win/Loss" value="$210" />
             </div>
             <div className="col-span-1 row-span-1">
-              <StatCard title="Progress On" value="100%" />
+              <ProgressCard />
             </div>
             <div className="col-span-1 row-span-1">
               <MotivationCard />
