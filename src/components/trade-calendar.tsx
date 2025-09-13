@@ -87,18 +87,17 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-1 rounded flex flex-col justify-between text-xs border",
-                !isCurrentMonth && "bg-muted/30 text-muted-foreground/50",
-                 isCurrentMonth && "bg-muted/20",
-                pnlData && pnlData.pnl > 0 && "border-green-400/50",
-                pnlData && pnlData.pnl < 0 && "border-red-400/50",
-                !pnlData && "border-border/50"
+                "relative bg-card p-1 rounded-sm flex flex-col justify-center text-xs border",
+                !isCurrentMonth && "bg-muted/30 text-muted-foreground/50 border-border/20",
+                isCurrentMonth && !pnlData && "border-border/50",
+                pnlData && pnlData.pnl > 0 && "border-green-400",
+                pnlData && pnlData.pnl < 0 && "border-red-400"
               )}
             >
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "font-semibold text-[10px]",
+                  "absolute top-1 right-1 font-semibold text-[10px]",
                    isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                 )}
               >
@@ -106,7 +105,7 @@ export function TradeCalendar() {
               </time>
 
               {pnlData && isCurrentMonth ? (
-                <div className="flex-1 flex items-center justify-center font-bold text-xs">
+                <div className="flex-1 flex items-center justify-center font-bold text-sm">
                   <span className={cn(pnlData.pnl > 0 && "text-green-400", pnlData.pnl < 0 && "text-red-400")}>
                       {pnlData.pnl.toLocaleString("en-US", {
                         style: "currency",
@@ -115,7 +114,11 @@ export function TradeCalendar() {
                       })}
                   </span>
                 </div>
-              ) : null}
+              ) : isCurrentMonth ? (
+                 <div className="flex-1 flex items-center justify-center">
+                    <span className="text-muted-foreground text-[10px]">No Trade</span>
+                </div>
+              ): null}
             </div>
           );
         })}
