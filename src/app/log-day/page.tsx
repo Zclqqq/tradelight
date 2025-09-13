@@ -38,6 +38,28 @@ const dayLogSchema = z.object({
   trades: z.array(tradeSchema),
 });
 
+const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
+    const [isEditing, setIsEditing] = React.useState(false);
+    return (
+        <div className="py-4 border-b border-muted-foreground/20">
+            <div className="flex items-center justify-between">
+                <span className="text-sm font-medium tracking-widest uppercase">{label}</span>
+                {!isEditing && (
+                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary" onClick={() => setIsEditing(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add
+                    </Button>
+                )}
+            </div>
+            {isEditing && (
+                <div className="mt-2">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 export default function LogDayPage() {
     const { toast } = useToast();
@@ -53,7 +75,7 @@ export default function LogDayPage() {
         },
     });
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, update } = useFieldArray({
         control: form.control,
         name: "trades",
     });
@@ -61,14 +83,14 @@ export default function LogDayPage() {
     React.useEffect(() => {
         if (fields.length === 0) {
             append({ 
-                instrument: "Summary", 
+                instrument: "", 
                 pnl: 0,
                 entryTime: "",
                 exitTime: "",
-                contracts: 0,
-                tradeTp: 0,
-                tradeSl: 0,
-                totalPoints: 0,
+                contracts: undefined,
+                tradeTp: undefined,
+                tradeSl: undefined,
+                totalPoints: undefined,
             });
         }
     }, [fields, append]);
@@ -80,8 +102,10 @@ export default function LogDayPage() {
             description: "Your daily recap has been saved successfully.",
         });
     };
+    
+    const summaryTrade = form.watch("trades")?.[0] ?? {};
+    const totalPnl = summaryTrade.pnl || 0;
 
-    const totalPnl = form.watch("trades").reduce((acc, trade) => acc + Number(trade.pnl || 0), 0);
 
     const handlePnlDoubleClick = () => {
         setIsEditingPnl(true);
@@ -94,11 +118,8 @@ export default function LogDayPage() {
     const handlePnlKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             const newPnl = parseFloat(event.currentTarget.value);
-            if (!isNaN(newPnl)) {
-                form.setValue('trades', [{ 
-                    instrument: "Summary", 
-                    pnl: newPnl,
-                }]);
+            if (!isNaN(newPnl) && fields[0]) {
+                update(0, {...fields[0], pnl: newPnl });
             }
             setIsEditingPnl(false);
         } else if (event.key === 'Escape') {
@@ -112,16 +133,6 @@ export default function LogDayPage() {
             pnlInputRef.current.select();
         }
     }, [isEditingPnl]);
-
-    const TradeDataField = ({ label }: { label: string }) => (
-        <div className="flex items-center justify-between py-4 border-b border-muted-foreground/20">
-            <span className="text-sm font-medium tracking-widest uppercase">{label}</span>
-             <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary">
-                <Plus className="h-4 w-4 mr-2" />
-                Add
-            </Button>
-        </div>
-    );
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -138,47 +149,47 @@ export default function LogDayPage() {
         </header>
 
         <main className="flex-1 p-4 md:p-6">
-            <div className="mx-auto w-full max-w-6xl">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">PNL</CardTitle>
-                            </CardHeader>
-                            <CardContent onDoubleClick={handlePnlDoubleClick}>
-                                {isEditingPnl ? (
-                                     <Input
-                                        ref={pnlInputRef}
-                                        type="number"
-                                        defaultValue={totalPnl}
-                                        onBlur={handlePnlBlur}
-                                        onKeyDown={handlePnlKeyDown}
-                                        className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent"
-                                     />
-                                ) : (
-                                    <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                        {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                    </p>
-                                )}
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">Chart</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="h-48 flex items-center justify-center bg-muted/50 rounded-none text-muted-foreground">
-                                    Chart Placeholder
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-base">Notes</CardTitle>
-                            </CardHeader>
-                           <CardContent className="p-4">
-                               <Form {...form}>
-                                    <form>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="mx-auto w-full max-w-6xl">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="lg:col-span-2 space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-base">PNL</CardTitle>
+                                    </CardHeader>
+                                    <CardContent onDoubleClick={handlePnlDoubleClick}>
+                                        {isEditingPnl ? (
+                                            <Input
+                                                ref={pnlInputRef}
+                                                type="number"
+                                                defaultValue={totalPnl}
+                                                onBlur={handlePnlBlur}
+                                                onKeyDown={handlePnlKeyDown}
+                                                className="text-3xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent"
+                                            />
+                                        ) : (
+                                            <p className={`text-3xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                                {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                            </p>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-base">Chart</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="h-48 flex items-center justify-center bg-muted/50 rounded-none text-muted-foreground">
+                                            Chart Placeholder
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-base">Notes</CardTitle>
+                                    </CardHeader>
+                                <CardContent className="p-4">
                                         <FormField
                                             control={form.control}
                                             name="notes"
@@ -191,74 +202,116 @@ export default function LogDayPage() {
                                                 </FormItem>
                                             )}
                                         />
-                                    </form>
-                               </Form>
-                            </CardContent>
-                        </Card>
-                    </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
 
-                     <div className="lg:col-span-1">
-                        <Card className="bg-card">
-                            <CardContent className="p-4">
-                               <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-                                     <FormField
-                                        control={form.control}
-                                        name="date"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-col space-y-2 mb-4">
-                                            <FormLabel>Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-full pl-3 text-left font-normal bg-background h-11",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                    >
-                                                    {field.value ? (
-                                                        format(field.value, "PPP")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                    date > new Date() || date < new Date("1900-01-01")
-                                                    }
-                                                    initialFocus
+                            <div className="lg:col-span-1">
+                                <Card className="bg-card">
+                                    <CardContent className="p-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="date"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-col space-y-2 mb-4">
+                                                    <FormLabel className="text-sm font-medium tracking-widest uppercase">Date</FormLabel>
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full pl-3 text-left font-normal bg-background h-11",
+                                                                !field.value && "text-muted-foreground"
+                                                            )}
+                                                            >
+                                                            {field.value ? (
+                                                                format(field.value, "PPP")
+                                                            ) : (
+                                                                <span>Pick a date</span>
+                                                            )}
+                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={field.value}
+                                                            onSelect={field.onChange}
+                                                            disabled={(date) =>
+                                                            date > new Date() || date < new Date("1900-01-01")
+                                                            }
+                                                            initialFocus
+                                                        />
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                    <FormMessage />
+                                                    </FormItem>
+                                                )}
                                                 />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                            </FormItem>
-                                        )}
-                                        />
-                                    
-                                    <div className="pt-2 space-y-2">
-                                        <TradeDataField label="Time" />
-                                        <TradeDataField label="Contracts" />
-                                        <TradeDataField label="TP / SL" />
-                                        <TradeDataField label="Points" />
-                                    </div>
-
-                                </form>
-                               </Form>
-                            </CardContent>
-                        </Card>
+                                            
+                                            <div className="pt-2 space-y-2">
+                                                <TradeDataField label="Instrument">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.instrument"
+                                                        render={({ field }) => <Input placeholder="e.g. NQ" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                                <TradeDataField label="Entry / Exit Time">
+                                                    <div className="flex gap-2">
+                                                        <FormField
+                                                            control={form.control}
+                                                            name="trades.0.entryTime"
+                                                            render={({ field }) => <Input type="time" {...field} />}
+                                                        />
+                                                        <FormField
+                                                            control={form.control}
+                                                            name="trades.0.exitTime"
+                                                            render={({ field }) => <Input type="time" {...field} />}
+                                                        />
+                                                    </div>
+                                                </TradeDataField>
+                                                <TradeDataField label="Contracts">
+                                                     <FormField
+                                                        control={form.control}
+                                                        name="trades.0.contracts"
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                                <TradeDataField label="TP / SL">
+                                                    <div className="flex gap-2">
+                                                         <FormField
+                                                            control={form.control}
+                                                            name="trades.0.tradeTp"
+                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                                        />
+                                                         <FormField
+                                                            control={form.control}
+                                                            name="trades.0.tradeSl"
+                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                                        />
+                                                    </div>
+                                                </TradeDataField>
+                                                <TradeDataField label="Points">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.totalPoints"
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                            </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </form>
+            </Form>
         </main>
     </div>
   );
 }
+
+    
