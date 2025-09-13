@@ -17,7 +17,7 @@ import Link from "next/link";
 export default function Home() {
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-6 w-6 text-primary" />
@@ -30,23 +30,21 @@ export default function Home() {
         </Button>
       </header>
 
-      <main className="flex-1 p-4 md:p-6">
-        <div className="mx-auto w-full max-w-7xl">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 gap-6">
-                  <TradeCalendar />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <StatCard title="Win Rate" value="67%" />
-                      <StatCard title="Avg Win/Loss" value="2.1R" />
-                      <StatCard title="Progress On" value="100%" />
-                      <MotivationCard />
-                  </div>
-                </div>
+      <main className="flex-1 p-4 md:p-6 overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl h-full flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 flex-1">
+              <div className="lg:col-span-3 h-full">
+                <TradeCalendar />
               </div>
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 h-full">
                 <RecentTrades />
               </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard title="Win Rate" value="67%" />
+                <StatCard title="Avg Win/Loss" value="2.1R" />
+                <StatCard title="Progress On" value="100%" />
+                <MotivationCard />
             </div>
         </div>
       </main>
