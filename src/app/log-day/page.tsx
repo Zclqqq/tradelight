@@ -188,14 +188,15 @@ export default function LogDayPage() {
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                     <div className="space-y-4">
                                         {fields.map((field, index) => (
-                                        <div key={field.id} className="space-y-4 relative bg-card p-4 rounded-lg border">
+                                        <div key={field.id} className="space-y-4 relative pt-4">
+                                            {index > 0 && <hr className="absolute top-0 left-0 right-0 border-border" />}
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => fields.length > 1 && remove(index)}
                                                 disabled={fields.length <= 1}
-                                                className="h-6 w-6 absolute top-2 right-2"
+                                                className="h-6 w-6 absolute top-2 right-0"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
@@ -328,7 +329,6 @@ export default function LogDayPage() {
                                                 </div>
                                             </div>
 
-                                            {index < fields.length - 1 && <hr className="my-4 border-border" />}
                                         </div>
                                         ))}
                                     </div>
