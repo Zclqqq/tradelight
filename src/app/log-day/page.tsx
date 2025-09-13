@@ -263,7 +263,7 @@ export default function LogDayPage() {
                                                     />
                                                 </TradeDataField>
                                                 <TradeDataField label="Entry / Exit Time">
-                                                    <div className="flex gap-2">
+                                                    <div className="flex justify-start gap-2">
                                                         <FormField
                                                             control={form.control}
                                                             name="trades.0.entryTime"
