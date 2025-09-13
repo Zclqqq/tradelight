@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-6 w-6 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-foreground">
@@ -30,13 +30,13 @@ export default function Home() {
         </Button>
       </header>
 
-      <main className="flex-1 p-4 md:p-6 overflow-auto">
-        <div className="mx-auto w-full max-w-7xl h-full flex flex-col gap-6">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              <div className="lg:col-span-3">
+      <main className="flex-1 p-4 md:p-6 overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl h-full flex flex-col gap-4">
+            <div className="flex-1 grid grid-cols-1 xl:grid-cols-5 gap-4">
+              <div className="xl:col-span-3">
                 <TradeCalendar />
               </div>
-              <div className="lg:col-span-2">
+              <div className="xl:col-span-2">
                 <RecentTrades />
               </div>
             </div>
