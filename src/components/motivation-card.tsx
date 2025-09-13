@@ -19,11 +19,11 @@ export function MotivationCard() {
     }, []);
 
   return (
-    <Card className="text-center h-full">
+    <Card className="text-center h-full flex flex-col">
       <CardHeader className="p-4 pb-2">
-        <CardTitle className="font-headline text-sm text-muted-foreground">Motivation Quote</CardTitle>
+        <CardTitle className="font-headline text-sm font-medium text-muted-foreground">Motivation Quote</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex items-center justify-center h-full">
+      <CardContent className="p-4 pt-0 flex-1 flex items-center justify-center">
         <p className="text-sm font-medium">"{quote}"</p>
       </CardContent>
     </Card>
