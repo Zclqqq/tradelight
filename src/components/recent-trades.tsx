@@ -18,13 +18,13 @@ export function RecentTrades() {
             {recentTrades.map(trade => (
                 <li key={trade.id} className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-3 shrink-0">
-                        <div className="w-12 text-center">
+                        <div className="w-10 text-center">
                             <p className="font-bold text-sm">{format(trade.date, "d")}</p>
                             <p className="text-xs text-muted-foreground">{format(trade.date, "MMM")}</p>
                         </div>
                         <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>
                     </div>
-                    <p className={cn("font-bold text-sm text-right", trade.profitOrLoss >= 0 ? "text-[hsl(var(--chart-1))]" : "text-[hsl(var(--chart-2))]")}>
+                    <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss >= 0 ? "text-[hsl(var(--chart-1))]" : "text-[hsl(var(--chart-2))]")}>
                         {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                     </p>
                 </li>
