@@ -31,8 +31,8 @@ export default function Home() {
       </header>
 
       <main className="flex-1 p-4 md:p-6 overflow-hidden">
-        <div className="mx-auto w-full max-w-7xl h-full flex flex-col gap-4">
-            <div className="flex-1 grid grid-cols-1 xl:grid-cols-5 gap-4">
+        <div className="mx-auto w-full max-w-7xl h-full flex flex-col gap-2">
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-2 flex-1">
               <div className="xl:col-span-3">
                 <TradeCalendar />
               </div>
@@ -40,7 +40,7 @@ export default function Home() {
                 <RecentTrades />
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                 <StatCard title="Trade Win" value="53%" />
                 <StatCard title="Avg Win/Loss" value="53%" />
                 <StatCard title="Progress On" value="100%" />

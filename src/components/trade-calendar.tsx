@@ -62,10 +62,10 @@ export function TradeCalendar() {
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={prevMonth}>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={nextMonth}>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={nextMonth}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -87,7 +87,7 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-1.5 rounded-md flex flex-col justify-between text-xs border",
+                "relative bg-card p-1 rounded flex flex-col justify-between text-xs border",
                 !isCurrentMonth && "bg-muted/30 text-muted-foreground/50",
                  isCurrentMonth && "bg-muted/20",
                 pnlData && pnlData.pnl > 0 && "border-green-400/50",
@@ -106,7 +106,7 @@ export function TradeCalendar() {
               </time>
 
               {pnlData && isCurrentMonth ? (
-                <div className="flex-1 flex items-center justify-center font-bold text-sm">
+                <div className="flex-1 flex items-center justify-center font-bold text-xs">
                   <span className={cn(pnlData.pnl > 0 && "text-green-400", pnlData.pnl < 0 && "text-red-400")}>
                       {pnlData.pnl.toLocaleString("en-US", {
                         style: "currency",

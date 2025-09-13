@@ -10,17 +10,17 @@ export function RecentTrades() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-headline">Recent Trade List</CardTitle>
+        <CardTitle className="font-headline text-lg">Recent Trade List</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ul className="space-y-4">
+      <CardContent className="pt-2">
+        <ul className="space-y-3">
             {recentTrades.map(trade => (
                 <li key={trade.id} className="flex justify-between items-center">
                     <div>
-                        <p className="font-bold">{trade.instrument}</p>
-                        <p className="text-sm text-muted-foreground">{format(trade.date, "MMM d")}</p>
+                        <p className="font-bold text-sm">{trade.instrument}</p>
+                        <p className="text-xs text-muted-foreground">{format(trade.date, "MMM d")}</p>
                     </div>
-                    <p className={cn("font-bold", trade.profitOrLoss > 0 ? "text-green-400" : "text-red-400")}>
+                    <p className={cn("font-bold text-sm", trade.profitOrLoss > 0 ? "text-green-400" : "text-red-400")}>
                         {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                     </p>
                 </li>
