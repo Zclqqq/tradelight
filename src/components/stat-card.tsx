@@ -10,7 +10,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, children }: StatCardProps) {
   return (
-    <Card className="text-center">
+    <Card className="text-center h-full">
       <CardHeader className="p-4">
         <CardTitle className="font-headline text-base text-muted-foreground">{title}</CardTitle>
       </CardHeader>

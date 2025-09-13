@@ -19,7 +19,7 @@ export function MotivationCard() {
     }, []);
 
   return (
-    <Card className="text-center">
+    <Card className="text-center h-full">
       <CardHeader className="p-4">
         <CardTitle className="font-headline text-base text-muted-foreground">Motivation Quote</CardTitle>
       </CardHeader>
