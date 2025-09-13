@@ -31,7 +31,7 @@ export default function Home() {
         </Button>
       </header>
 
-      <main className="flex-1 p-6 overflow-hidden">
+      <main className="flex-1 p-6 overflow-auto">
         <div className="mx-auto w-full max-w-7xl h-full">
           <div className="grid grid-cols-4 grid-rows-3 gap-6 h-full">
             <div className="col-span-3 row-span-2">
