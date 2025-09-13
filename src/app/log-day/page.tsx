@@ -207,51 +207,54 @@ export default function LogDayPage() {
                             </div>
 
                             <div className="lg:col-span-1">
-                                <Card className="bg-card">
-                                    <CardContent className="p-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-base">Trade Data</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-4 pt-0">
                                             <FormField
                                                 control={form.control}
                                                 name="date"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-2 mb-4">
-                                                    <FormLabel className="text-sm font-medium tracking-widest uppercase">Date</FormLabel>
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                        <FormControl>
-                                                            <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal bg-background h-11",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                            >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                            </Button>
-                                                        </FormControl>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-0" align="start">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={field.value}
-                                                            onSelect={field.onChange}
-                                                            disabled={(date) =>
-                                                            date > new Date() || date < new Date("1900-01-01")
-                                                            }
-                                                            initialFocus
-                                                        />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                    <FormMessage />
+                                                    <FormItem className="flex flex-col space-y-2 py-4 border-b border-muted-foreground/20">
+                                                        <FormLabel className="text-sm font-medium tracking-widest uppercase">Date</FormLabel>
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                            <FormControl>
+                                                                <Button
+                                                                variant={"ghost"}
+                                                                className={cn(
+                                                                    "w-full justify-start text-left font-headline text-xl font-bold p-0 h-auto",
+                                                                    !field.value && "text-muted-foreground"
+                                                                )}
+                                                                >
+                                                                {field.value ? (
+                                                                    format(field.value, "PPP")
+                                                                ) : (
+                                                                    <span>Pick a date</span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                </Button>
+                                                            </FormControl>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-auto p-0" align="start">
+                                                            <Calendar
+                                                                mode="single"
+                                                                selected={field.value}
+                                                                onSelect={field.onChange}
+                                                                disabled={(date) =>
+                                                                date > new Date() || date < new Date("1900-01-01")
+                                                                }
+                                                                initialFocus
+                                                            />
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                                 />
                                             
-                                            <div className="pt-2 space-y-2">
+                                            <div className="space-y-2">
                                                 <TradeDataField label="Instrument">
                                                     <FormField
                                                         control={form.control}
@@ -313,5 +316,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
