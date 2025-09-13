@@ -41,12 +41,12 @@ const dayLogSchema = z.object({
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isEditing, setIsEditing] = React.useState(false);
     return (
-        <div className="py-4 border-b border-muted-foreground/20">
+        <div className="py-3 border-b border-muted-foreground/20">
             <div className="flex items-center justify-between">
-                <span className="text-sm font-medium tracking-widest uppercase">{label}</span>
+                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
                 {!isEditing && (
-                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary" onClick={() => setIsEditing(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-0" onClick={() => setIsEditing(true)}>
+                        <Plus className="h-4 w-4 mr-1" />
                         Add
                     </Button>
                 )}
@@ -216,15 +216,15 @@ export default function LogDayPage() {
                                                 control={form.control}
                                                 name="date"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-2 py-4 border-b border-muted-foreground/20">
-                                                        <FormLabel className="text-sm font-medium tracking-widest uppercase">Date</FormLabel>
+                                                    <FormItem className="flex flex-col space-y-2 py-3 border-b border-muted-foreground/20">
+                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                             <FormControl>
                                                                 <Button
                                                                 variant={"ghost"}
                                                                 className={cn(
-                                                                    "w-full justify-start text-left font-headline text-xl font-bold p-0 h-auto",
+                                                                    "w-full justify-start text-left font-headline font-bold p-0 h-auto text-base",
                                                                     !field.value && "text-muted-foreground"
                                                                 )}
                                                                 >
@@ -316,5 +316,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
