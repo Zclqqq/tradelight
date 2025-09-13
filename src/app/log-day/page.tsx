@@ -180,7 +180,7 @@ export default function LogDayPage() {
                                         <CardTitle className="font-headline text-base">Chart</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="h-48 flex items-center justify-center bg-muted/50 rounded-none text-muted-foreground">
+                                        <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg text-muted-foreground">
                                             Chart Placeholder
                                         </div>
                                     </CardContent>
