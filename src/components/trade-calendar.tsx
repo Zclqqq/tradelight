@@ -32,7 +32,6 @@ export function TradeCalendar() {
   const [dailyPnl, setDailyPnl] = React.useState<Record<string, DailyPnl>>({});
 
   React.useEffect(() => {
-    // This function now runs only on the client
     const initializeCalendar = () => {
       setToday(new Date());
       
@@ -123,8 +122,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 flex flex-col justify-center text-xs cursor-pointer transition-colors border-border/20",
-                "border-b border-r",
+                "relative p-1 flex flex-col justify-start text-xs cursor-pointer transition-colors border border-border/20",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
