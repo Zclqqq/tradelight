@@ -31,25 +31,22 @@ export default function Home() {
         </Button>
       </header>
 
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="mx-auto w-full max-w-7xl h-full">
-          <div className="grid grid-cols-4 grid-rows-3 gap-6 h-full">
+      <main className="flex-1 p-4 overflow-auto">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-4 gap-4">
             <div className="col-span-3 row-span-2">
               <TradeCalendar />
             </div>
             <div className="col-span-1 row-span-2">
               <RecentTrades />
             </div>
-            <div className="col-span-1 row-span-1">
-              <StatCard title="Trade Win %" value="53%" />
-            </div>
-            <div className="col-span-1 row-span-1">
-              <StatCard title="Avg Win/Loss" value="$210" />
-            </div>
-            <div className="col-span-1 row-span-1">
+            <div className="col-span-2">
               <ProgressCard />
             </div>
-            <div className="col-span-1 row-span-1">
+            <div className="col-span-1">
+              <StatCard title="Avg Win/Loss" value="$210" />
+            </div>
+            <div className="col-span-1">
                 <MotivationCard />
             </div>
           </div>
