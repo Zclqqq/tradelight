@@ -62,9 +62,17 @@ export function TradeCalendar() {
     
     initializeCalendar();
 
-    window.addEventListener('storage', initializeCalendar);
+    const handleStorageChange = () => {
+        initializeCalendar();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also re-initialize when the component mounts, in case of navigation
+    initializeCalendar();
+
     return () => {
-        window.removeEventListener('storage', initializeCalendar);
+        window.removeEventListener('storage', handleStorageChange);
     }
   }, []);
 
@@ -116,7 +124,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 grid-rows-6 flex-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -127,7 +135,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 flex flex-col justify-start text-xs cursor-pointer transition-colors border border-border/20 aspect-square",
+                "relative p-1 flex flex-col justify-start text-xs cursor-pointer transition-colors border-t border-r border-border/20",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
