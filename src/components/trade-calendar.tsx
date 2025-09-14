@@ -74,12 +74,7 @@ export function TradeCalendar() {
 
   const handleDayClick = (day: Date) => {
     const dayKey = format(day, "yyyy-MM-dd");
-    const pnlData = dailyPnl[dayKey];
-    if (pnlData) {
-        router.push(`/log-day?date=${dayKey}`);
-    } else {
-        router.push(`/log-day?date=${dayKey}`);
-    }
+    router.push(`/log-day?date=${dayKey}`);
   };
 
 
@@ -105,7 +100,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-flow-row auto-rows-fr gap-1 flex-1 pt-1">
+      <div className="grid grid-cols-7 grid-rows-6 gap-1 flex-1 pt-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -159,5 +154,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
-    
