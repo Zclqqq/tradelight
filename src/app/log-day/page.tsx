@@ -203,20 +203,20 @@ export default function LogDayPage() {
                                 </Card>
                                 <Card onPaste={handleImagePaste} className="overflow-hidden">
                                     <CardContent className="p-0">
-                                        <div className="flex flex-col items-center justify-center text-center">
+                                        <div className="flex flex-col text-left">
                                         {analysisImage ? (
-                                             <div className="w-full space-y-2 relative">
-                                                <div className="relative w-full aspect-video bg-card overflow-hidden">
-                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                             <div className="w-full">
+                                                <div className="relative w-full aspect-video bg-card">
+                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
                                                 </div>
-                                                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                                <div className="p-2">
                                                     <FormField
                                                         control={form.control}
                                                         name="trades.0.analysisText"
                                                         render={({ field }) => (
                                                             <FormItem>
                                                                 <FormControl>
-                                                                    <Input className="bg-transparent border-0 text-center p-0 text-white placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
+                                                                    <Input className="bg-transparent border-0 p-0 h-auto text-sm placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                             </FormItem>
