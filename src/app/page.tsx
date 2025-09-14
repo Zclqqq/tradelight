@@ -22,6 +22,8 @@ export default function Home() {
     ? winningTrades.reduce((acc, trade) => acc + trade.profitOrLoss, 0) / winningTrades.length
     : 0;
 
+  const winRate = trades.length > 0 ? (winningTrades.length / trades.length) * 100 : 0;
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm shrink-0">
@@ -57,7 +59,13 @@ export default function Home() {
                   value={avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
                 />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1">
+               <StatCard 
+                  title="Win Rate" 
+                  value={`${winRate.toFixed(0)}%`}
+                />
+            </div>
+            <div className="col-span-1">
                 <MotivationCard />
             </div>
           </div>
