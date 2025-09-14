@@ -62,21 +62,21 @@ const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id
                         className="h-7 text-xs" 
                     />
                 ) : (
-                     <span className="font-medium text-xs flex-1 truncate">{goal.title}</span>
+                     <span className="font-medium text-sm flex-1 truncate">{goal.title}</span>
                 )}
                  <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setIsEditing(!isEditing)}>
                     <Edit className="h-3 w-3" />
                 </Button>
             </div>
             <div className="flex items-center gap-3 w-32">
-                <Progress value={(goal.progress / 7) * 100} className="h-1.5 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
+                <Progress value={(goal.progress / 7) * 100} className="h-2 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
                 <span className="text-xs font-mono w-8 text-right">{goal.progress}/7</span>
             </div>
             <Button 
                 size="icon" 
                 variant={canComplete ? "outline" : "secondary"}
                 onClick={() => canComplete && onComplete(goal.id)}
-                className="h-7 w-7 text-xs"
+                className="h-8 w-8 text-xs shrink-0"
                 disabled={!canComplete}
             >
                 {canComplete ? <Plus className="h-4 w-4" /> : <Check className="h-4 w-4" />}
@@ -109,11 +109,11 @@ export function ProgressCard() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="p-4 pb-2">
-        <CardTitle className="font-headline text-sm font-medium text-muted-foreground">
+        <CardTitle className="font-headline text-base font-medium">
           Weekly Goals
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-2">
+      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-3">
         {goals.map(goal => (
             <GoalTracker 
                 key={goal.id} 

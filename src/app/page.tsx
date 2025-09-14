@@ -11,11 +11,16 @@ import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProgressCard } from "@/components/progress-card";
 import { MotivationCard } from "@/components/motivation-card";
+import { trades } from "@/lib/data";
 
 
 export default function Home() {
+  const netPnl = trades.reduce((acc, trade) => acc + trade.profitOrLoss, 0);
+  const winningTrades = trades.filter(trade => trade.profitOrLoss > 0);
+  const avgWin = winningTrades.length > 0
+    ? winningTrades.reduce((acc, trade) => acc + trade.profitOrLoss, 0) / winningTrades.length
+    : 0;
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -40,13 +45,19 @@ export default function Home() {
             <div className="col-span-1 row-span-2">
               <RecentTrades />
             </div>
+            <div className="col-span-1">
+               <StatCard 
+                  title="Net P&L" 
+                  value={netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
+               />
+            </div>
+             <div className="col-span-1">
+               <StatCard 
+                  title="Avg Trade Win" 
+                  value={avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                />
+            </div>
             <div className="col-span-2">
-              <ProgressCard />
-            </div>
-            <div className="col-span-1">
-              <StatCard title="Avg Win/Loss" value="$210" />
-            </div>
-            <div className="col-span-1">
                 <MotivationCard />
             </div>
           </div>
