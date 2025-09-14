@@ -56,7 +56,7 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="bg-card p-4 rounded-lg shadow-sm h-full flex flex-col">
+    <div className="p-4 rounded-lg h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -87,7 +87,7 @@ export function TradeCalendar() {
             <div
               key={day.toString()}
               className={cn(
-                "relative bg-card p-1 rounded-sm flex flex-col justify-center text-xs border",
+                "relative p-1 rounded-sm flex flex-col justify-center text-xs border",
                 !isCurrentMonth && "bg-muted/30 text-muted-foreground/50 border-transparent",
                 isCurrentMonth && !pnlData && "border-border/50",
                 pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))]",
