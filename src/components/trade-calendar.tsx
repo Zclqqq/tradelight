@@ -45,7 +45,7 @@ export function TradeCalendar() {
       pnl[dayKey].tradeCount++;
     });
     return pnl;
-  }, []);
+  }, [trades]);
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
