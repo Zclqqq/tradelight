@@ -209,7 +209,7 @@ export default function LogDayPage() {
                                         <div className="flex flex-col items-center justify-center text-center">
                                         {analysisImage ? (
                                              <div className="w-full space-y-2">
-                                                <div className="relative w-full h-[300px] bg-card rounded-md overflow-hidden">
+                                                <div className="relative w-full aspect-video bg-card rounded-md overflow-hidden">
                                                     <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
                                                 </div>
                                                 <FormField
@@ -218,7 +218,7 @@ export default function LogDayPage() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <Input placeholder="Add a short description..." {...field} />
+                                                                <Input className="bg-transparent border-0 text-center p-0" placeholder="Add a short description..." {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -375,6 +375,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
