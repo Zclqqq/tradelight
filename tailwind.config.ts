@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
-        headline: ['Kalam', 'cursive'],
+        headline: ['Inter', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -67,9 +67,9 @@ export default {
         },
       },
       borderRadius: {
-        lg: '0',
-        md: '0',
-        sm: '0',
+        lg: '0rem',
+        md: '0rem',
+        sm: '0rem',
       },
       keyframes: {
         'accordion-down': {
