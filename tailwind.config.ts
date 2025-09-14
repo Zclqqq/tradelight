@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
-        headline: ['Space Grotesk', 'sans-serif'],
+        headline: ['Kalam', 'cursive'],
         code: ['monospace'],
       },
       colors: {
@@ -67,9 +67,9 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: '0',
+        md: '0',
+        sm: '0',
       },
       keyframes: {
         'accordion-down': {
