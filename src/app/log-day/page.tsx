@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, Download } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -110,6 +110,58 @@ export default function LogDayPage() {
         }
     };
 
+    const exportToCsv = () => {
+        const values = form.getValues();
+        const trades = values.trades;
+        if(trades.length === 0 || (trades.length === 1 && trades[0].instrument === 'Summary' && trades[0].pnl === 0)) {
+             toast({
+                title: "No Trades to Export",
+                description: "Please add at least one trade before exporting.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        // We only export the first trade which is the main summary.
+        const tradeData = trades[0];
+
+        const headers = [
+            'Date', 'Instrument', 'P&L', 'Entry Time', 'Exit Time', 
+            'Contracts', 'TP', 'SL', 'Total Points', 'Notes', 'Analysis Text'
+        ];
+        
+        const row = [
+            format(values.date, 'yyyy-MM-dd'),
+            tradeData.instrument,
+            tradeData.pnl,
+            tradeData.entryTime || '',
+            tradeData.exitTime || '',
+            tradeData.contracts || '',
+            tradeData.tradeTp || '',
+            tradeData.tradeSl || '',
+            tradeData.totalPoints || '',
+            values.notes || '',
+            tradeData.analysisText || '',
+        ];
+
+        let csvContent = "data:text/csv;charset=utf-8," 
+            + headers.join(",") + "\n" 
+            + row.join(",");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `trade_log_${format(values.date, 'yyyy-MM-dd')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({
+            title: "Export Successful",
+            description: "Your trade log has been exported as a CSV file.",
+        });
+    };
+
 
     React.useEffect(() => {
         if (fields.length === 0) {
@@ -171,7 +223,12 @@ export default function LogDayPage() {
             <h1 className="text-xl font-bold font-headline text-center">
                 Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
-            <Button onClick={form.handleSubmit(onSubmit)}>Save Recap</Button>
+            <div className="flex items-center gap-2">
+                <Button variant="outline" size="icon" onClick={exportToCsv}>
+                    <Download />
+                </Button>
+                <Button onClick={form.handleSubmit(onSubmit)}>Save Recap</Button>
+            </div>
         </header>
 
         <main className="flex-1 p-4 md:p-6">
@@ -377,6 +434,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
