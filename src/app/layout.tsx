@@ -2,7 +2,6 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { Particles } from '@/components/particles';
 
 export const metadata: Metadata = {
   title: 'TradeLight',
@@ -21,9 +20,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased text-foreground">
-        <Particles className="absolute inset-0 -z-10" quantity={100} />
-        <div className="relative z-0 bg-background min-h-screen">
+      <body className="font-body antialiased text-foreground bg-grid-noise">
+        <div className="content-wrapper min-h-screen">
           {children}
         </div>
         <Toaster />
