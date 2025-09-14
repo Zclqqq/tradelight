@@ -22,7 +22,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <Particles className="absolute inset-0 -z-10" />
+        <Particles className="absolute inset-0 -z-10" quantity={100} />
         {children}
         <Toaster />
       </body>
