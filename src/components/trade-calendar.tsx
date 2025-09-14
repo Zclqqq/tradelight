@@ -100,7 +100,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-6 gap-1 flex-1 pt-1">
+      <div className="grid grid-cols-7 grid-rows-6 flex-1 pt-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
