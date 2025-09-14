@@ -12,7 +12,7 @@ import {
   startOfWeek,
   add,
   sub,
-  isToday
+  isToday as isTodayDateFns
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { trades } from "@/lib/data";
@@ -26,6 +26,11 @@ interface DailyPnl {
 
 export function TradeCalendar() {
   const [currentDate, setCurrentDate] = React.useState(new Date());
+  const [today, setToday] = React.useState<Date | null>(null);
+
+  React.useEffect(() => {
+    setToday(new Date());
+  }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 
@@ -45,7 +50,7 @@ export function TradeCalendar() {
       pnl[dayKey].tradeCount++;
     });
     return pnl;
-  }, [trades]);
+  }, []);
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -53,6 +58,11 @@ export function TradeCalendar() {
 
   function prevMonth() {
     setCurrentDate(sub(currentDate, { months: 1 }));
+  }
+  
+  const isToday = (day: Date) => {
+    if (!today) return false;
+    return isTodayDateFns(day);
   }
 
   return (
