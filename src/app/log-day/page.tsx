@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, Download } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 const tradeSchema = z.object({
@@ -39,6 +40,8 @@ const dayLogSchema = z.object({
   notes: z.string().optional(),
   trades: z.array(tradeSchema),
 });
+
+export type DayLog = z.infer<typeof dayLogSchema>;
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isEditing, setIsEditing] = React.useState(false);
@@ -65,6 +68,8 @@ const TradeDataField = ({ label, children }: { label: string, children: React.Re
 
 export default function LogDayPage() {
     const { toast } = useToast();
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [isEditingPnl, setIsEditingPnl] = React.useState(false);
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -82,6 +87,24 @@ export default function LogDayPage() {
         control: form.control,
         name: "trades",
     });
+
+    React.useEffect(() => {
+        const dateParam = searchParams.get('date');
+        const date = dateParam ? new Date(dateParam) : new Date();
+        const key = `trade-log-${format(date, 'yyyy-MM-dd')}`;
+        const savedData = localStorage.getItem(key);
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            parsedData.date = new Date(parsedData.date); // Convert date string back to Date object
+            form.reset(parsedData);
+        } else {
+             form.reset({
+                date: date,
+                notes: "",
+                trades: [{ instrument: "Summary", pnl: 0 }],
+             });
+        }
+    }, [searchParams, form]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -110,78 +133,30 @@ export default function LogDayPage() {
         }
     };
 
-    const exportToCsv = () => {
-        const values = form.getValues();
-        const trades = values.trades;
-        if(trades.length === 0 || (trades.length === 1 && trades[0].instrument === 'Summary' && trades[0].pnl === 0)) {
-             toast({
-                title: "No Trades to Export",
-                description: "Please add at least one trade before exporting.",
-                variant: "destructive"
-            });
-            return;
-        }
-
-        // We only export the first trade which is the main summary.
-        const tradeData = trades[0];
-
-        const headers = [
-            'Date', 'Instrument', 'P&L', 'Entry Time', 'Exit Time', 
-            'Contracts', 'TP', 'SL', 'Total Points', 'Notes', 'Analysis Text'
-        ];
-        
-        const row = [
-            format(values.date, 'yyyy-MM-dd'),
-            tradeData.instrument,
-            tradeData.pnl,
-            tradeData.entryTime || '',
-            tradeData.exitTime || '',
-            tradeData.contracts || '',
-            tradeData.tradeTp || '',
-            tradeData.tradeSl || '',
-            tradeData.totalPoints || '',
-            values.notes || '',
-            tradeData.analysisText || '',
-        ];
-
-        let csvContent = "data:text/csv;charset=utf-8," 
-            + headers.join(",") + "\n" 
-            + row.join(",");
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `trade_log_${format(values.date, 'yyyy-MM-dd')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        toast({
-            title: "Export Successful",
-            description: "Your trade log has been exported as a CSV file.",
-        });
-    };
-
-
-    React.useEffect(() => {
-        if (fields.length === 0) {
-            append({ 
-                instrument: "Summary", 
-                pnl: 0,
-            });
-        }
-    }, [fields, append]);
-
     const onSubmit = (values: z.infer<typeof dayLogSchema>) => {
-        console.log(values);
+        const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
+        const dataToSave = {
+            ...values,
+            date: values.date.toISOString(), // a non-serializable value
+        };
+        localStorage.setItem(key, JSON.stringify(dataToSave));
+        
+        // Update the main trade list
+        const allLogs = Object.keys(localStorage)
+            .filter(k => k.startsWith('trade-log-'))
+            .map(k => JSON.parse(localStorage.getItem(k) as string));
+
+        localStorage.setItem('all-trades', JSON.stringify(allLogs));
+        
         toast({
             title: "Day Logged!",
             description: "Your daily recap has been saved successfully.",
         });
+        router.push('/');
     };
     
     const allTrades = form.watch("trades");
-    const totalPnl = allTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+    const totalPnl = allTrades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
     const analysisImage = form.watch("trades.0.analysisImage");
 
 
@@ -224,9 +199,6 @@ export default function LogDayPage() {
                 Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
             <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={exportToCsv}>
-                    <Download />
-                </Button>
                 <Button onClick={form.handleSubmit(onSubmit)}>Save Recap</Button>
             </div>
         </header>
@@ -434,11 +406,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
 
     

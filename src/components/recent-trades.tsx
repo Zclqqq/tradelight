@@ -1,14 +1,41 @@
 
 "use client";
 
-import { trades } from "@/lib/data";
+import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "./ui/scroll-area";
+import type { DayLog } from '@/app/log-day/page';
+
+interface FlatTrade {
+    id: string;
+    date: Date;
+    instrument: string;
+    profitOrLoss: number;
+}
 
 export function RecentTrades() {
-    const recentTrades = trades;
+    const [recentTrades, setRecentTrades] = React.useState<FlatTrade[]>([]);
+
+    React.useEffect(() => {
+        const allLogsRaw = localStorage.getItem('all-trades');
+        if (allLogsRaw) {
+            const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+            const flatTrades: FlatTrade[] = allLogs.flatMap((log, logIndex) => 
+                log.trades.map((trade, tradeIndex) => ({
+                    id: `${logIndex}-${tradeIndex}`,
+                    date: new Date(log.date),
+                    instrument: trade.instrument,
+                    profitOrLoss: trade.pnl,
+                }))
+            )
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
+            
+            setRecentTrades(flatTrades);
+        }
+    }, []);
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -16,24 +43,32 @@ export function RecentTrades() {
       </CardHeader>
       <CardContent className="pt-2 flex-1 min-h-0">
         <ScrollArea className="h-full">
-            <ul className="space-y-4 pr-4">
-                {recentTrades.map(trade => (
-                    <li key={trade.id} className="flex justify-between items-center gap-4">
-                        <div className="flex items-center gap-3 shrink-0">
-                            <div className="w-10 text-center">
-                                <p className="font-bold text-sm">{format(trade.date, "d")}</p>
-                                <p className="text-xs text-muted-foreground">{format(trade.date, "MMM")}</p>
+            {recentTrades.length > 0 ? (
+                <ul className="space-y-4 pr-4">
+                    {recentTrades.map(trade => (
+                        <li key={trade.id} className="flex justify-between items-center gap-4">
+                            <div className="flex items-center gap-3 shrink-0">
+                                <div className="w-10 text-center">
+                                    <p className="font-bold text-sm">{format(trade.date, "d")}</p>
+                                    <p className="text-xs text-muted-foreground">{format(trade.date, "MMM")}</p>
+                                </div>
+                                <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>
                             </div>
-                            <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>
-                        </div>
-                        <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss >= 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
-                            {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                        </p>
-                    </li>
-                ))}
-            </ul>
+                            <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss >= 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
+                                {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <p>No recent trades</p>
+                </div>
+            )}
         </ScrollArea>
       </CardContent>
     </Card>
   );
 }
+
+    

@@ -12,17 +12,32 @@ import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MotivationCard } from "@/components/motivation-card";
-import { trades } from "@/lib/data";
+import type { DayLog } from "./log-day/page";
 
 
 export default function Home() {
-  const netPnl = trades.reduce((acc, trade) => acc + trade.profitOrLoss, 0);
-  const winningTrades = trades.filter(trade => trade.profitOrLoss > 0);
-  const avgWin = winningTrades.length > 0
-    ? winningTrades.reduce((acc, trade) => acc + trade.profitOrLoss, 0) / winningTrades.length
-    : 0;
+  const [stats, setStats] = React.useState({
+      netPnl: 0,
+      avgWin: 0,
+      winRate: 0,
+  });
 
-  const winRate = trades.length > 0 ? (winningTrades.length / trades.length) * 100 : 0;
+  React.useEffect(() => {
+      const allLogsRaw = localStorage.getItem('all-trades');
+      if (allLogsRaw) {
+          const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+          const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
+
+          const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
+          const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
+          const avgWin = winningTrades.length > 0
+            ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
+            : 0;
+          const winRate = allTrades.length > 0 ? (winningTrades.length / allTrades.length) * 100 : 0;
+          
+          setStats({ netPnl, avgWin, winRate });
+      }
+  }, []);
 
   return (
     <div className="flex flex-col h-screen text-foreground">
@@ -47,19 +62,19 @@ export default function Home() {
             <div className="col-span-1">
                <StatCard 
                   title="Net P&L" 
-                  value={netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
+                  value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
                />
             </div>
              <div className="col-span-1">
                <StatCard 
                   title="Avg Trade Win" 
-                  value={avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                  value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
                 />
             </div>
             <div className="col-span-1">
                <StatCard 
                   title="Win Rate" 
-                  value={`${winRate.toFixed(0)}%`}
+                  value={`${stats.winRate.toFixed(0)}%`}
                 />
             </div>
             <div className="col-span-1">
@@ -71,3 +86,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

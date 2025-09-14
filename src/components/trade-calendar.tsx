@@ -15,9 +15,10 @@ import {
   isToday as isTodayDateFns
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { trades } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import type { DayLog } from "@/app/log-day/page";
+import { useRouter } from "next/navigation";
 
 interface DailyPnl {
   pnl: number;
@@ -25,11 +26,30 @@ interface DailyPnl {
 }
 
 export function TradeCalendar() {
+  const router = useRouter();
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [today, setToday] = React.useState<Date | null>(null);
+  const [dailyPnl, setDailyPnl] = React.useState<Record<string, DailyPnl>>({});
 
   React.useEffect(() => {
     setToday(new Date());
+
+    const allLogsRaw = localStorage.getItem('all-trades');
+    if (allLogsRaw) {
+      const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+      const pnl: Record<string, DailyPnl> = {};
+      allLogs.forEach((log) => {
+        const logDate = new Date(log.date);
+        const dayKey = format(logDate, "yyyy-MM-dd");
+        if (!pnl[dayKey]) {
+          pnl[dayKey] = { pnl: 0, tradeCount: 0 };
+        }
+        const dayPnl = log.trades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
+        pnl[dayKey].pnl += dayPnl;
+        pnl[dayKey].tradeCount += log.trades.length;
+      });
+      setDailyPnl(pnl);
+    }
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
@@ -38,19 +58,6 @@ export function TradeCalendar() {
     start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 1 }), // Monday
     end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 1 }),
   });
-
-  const dailyPnl: Record<string, DailyPnl> = React.useMemo(() => {
-    const pnl: Record<string, DailyPnl> = {};
-    trades.forEach((trade) => {
-      const dayKey = format(trade.date, "yyyy-MM-dd");
-      if (!pnl[dayKey]) {
-        pnl[dayKey] = { pnl: 0, tradeCount: 0 };
-      }
-      pnl[dayKey].pnl += trade.profitOrLoss;
-      pnl[dayKey].tradeCount++;
-    });
-    return pnl;
-  }, []);
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -65,8 +72,19 @@ export function TradeCalendar() {
     return isTodayDateFns(day);
   }
 
+  const handleDayClick = (day: Date) => {
+    const dayKey = format(day, "yyyy-MM-dd");
+    const pnlData = dailyPnl[dayKey];
+    if (pnlData) {
+        router.push(`/log-day?date=${dayKey}`);
+    } else {
+        router.push(`/log-day?date=${dayKey}`);
+    }
+  };
+
+
   return (
-    <div className="p-4 h-full flex flex-col border border-border/20">
+    <div className="p-4 h-full flex flex-col border border-border/20 rounded-lg">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -87,7 +105,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-1 flex-1 pt-1">
+      <div className="grid grid-cols-7 grid-flow-row auto-rows-fr gap-1 flex-1 pt-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -96,13 +114,14 @@ export function TradeCalendar() {
           return (
             <div
               key={day.toString()}
+              onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 rounded-sm flex flex-col justify-center text-xs border h-20",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent",
-                isCurrentMonth && !pnlData && "border-border/20",
-                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))]",
-                pnlData && pnlData.pnl < 0 && "border-destructive",
-                pnlData && pnlData.pnl === 0 && "border-muted-foreground"
+                "relative p-1 rounded-sm flex flex-col justify-center text-xs border cursor-pointer transition-colors",
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent hover:bg-accent/50",
+                isCurrentMonth && !pnlData && "border-border/20 hover:bg-accent/50",
+                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))] hover:bg-[hsl(var(--chart-1))]/10",
+                pnlData && pnlData.pnl < 0 && "border-destructive hover:bg-destructive/10",
+                pnlData && pnlData.pnl === 0 && "border-muted-foreground hover:bg-muted-foreground/10"
               )}
             >
               <time
@@ -140,3 +159,5 @@ export function TradeCalendar() {
     </div>
   );
 }
+
+    
