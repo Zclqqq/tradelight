@@ -100,8 +100,8 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-6 flex-1 pt-1">
-        {days.map((day) => {
+      <div className="grid grid-cols-7 auto-rows-fr flex-1">
+        {days.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
@@ -111,12 +111,14 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 rounded-sm flex flex-col justify-center text-xs border cursor-pointer transition-colors min-h-[5rem]",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent hover:bg-accent/50",
-                isCurrentMonth && !pnlData && "border-border/20 hover:bg-accent/50",
-                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))] hover:bg-[hsl(var(--chart-1))]/10",
-                pnlData && pnlData.pnl < 0 && "border-destructive hover:bg-destructive/10",
-                pnlData && pnlData.pnl === 0 && "border-muted-foreground hover:bg-muted-foreground/10"
+                "relative p-1 flex flex-col justify-center text-xs cursor-pointer transition-colors border-t border-l border-border/20",
+                (index + 1) % 7 === 0 && "border-r", // Right border for last column
+                index >= days.length - 7 && "border-b", // Bottom border for last row
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                isCurrentMonth && !pnlData && "hover:bg-accent/50",
+                pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
+                pnlData && pnlData.pnl < 0 && "bg-destructive/5 hover:bg-destructive/10 border-destructive",
+                pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
               <time
@@ -154,4 +156,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
