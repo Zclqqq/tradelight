@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { MotivationCard } from "./motivation-card";
 
 const isSameDay = (date1: Date, date2: Date) => {
     return date1.getFullYear() === date2.getFullYear() &&
@@ -52,7 +51,7 @@ const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id
     };
 
     return (
-        <div className="flex items-center gap-2 py-1">
+        <div className="flex items-center gap-4 py-1 group">
             <div className="flex-1 flex items-center gap-2">
                 {isEditing ? (
                     <Input 
@@ -63,25 +62,25 @@ const GoalTracker = ({ goal, onUpdate, onComplete }: { goal: Goal, onUpdate: (id
                         className="h-7 text-xs" 
                     />
                 ) : (
-                    <span className="font-medium text-xs flex-1 truncate">{goal.title}</span>
+                     <span className="font-medium text-xs flex-1 truncate">{goal.title}</span>
                 )}
-                 <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={() => setIsEditing(!isEditing)}>
+                 <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setIsEditing(!isEditing)}>
                     <Edit className="h-3 w-3" />
                 </Button>
             </div>
-            <div className="flex items-center gap-2 w-28">
+            <div className="flex items-center gap-3 w-32">
                 <Progress value={(goal.progress / 7) * 100} className="h-1.5 w-full" indicatorClassName="bg-[hsl(var(--chart-1))]" />
                 <span className="text-xs font-mono w-8 text-right">{goal.progress}/7</span>
             </div>
             <Button 
-                size="sm" 
-                variant={canComplete ? "default" : "secondary"}
+                size="icon" 
+                variant={canComplete ? "outline" : "secondary"}
                 onClick={() => canComplete && onComplete(goal.id)}
-                className="w-20 h-7 text-xs gap-1"
+                className="h-7 w-7 text-xs"
                 disabled={!canComplete}
             >
-                {canComplete ? <Plus className="h-3 w-3" /> : <Check className="h-3 w-3" />}
-                <span>{canComplete ? 'Done' : 'Done'}</span>
+                {canComplete ? <Plus className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                <span className="sr-only">Complete Goal</span>
             </Button>
         </div>
     );
@@ -114,19 +113,15 @@ export function ProgressCard() {
           Weekly Goals
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 grid grid-cols-2 gap-4 items-center">
-        <div className="flex flex-col justify-center gap-1">
-            {goals.map(goal => (
-                <GoalTracker 
-                    key={goal.id} 
-                    goal={goal} 
-                    onUpdate={handleUpdateGoal} 
-                    onComplete={handleCompleteGoal}
-                />
-            ))}
-        </div>
-        <div className="border-l border-border h-2/3" />
-        <MotivationCard />
+      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-2">
+        {goals.map(goal => (
+            <GoalTracker 
+                key={goal.id} 
+                goal={goal} 
+                onUpdate={handleUpdateGoal} 
+                onComplete={handleCompleteGoal}
+            />
+        ))}
       </CardContent>
     </Card>
   );
