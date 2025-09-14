@@ -90,7 +90,7 @@ export function TradeCalendar() {
                 "relative p-1 rounded-sm flex flex-col justify-center text-xs border",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent",
                 isCurrentMonth && !pnlData && "border-border/20",
-                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-2))]",
+                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))]",
                 pnlData && pnlData.pnl < 0 && "border-destructive",
                 pnlData && pnlData.pnl === 0 && "border-muted-foreground"
               )}
@@ -108,7 +108,7 @@ export function TradeCalendar() {
               {pnlData && isCurrentMonth ? (
                 <div className="flex-1 flex items-center justify-center font-bold text-sm">
                   {pnlData.pnl !== 0 ? (
-                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-2))]", pnlData.pnl < 0 && "text-destructive")}>
+                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
