@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { MotivationCard } from "./motivation-card";
 
 const isSameDay = (date1: Date, date2: Date) => {
     return date1.getFullYear() === date2.getFullYear() &&
@@ -113,15 +114,19 @@ export function ProgressCard() {
           Weekly Goals
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-center gap-1">
-        {goals.map(goal => (
-            <GoalTracker 
-                key={goal.id} 
-                goal={goal} 
-                onUpdate={handleUpdateGoal} 
-                onComplete={handleCompleteGoal}
-            />
-        ))}
+      <CardContent className="p-4 pt-0 flex-1 grid grid-cols-2 gap-4 items-center">
+        <div className="flex flex-col justify-center gap-1">
+            {goals.map(goal => (
+                <GoalTracker 
+                    key={goal.id} 
+                    goal={goal} 
+                    onUpdate={handleUpdateGoal} 
+                    onComplete={handleCompleteGoal}
+                />
+            ))}
+        </div>
+        <div className="border-l border-border h-2/3" />
+        <MotivationCard />
       </CardContent>
     </Card>
   );

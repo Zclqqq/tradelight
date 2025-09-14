@@ -9,7 +9,6 @@ import {
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
-import { MotivationCard } from "@/components/motivation-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ProgressCard } from "@/components/progress-card";
@@ -46,11 +45,8 @@ export default function Home() {
             <div className="col-span-1 row-span-1">
               <StatCard title="Avg Win/Loss" value="$210" />
             </div>
-            <div className="col-span-1 row-span-1">
+            <div className="col-span-2 row-span-1">
               <ProgressCard />
-            </div>
-             <div className="col-span-1 row-span-1">
-              <MotivationCard />
             </div>
           </div>
         </div>

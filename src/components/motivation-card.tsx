@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const quotes = [
     "The secret of getting ahead is getting started.",
@@ -24,13 +23,8 @@ export function MotivationCard() {
     }, []);
 
   return (
-    <Card className="text-center h-full flex flex-col">
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="font-headline text-sm font-medium text-muted-foreground">Motivation Quote</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 pt-0 flex-1 flex items-center justify-center">
-        <p className="text-sm font-medium">"{quote}"</p>
-      </CardContent>
-    </Card>
+    <div className="text-center flex flex-col items-center justify-center h-full">
+        <p className="text-sm font-medium text-muted-foreground italic">"{quote}"</p>
+    </div>
   );
 }
