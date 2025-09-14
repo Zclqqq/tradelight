@@ -32,24 +32,36 @@ export function TradeCalendar() {
   const [dailyPnl, setDailyPnl] = React.useState<Record<string, DailyPnl>>({});
 
   React.useEffect(() => {
-    setToday(new Date());
-    
-    const allLogsRaw = localStorage.getItem('all-trades');
-    if (allLogsRaw) {
-      const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-      const pnl: Record<string, DailyPnl> = {};
-      allLogs.forEach((log) => {
-        const logDate = new Date(log.date);
-        const dayKey = format(logDate, "yyyy-MM-dd");
-        if (!pnl[dayKey]) {
-          pnl[dayKey] = { pnl: 0, tradeCount: 0 };
+    // This function now runs only on the client
+    const initializeCalendar = () => {
+      setToday(new Date());
+      
+      const allLogsRaw = localStorage.getItem('all-trades');
+      if (allLogsRaw) {
+        try {
+          const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+          const pnl: Record<string, DailyPnl> = {};
+          allLogs.forEach((log) => {
+            const logDate = new Date(log.date);
+            const dayKey = format(logDate, "yyyy-MM-dd");
+            if (!pnl[dayKey]) {
+              pnl[dayKey] = { pnl: 0, tradeCount: 0 };
+            }
+            const dayPnl = log.trades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
+            pnl[dayKey].pnl += dayPnl;
+            pnl[dayKey].tradeCount += log.trades.length;
+          });
+          setDailyPnl(pnl);
+        } catch (error) {
+          console.error("Failed to parse trade logs from localStorage", error);
+          setDailyPnl({});
         }
-        const dayPnl = log.trades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
-        pnl[dayKey].pnl += dayPnl;
-        pnl[dayKey].tradeCount += log.trades.length;
-      });
-      setDailyPnl(pnl);
-    }
+      } else {
+        setDailyPnl({});
+      }
+    };
+    
+    initializeCalendar();
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
@@ -100,7 +112,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 auto-rows-fr flex-1">
+      <div className="grid grid-cols-7 grid-rows-6 flex-1">
         {days.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -111,9 +123,8 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 flex flex-col justify-center text-xs cursor-pointer transition-colors border-t border-l border-border/20",
-                (index + 1) % 7 === 0 && "border-r", // Right border for last column
-                index >= days.length - 7 && "border-b", // Bottom border for last row
+                "relative p-1 flex flex-col justify-center text-xs cursor-pointer transition-colors border-border/20",
+                "border-b border-r",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
