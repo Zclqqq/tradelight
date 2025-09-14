@@ -41,7 +41,7 @@ const dayLogSchema = z.object({
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isEditing, setIsEditing] = React.useState(false);
     return (
-        <div className="py-3 border-b border-muted-foreground/20">
+        <div className="py-3 border-b border-border/20">
             <div className="flex items-center justify-between">
                 <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
                 {!isEditing && (
@@ -180,7 +180,7 @@ export default function LogDayPage() {
                                                 <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
                                                     <XAxis type="number" hide />
                                                     <YAxis type="category" dataKey="name" hide />
-                                                    <Bar dataKey="value" barSize={40} fill={totalPnl >= 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--chart-2))'} radius={[0, 4, 4, 0]} />
+                                                    <Bar dataKey="value" barSize={40} fill={totalPnl >= 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))'} radius={[0, 4, 4, 0]} />
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         </div>
@@ -217,7 +217,7 @@ export default function LogDayPage() {
                                                 control={form.control}
                                                 name="date"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-2 py-3 border-b border-muted-foreground/20">
+                                                    <FormItem className="flex flex-col space-y-2 py-3 border-b border-border/20">
                                                         <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
@@ -225,7 +225,7 @@ export default function LogDayPage() {
                                                                 <Button
                                                                 variant={"ghost"}
                                                                 className={cn(
-                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent",
+                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
                                                                     !field.value && "text-muted-foreground"
                                                                 )}
                                                                 >
@@ -317,3 +317,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
