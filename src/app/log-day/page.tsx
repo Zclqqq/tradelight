@@ -202,12 +202,15 @@ export default function LogDayPage() {
                                     </CardContent>
                                 </Card>
                                 <Card onPaste={handleImagePaste} className="overflow-hidden">
+                                     <CardHeader>
+                                        <CardTitle className="font-headline text-base">Chart</CardTitle>
+                                    </CardHeader>
                                     <CardContent className="p-0">
                                         <div className="flex flex-col text-left">
                                         {analysisImage ? (
                                              <div className="w-full">
-                                                <div className="relative w-full aspect-video bg-card">
-                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                                <div className="relative w-full aspect-video">
+                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
                                                 </div>
                                                 <div className="p-2">
                                                     <FormField
@@ -374,5 +377,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
