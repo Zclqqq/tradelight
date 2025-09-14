@@ -116,7 +116,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-6 flex-1">
+      <div className="grid grid-cols-7">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -127,7 +127,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 flex flex-col justify-start text-xs cursor-pointer transition-colors border-t border-r border-border/20",
+                "relative p-1 flex flex-col justify-start text-xs cursor-pointer transition-colors border border-border/20 aspect-square",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
