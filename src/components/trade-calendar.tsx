@@ -33,7 +33,7 @@ export function TradeCalendar() {
 
   React.useEffect(() => {
     setToday(new Date());
-
+    
     const allLogsRaw = localStorage.getItem('all-trades');
     if (allLogsRaw) {
       const allLogs: DayLog[] = JSON.parse(allLogsRaw);
@@ -111,7 +111,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-1 rounded-sm flex flex-col justify-center text-xs border cursor-pointer transition-colors",
+                "relative p-1 rounded-sm flex flex-col justify-center text-xs border cursor-pointer transition-colors min-h-[5rem]",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent hover:bg-accent/50",
                 isCurrentMonth && !pnlData && "border-border/20 hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))] hover:bg-[hsl(var(--chart-1))]/10",
@@ -154,3 +154,4 @@ export function TradeCalendar() {
     </div>
   );
 }
+
