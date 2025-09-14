@@ -201,29 +201,28 @@ export default function LogDayPage() {
                                         )}
                                     </CardContent>
                                 </Card>
-                                <Card onPaste={handleImagePaste}>
-                                    <CardHeader>
-                                        <CardTitle className="font-headline text-base">Analysis</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-4 pt-0">
+                                <Card onPaste={handleImagePaste} className="overflow-hidden">
+                                    <CardContent className="p-0">
                                         <div className="flex flex-col items-center justify-center text-center">
                                         {analysisImage ? (
-                                             <div className="w-full space-y-2">
-                                                <div className="relative w-full aspect-video bg-card rounded-md overflow-hidden">
-                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                             <div className="w-full space-y-2 relative">
+                                                <div className="relative w-full aspect-video bg-card overflow-hidden">
+                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
                                                 </div>
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.analysisText"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input className="bg-transparent border-0 text-center p-0" placeholder="Add a short description..." {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                                                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.analysisText"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormControl>
+                                                                    <Input className="bg-transparent border-0 text-center p-0 text-white placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-[350px]">
@@ -375,9 +374,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
 
     
