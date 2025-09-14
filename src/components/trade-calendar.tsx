@@ -124,7 +124,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 flex-1">
+      <div className="grid grid-cols-7 grid-rows-6 flex-1">
         {days.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -145,7 +145,7 @@ export function TradeCalendar() {
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
-              <div className="p-1 pt-[80%]"></div>
+              <div className="p-1 pt-[75%]"></div>
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
@@ -178,4 +178,5 @@ export function TradeCalendar() {
     </div>
   );
 }
+
 
