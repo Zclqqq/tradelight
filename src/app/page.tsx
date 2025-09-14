@@ -25,7 +25,7 @@ export default function Home() {
   const winRate = trades.length > 0 ? (winningTrades.length / trades.length) * 100 : 0;
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground">
+    <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <h1 className="text-xl font-bold font-headline">
           TradeLight

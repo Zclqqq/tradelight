@@ -19,7 +19,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { Particles } from "@/components/particles";
 
 
 const tradeSchema = z.object({
@@ -131,8 +130,7 @@ export default function LogDayPage() {
     }, [isEditingPnl]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-        <Particles className="absolute inset-0 -z-10" quantity={100} />
+    <div className="flex flex-col min-h-screen text-foreground">
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm">
             <Button variant="ghost" size="icon" asChild>
                 <Link href="/">
