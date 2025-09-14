@@ -3,12 +3,12 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +30,7 @@ const tradeSchema = z.object({
   tradeTp: z.coerce.number().optional(),
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
+  analysisImage: z.string().optional(),
 });
 
 const dayLogSchema = z.object({
@@ -65,6 +66,7 @@ export default function LogDayPage() {
     const { toast } = useToast();
     const [isEditingPnl, setIsEditingPnl] = React.useState(false);
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -79,6 +81,34 @@ export default function LogDayPage() {
         control: form.control,
         name: "trades",
     });
+    
+    const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                const file = items[i].getAsFile();
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        form.setValue("trades.0.analysisImage", e.target?.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+    };
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                form.setValue("trades.0.analysisImage", e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
 
     React.useEffect(() => {
         if (fields.length === 0) {
@@ -99,8 +129,8 @@ export default function LogDayPage() {
     
     const allTrades = form.watch("trades");
     const totalPnl = allTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+    const analysisImage = form.watch("trades.0.analysisImage");
 
-    const chartData = [{ name: 'PNL', value: totalPnl }];
 
     const handlePnlDoubleClick = () => {
         setIsEditingPnl(true);
@@ -131,7 +161,7 @@ export default function LogDayPage() {
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
-        <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b bg-background/80 backdrop-blur-sm">
+        <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
             <Button variant="ghost" size="icon" asChild>
                 <Link href="/">
                     <ArrowLeft />
@@ -161,29 +191,40 @@ export default function LogDayPage() {
                                                 defaultValue={totalPnl}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
-                                                className={`text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-destructive'}`}
+                                                className={`text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-green-500' : 'text-red-500'}`}
                                             />
                                         ) : (
-                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-destructive'}`}>
+                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                                                 {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                             </p>
                                         )}
                                     </CardContent>
                                 </Card>
-                                <Card>
+                                <Card className="h-[400px] flex flex-col" onPaste={handleImagePaste}>
                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">Performance</CardTitle>
+                                        <CardTitle className="font-headline text-base">Analysis</CardTitle>
                                     </CardHeader>
-                                    <CardContent>
-                                        <div className="h-48">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
-                                                    <XAxis type="number" hide />
-                                                    <YAxis type="category" dataKey="name" hide />
-                                                    <Bar dataKey="value" barSize={40} fill={totalPnl >= 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))'} radius={[0, 4, 4, 0]} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
+                                    <CardContent className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+                                        {analysisImage ? (
+                                            <div className="relative w-full h-full">
+                                                <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                                <Upload className="h-8 w-8" />
+                                                <p className="text-sm font-medium">Paste or upload an image of your trade.</p>
+                                                 <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                                    Upload File
+                                                </Button>
+                                                <input
+                                                    type="file"
+                                                    ref={fileInputRef}
+                                                    onChange={handleImageUpload}
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                />
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                                 <Card>
@@ -317,3 +358,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
