@@ -31,6 +31,7 @@ const tradeSchema = z.object({
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional(),
+  analysisText: z.string().optional(),
 });
 
 const dayLogSchema = z.object({
@@ -200,17 +201,32 @@ export default function LogDayPage() {
                                         )}
                                     </CardContent>
                                 </Card>
-                                <Card className="h-[400px] flex flex-col" onPaste={handleImagePaste}>
+                                <Card onPaste={handleImagePaste}>
                                     <CardHeader>
                                         <CardTitle className="font-headline text-base">Analysis</CardTitle>
                                     </CardHeader>
-                                    <CardContent className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+                                    <CardContent className="p-4 pt-0">
+                                        <div className="flex flex-col items-center justify-center text-center">
                                         {analysisImage ? (
-                                            <div className="relative w-full h-full">
-                                                <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                             <div className="w-full space-y-2">
+                                                <div className="relative w-full h-[300px] bg-card rounded-md overflow-hidden">
+                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                                </div>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.analysisText"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input placeholder="Add a short description..." {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
                                             </div>
                                         ) : (
-                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                            <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-[350px]">
                                                 <Upload className="h-8 w-8" />
                                                 <p className="text-sm font-medium">Paste or upload an image of your trade.</p>
                                                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
@@ -225,6 +241,7 @@ export default function LogDayPage() {
                                                 />
                                             </div>
                                         )}
+                                        </div>
                                     </CardContent>
                                 </Card>
                                 <Card>
@@ -358,5 +375,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
