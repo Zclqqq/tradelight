@@ -209,8 +209,8 @@ export default function LogDayPage() {
                                         <div className="flex flex-col text-left">
                                         {analysisImage ? (
                                              <div className="w-full">
-                                                <div className="relative w-full aspect-video">
-                                                    <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                                <div className="relative w-full">
+                                                    <Image src={analysisImage} alt="Trade analysis" width={0} height={0} sizes="100vw" style={{ width: '100%', height: 'auto' }} />
                                                 </div>
                                                 <div className="p-2">
                                                     <FormField
@@ -377,6 +377,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
