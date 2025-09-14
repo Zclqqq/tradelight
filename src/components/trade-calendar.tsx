@@ -56,7 +56,7 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="p-4 h-full flex flex-col border">
+    <div className="p-4 h-full flex flex-col border border-border/20">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -70,14 +70,14 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-border/20">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="py-1">
+          <div key={day} className="py-2">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
+      <div className="grid grid-cols-7 grid-rows-5 gap-1 flex-1 pt-1">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -88,9 +88,9 @@ export function TradeCalendar() {
               key={day.toString()}
               className={cn(
                 "relative p-1 rounded-sm flex flex-col justify-center text-xs border",
-                !isCurrentMonth && "bg-muted/5 text-muted-foreground/50 border-transparent",
-                isCurrentMonth && !pnlData && "border-border/50",
-                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-1))]",
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30 border-transparent",
+                isCurrentMonth && !pnlData && "border-border/20",
+                pnlData && pnlData.pnl > 0 && "border-[hsl(var(--chart-2))]",
                 pnlData && pnlData.pnl < 0 && "border-destructive",
                 pnlData && pnlData.pnl === 0 && "border-muted-foreground"
               )}
@@ -108,7 +108,7 @@ export function TradeCalendar() {
               {pnlData && isCurrentMonth ? (
                 <div className="flex-1 flex items-center justify-center font-bold text-sm">
                   {pnlData.pnl !== 0 ? (
-                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-2))]", pnlData.pnl < 0 && "text-destructive")}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
