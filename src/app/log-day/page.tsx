@@ -161,10 +161,10 @@ export default function LogDayPage() {
                                                 defaultValue={totalPnl}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
-                                                className={`text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-[hsl(var(--chart-2))]'}`}
+                                                className={`text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-destructive'}`}
                                             />
                                         ) : (
-                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-[hsl(var(--chart-2))]'}`}>
+                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-[hsl(var(--chart-1))]' : 'text-destructive'}`}>
                                                 {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                             </p>
                                         )}
