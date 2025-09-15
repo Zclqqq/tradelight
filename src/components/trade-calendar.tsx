@@ -78,10 +78,20 @@ export function TradeCalendar() {
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 
-  const days = eachDayOfInterval({
-    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 1 }), // Monday
+  const daysInMonth = eachDayOfInterval({
+    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 1 }),
     end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 1 }),
   });
+  
+  const days = daysInMonth.length < 42 
+    ? [
+        ...daysInMonth,
+        ...eachDayOfInterval({
+            start: add(daysInMonth[daysInMonth.length - 1], { days: 1 }),
+            end: add(daysInMonth[daysInMonth.length - 1], { days: 42 - daysInMonth.length })
+        })
+      ]
+    : daysInMonth;
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -137,7 +147,7 @@ export function TradeCalendar() {
               className={cn(
                 "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-t border-l",
                 (index + 1) % 7 === 0 && "border-r",
-                 index >= 35 && "border-b",
+                index >= days.length - 7 && "border-b",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
