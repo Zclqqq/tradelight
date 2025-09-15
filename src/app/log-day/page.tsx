@@ -29,7 +29,7 @@ const tradeSchema = z.object({
   entryTime: z.string().optional(),
   exitTime: z.string().optional(),
   contracts: z.coerce.number().optional(),
-  tradeTp: zcoerce.number().optional(),
+  tradeTp: z.coerce.number().optional(),
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional(),
