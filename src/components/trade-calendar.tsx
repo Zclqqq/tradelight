@@ -149,7 +149,7 @@ export function TradeCalendar() {
                 dayIdx % 7 !== 0 && "border-l",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
-                pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/10 hover:bg-[hsl(var(--chart-1))]/20",
+                pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/10 hover:bg-[hsl(var(--chart-1))]/20 border-[hsl(var(--chart-1))] shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
                 pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
