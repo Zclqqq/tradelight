@@ -3,6 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { CandlestickChart } from "lucide-react";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -54,10 +55,13 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <h1 className="text-xl font-bold font-headline">
-          TradeLight
-        </h1>
-        <p className="text-sm font-medium text-muted-foreground italic hidden md:block">"{quote}"</p>
+        <div className="flex items-center gap-2">
+            <CandlestickChart className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold font-headline tracking-tighter">
+              TradeLight
+            </h1>
+        </div>
+        <p className="text-sm font-light text-muted-foreground italic hidden md:block">"{quote}"</p>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
