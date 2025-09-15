@@ -103,10 +103,10 @@ export default function LogDayPage() {
                 chartPerformance: "",
                 entryTime: "",
                 exitTime: "",
-                contracts: undefined,
-                tradeTp: undefined,
-                tradeSl: undefined,
-                totalPoints: undefined,
+                contracts: 0,
+                tradeTp: 0,
+                tradeSl: 0,
+                totalPoints: 0,
             }],
         },
     });
@@ -130,10 +130,10 @@ export default function LogDayPage() {
             chartPerformance: "",
             entryTime: "",
             exitTime: "",
-            contracts: undefined,
-            tradeTp: undefined,
-            tradeSl: undefined,
-            totalPoints: undefined,
+            contracts: 0,
+            tradeTp: 0,
+            tradeSl: 0,
+            totalPoints: 0,
         };
 
         if (savedData) {
@@ -536,3 +536,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
