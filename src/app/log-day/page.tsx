@@ -20,8 +20,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+
+const sessionTradeSchema = z.object({
+  sessionName: z.string(),
+  direction: z.enum(["long", "short"]),
+});
 
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
@@ -34,7 +39,7 @@ const tradeSchema = z.object({
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional(),
   analysisText: z.string().optional(),
-  sessions: z.array(z.string()).optional(),
+  sessions: z.array(sessionTradeSchema).optional(),
 });
 
 const dayLogSchema = z.object({
@@ -90,6 +95,11 @@ export default function LogDayPage() {
     const { fields, append, remove, update } = useFieldArray({
         control: form.control,
         name: "trades",
+    });
+
+    const { fields: sessionFields, append: appendSession, remove: removeSession } = useFieldArray({
+        control: form.control,
+        name: "trades.0.sessions",
     });
 
     React.useEffect(() => {
@@ -353,53 +363,53 @@ export default function LogDayPage() {
                                                 />
                                             
                                             <div className="space-y-2">
-                                                <div className="py-3 border-b border-border/20">
-                                                    <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Sessions</FormLabel>
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.sessions"
-                                                        render={() => (
-                                                            <FormItem className="space-y-2 mt-2">
-                                                                <div className="grid grid-cols-3 gap-2">
-                                                                {sessionOptions.map((item) => (
-                                                                    <FormField
-                                                                    key={item}
+                                                <TradeDataField label="Sessions">
+                                                    <div className="space-y-2">
+                                                        {sessionFields.map((field, index) => (
+                                                            <div key={field.id} className="flex gap-2 items-center">
+                                                                <FormField
                                                                     control={form.control}
-                                                                    name="trades.0.sessions"
-                                                                    render={({ field }) => {
-                                                                        return (
-                                                                        <FormItem
-                                                                            key={item}
-                                                                            className="flex flex-row items-start space-x-2 space-y-0"
-                                                                        >
+                                                                    name={`trades.0.sessions.${index}.sessionName`}
+                                                                    render={({ field }) => (
+                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                                             <FormControl>
-                                                                            <Checkbox
-                                                                                checked={field.value?.includes(item)}
-                                                                                onCheckedChange={(checked) => {
-                                                                                return checked
-                                                                                    ? field.onChange([...(field.value || []), item])
-                                                                                    : field.onChange(
-                                                                                        field.value?.filter(
-                                                                                        (value) => value !== item
-                                                                                        )
-                                                                                    )
-                                                                                }}
-                                                                            />
+                                                                                <SelectTrigger>
+                                                                                    <SelectValue placeholder="Session" />
+                                                                                </SelectTrigger>
                                                                             </FormControl>
-                                                                            <FormLabel className="text-sm font-normal">
-                                                                            {item}
-                                                                            </FormLabel>
-                                                                        </FormItem>
-                                                                        )
-                                                                    }}
-                                                                    />
-                                                                ))}
-                                                                </div>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
+                                                                            <SelectContent>
+                                                                                {sessionOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    )}
+                                                                />
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`trades.0.sessions.${index}.direction`}
+                                                                    render={({ field }) => (
+                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger>
+                                                                                    <SelectValue placeholder="Side" />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="long">Long</SelectItem>
+                                                                                <SelectItem value="short">Short</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    )}
+                                                                />
+                                                                <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
+                                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                                </Button>
+                                                            </div>
+                                                        ))}
+                                                        <Button type="button" variant="outline" size="sm" onClick={() => appendSession({ sessionName: '', direction: 'long' })}>
+                                                            <Plus className="h-4 w-4 mr-1" /> Add Session
+                                                        </Button>
+                                                    </div>
+                                                </TradeDataField>
                                                 <TradeDataField label="Instrument">
                                                     <FormField
                                                         control={form.control}
@@ -461,3 +471,4 @@ export default function LogDayPage() {
     </div>
   );
 }
+
