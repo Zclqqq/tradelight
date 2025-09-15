@@ -113,7 +113,7 @@ export function TradeCalendar() {
 
 
   return (
-    <div className="p-4 flex flex-col border border-border/20 rounded-lg">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -129,12 +129,12 @@ export function TradeCalendar() {
       </div>
       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-t border-l border-border/20">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="py-2 border-b border-r border-border/20">
+          <div key={day} className="py-2 border-r border-b border-border/20">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border/20">
+      <div className="grid grid-cols-7 border-l border-b border-border/20">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -145,7 +145,8 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-b border-r",
+                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-r border-t border-border/20 p-1",
+                "h-24", // Adjust height to be more rectangular
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
@@ -153,7 +154,6 @@ export function TradeCalendar() {
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
-              <div className="pt-[65%]"></div>
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
