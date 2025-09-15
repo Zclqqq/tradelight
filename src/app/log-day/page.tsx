@@ -25,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["long", "short"]),
+  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both"]),
 });
 
 const tradeSchema = z.object({
@@ -394,8 +394,10 @@ export default function LogDayPage() {
                                                                                 </SelectTrigger>
                                                                             </FormControl>
                                                                             <SelectContent>
-                                                                                <SelectItem value="long">Long</SelectItem>
-                                                                                <SelectItem value="short">Short</SelectItem>
+                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
+                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
+                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
                                                                             </SelectContent>
                                                                         </Select>
                                                                     )}
@@ -405,7 +407,7 @@ export default function LogDayPage() {
                                                                 </Button>
                                                             </div>
                                                         ))}
-                                                        <Button type="button" variant="outline" size="sm" onClick={() => appendSession({ sessionName: '', direction: 'long' })}>
+                                                        <Button type="button" variant="outline" size="sm" onClick={() => appendSession({ sessionName: '', direction: 'consolidation' })}>
                                                             <Plus className="h-4 w-4 mr-1" /> Add Session
                                                         </Button>
                                                     </div>
