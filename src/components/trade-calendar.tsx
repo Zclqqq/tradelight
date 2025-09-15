@@ -145,7 +145,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-b p-1 h-24",
+                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-b p-1 h-20",
                 dayIdx % 7 !== 0 && "border-l",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
