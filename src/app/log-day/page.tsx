@@ -101,6 +101,9 @@ export default function LogDayPage() {
         control: form.control,
         name: "trades.0.sessions",
     });
+    
+    const watchedSessions = form.watch("trades.0.sessions");
+
 
     React.useEffect(() => {
         const dateParam = searchParams.get('date');
@@ -365,48 +368,53 @@ export default function LogDayPage() {
                                             <div className="space-y-2">
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-2">
-                                                        {sessionFields.map((field, index) => (
-                                                            <div key={field.id} className="flex gap-2 items-center">
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.sessionName`}
-                                                                    render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger>
-                                                                                    <SelectValue placeholder="Session" />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                {sessionOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    )}
-                                                                />
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.direction`}
-                                                                    render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger>
-                                                                                    <SelectValue placeholder="Side" />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
-                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
-                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
-                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    )}
-                                                                />
-                                                                <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
-                                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                                </Button>
-                                                            </div>
-                                                        ))}
+                                                        {sessionFields.map((field, index) => {
+                                                            const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
+                                                            const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === field.sessionName);
+                                                            
+                                                            return (
+                                                                <div key={field.id} className="flex gap-2 items-center">
+                                                                    <FormField
+                                                                        control={form.control}
+                                                                        name={`trades.0.sessions.${index}.sessionName`}
+                                                                        render={({ field }) => (
+                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                                <FormControl>
+                                                                                    <SelectTrigger>
+                                                                                        <SelectValue placeholder="Session" />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    {availableOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        )}
+                                                                    />
+                                                                    <FormField
+                                                                        control={form.control}
+                                                                        name={`trades.0.sessions.${index}.direction`}
+                                                                        render={({ field }) => (
+                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                                <FormControl>
+                                                                                    <SelectTrigger>
+                                                                                        <SelectValue placeholder="Side" />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                                    <SelectItem value="sweep-up">Sweep Up</SelectItem>
+                                                                                    <SelectItem value="sweep-down">Sweep Down</SelectItem>
+                                                                                    <SelectItem value="sweep-both">Sweep Both</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        )}
+                                                                    />
+                                                                    <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
+                                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                                    </Button>
+                                                                </div>
+                                                            )
+                                                        })}
                                                         <Button type="button" variant="outline" size="sm" onClick={() => appendSession({ sessionName: '', direction: 'consolidation' })}>
                                                             <Plus className="h-4 w-4 mr-1" /> Add Session
                                                         </Button>
