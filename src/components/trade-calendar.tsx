@@ -130,6 +130,21 @@ export function TradeCalendar() {
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
 
+          const hasTrade = (d: Date) => !!dailyPnl[format(d, "yyyy-MM-dd")];
+          
+          const noGlowRight = (dayIdx % 7 < 6) && hasTrade(days[dayIdx+1]);
+          const noGlowLeft = (dayIdx % 7 > 0) && hasTrade(days[dayIdx-1]);
+          const noGlowBottom = dayIdx < days.length - 7 && hasTrade(days[dayIdx+7]);
+          const noGlowTop = dayIdx >= 7 && hasTrade(days[dayIdx-7]);
+
+          let boxShadow = "0 0 8px 0";
+          if (pnlData) {
+            if (noGlowTop) boxShadow = `${boxShadow}, 0 4px 8px 0`;
+            if (noGlowBottom) boxShadow = `${boxShadow}, 0 -4px 8px 0`;
+            if (noGlowLeft) boxShadow = `${boxShadow}, 4px 0 8px 0`;
+            if (noGlowRight) boxShadow = `${boxShadow}, -4px 0 8px 0`;
+          }
+
           return (
             <div
               key={day.toString()}
@@ -138,10 +153,13 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-b border-r border-border/20 p-1 h-20",
                 isCurrentMonth && "cursor-pointer hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent shadow-[inset_0_0_0_1px_hsl(var(--chart-1)),0_0_8px_0_hsl(var(--chart-1))] z-10",
-                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent shadow-[inset_0_0_0_1px_hsl(var(--destructive)),0_0_8px_0_hsl(var(--destructive))] z-10",
+                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent z-10",
+                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent z-10",
                 isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
+               style={pnlData ? {
+                boxShadow: `inset 0 0 0 1px hsl(var(${pnlData.pnl > 0 ? '--chart-1' : '--destructive'})), ${boxShadow} hsl(var(${pnlData.pnl > 0 ? '--chart-1' : '--destructive'}))`,
+              } : {}}
             >
               {isCurrentMonth && (
                 <>
