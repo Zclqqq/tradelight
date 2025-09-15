@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MotivationCard } from "@/components/motivation-card";
 import type { DayLog } from "./log-day/page";
-import { ProgressCard } from "@/components/progress-card";
 
 
 export default function Home() {
@@ -53,33 +52,35 @@ export default function Home() {
 
       <main className="flex-1 p-4 overflow-auto">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-3">
-              <TradeCalendar />
-            </div>
-            <div className="col-span-1 row-span-2">
-              <RecentTrades />
-            </div>
-             <div className="col-span-1">
-               <StatCard 
-                  title="Net P&L" 
-                  value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
-               />
-            </div>
-             <div className="col-span-1">
-               <StatCard 
-                  title="Avg Trade Win" 
-                  value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
-                />
-            </div>
-            <div className="col-span-1">
-               <StatCard 
-                  title="Win Rate" 
-                  value={`${stats.winRate.toFixed(0)}%`}
-                />
-            </div>
-            <div className="col-span-3">
+          <div className="flex flex-col gap-4">
+            <div className="w-full">
                 <MotivationCard />
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              <div className="col-span-3">
+                <TradeCalendar />
+              </div>
+              <div className="col-span-1">
+                <RecentTrades />
+              </div>
+              <div className="col-span-1">
+                <StatCard 
+                    title="Net P&L" 
+                    value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
+                />
+              </div>
+              <div className="col-span-1">
+                <StatCard 
+                    title="Avg Trade Win" 
+                    value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                  />
+              </div>
+              <div className="col-span-1">
+                <StatCard 
+                    title="Win Rate" 
+                    value={`${stats.winRate.toFixed(0)}%`}
+                  />
+              </div>
             </div>
           </div>
         </div>
