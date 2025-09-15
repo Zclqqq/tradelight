@@ -91,8 +91,9 @@ export function TradeCalendar() {
     calendarWeeks.push(days.slice(i, i + 7));
   }
 
+  // Check if the last week is entirely outside the current month and has no PNL data
   const lastWeek = calendarWeeks[calendarWeeks.length - 1];
-  if (lastWeek && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
+  if (lastWeek && calendarWeeks.length > 5 && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
     calendarWeeks.pop();
   }
   const calendarDays = calendarWeeks.flat();
@@ -145,9 +146,9 @@ export function TradeCalendar() {
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let glowClass = "";
+          let dayStyles: React.CSSProperties = {};
           if (pnlData) {
-            const hasNeighbor = {
+             const hasNeighbor = {
               top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')],
               bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')],
               left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')],
@@ -162,54 +163,9 @@ export function TradeCalendar() {
               !hasNeighbor.right && `2px 0 5px -2px hsl(${color})`,
             ].filter(Boolean).join(', ');
 
-            glowClass = `ring-1 ${pnlData.pnl > 0 ? 'ring-chart-1' : 'ring-destructive'}`;
-
-            return (
-              <div
-                key={day.toString()}
-                onClick={() => isCurrentMonth && handleDayClick(day)}
-                className={cn(
-                  "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
-                  isCurrentMonth && "cursor-pointer",
-                  isCurrentMonth && !pnlData && "hover:bg-accent/50",
-                  !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                  pnlData && "z-10",
-                   glowClass
-                )}
-                style={{ boxShadow: shadows }}
-              >
-                {isCurrentMonth && (
-                  <>
-                    <time
-                      dateTime={format(day, "yyyy-MM-dd")}
-                      className={cn(
-                        "font-semibold text-[10px] ml-auto z-20",
-                        isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
-                      )}
-                    >
-                      {format(day, "d")}
-                    </time>
-  
-                    {pnlData ? (
-                      <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-20">
-                        {pnlData.pnl !== 0 ? (
-                          <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
-                              {pnlData.pnl.toLocaleString("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                                maximumFractionDigits: 0,
-                              })}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground text-[10px]">No Trade</span>
-                        )}
-                      </div>
-                    ) : null}
-                  </>
-                )}
-              </div>
-            );
+            dayStyles = { boxShadow: shadows };
           }
+
 
           return (
             <div
@@ -220,22 +176,24 @@ export function TradeCalendar() {
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                pnlData && (pnlData.pnl > 0 ? "bg-[hsl(var(--chart-1))]/10" : "bg-destructive/10")
               )}
+              style={dayStyles}
             >
-              {isCurrentMonth && (
+              {isCurrentMonth ? (
                 <>
                   <time
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
-                      "font-semibold text-[10px] ml-auto z-20",
-                       isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
+                      "font-semibold text-[10px] ml-auto z-10",
+                      isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                     )}
                   >
                     {format(day, "d")}
                   </time>
 
                   {pnlData ? (
-                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-20">
+                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-10">
                       {pnlData.pnl !== 0 ? (
                         <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
                             {pnlData.pnl.toLocaleString("en-US", {
@@ -250,7 +208,7 @@ export function TradeCalendar() {
                     </div>
                   ) : null}
                 </>
-              )}
+              ) : <div className="h-full"></div>}
             </div>
           );
         })}
