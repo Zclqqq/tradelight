@@ -148,19 +148,20 @@ export function TradeCalendar() {
           
           let dayStyles: React.CSSProperties = {};
           if (pnlData) {
-             const hasNeighbor = {
-              top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')],
-              bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')],
-              left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')],
-              right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')],
-            };
-            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
+            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : pnlData.pnl < 0 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground))';
+            
+              const hasNeighbor = {
+                top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')] !== undefined,
+                bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')] !== undefined,
+                left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')] !== undefined,
+                right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')] !== undefined,
+              };
             
             const shadows = [
-              !hasNeighbor.top && `inset 0 2px 0 0 ${color}`,
-              !hasNeighbor.bottom && `inset 0 -2px 0 0 ${color}`,
-              !hasNeighbor.left && `inset 2px 0 0 0 ${color}`,
-              !hasNeighbor.right && `inset -2px 0 0 0 ${color}`,
+              !hasNeighbor.top && `inset 0 2px 8px -4px ${color}`,
+              !hasNeighbor.bottom && `inset 0 -2px 8px -4px ${color}`,
+              !hasNeighbor.left && `inset 2px 0 8px -4px ${color}`,
+              !hasNeighbor.right && `inset -2px 0 8px -4px ${color}`,
             ].filter(Boolean).join(', ');
 
             dayStyles = { boxShadow: shadows };
@@ -202,7 +203,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground text-[10px]">No Trade</span>
+                        <span className="text-foreground text-[10px]">No Trade</span>
                       )}
                     </div>
                   ) : null}
@@ -215,3 +216,4 @@ export function TradeCalendar() {
     </div>
   );
 }
+
