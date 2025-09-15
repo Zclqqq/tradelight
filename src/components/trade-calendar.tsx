@@ -139,7 +139,7 @@ export function TradeCalendar() {
                 isCurrentMonth && "cursor-pointer hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-transparent shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
-                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
+                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent border-transparent shadow-[0_0_8px_0_hsl(var(--destructive))] z-10",
                 isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
