@@ -143,42 +143,47 @@ export function TradeCalendar() {
           return (
             <div
               key={day.toString()}
-              onClick={() => handleDayClick(day)}
+              onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-b p-1 h-20",
+                "relative flex flex-col justify-start text-xs transition-colors border-b p-1 h-20",
                 dayIdx % 7 !== 0 && "border-l",
+                isCurrentMonth && !pnlData && "cursor-pointer hover:bg-accent/50",
+                isCurrentMonth && pnlData && "cursor-pointer",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                isCurrentMonth && !pnlData && "hover:bg-accent/50",
-                pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-[hsl(var(--chart-1))] shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
-                pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
-                pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
+                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-[hsl(var(--chart-1))] shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
+                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
+                isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
-              <time
-                dateTime={format(day, "yyyy-MM-dd")}
-                className={cn(
-                  "font-semibold text-[10px] ml-auto",
-                   isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
-                )}
-              >
-                {format(day, "d")}
-              </time>
+              {isCurrentMonth && (
+                <>
+                  <time
+                    dateTime={format(day, "yyyy-MM-dd")}
+                    className={cn(
+                      "font-semibold text-[10px] ml-auto",
+                      isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
+                    )}
+                  >
+                    {format(day, "d")}
+                  </time>
 
-              {pnlData && isCurrentMonth ? (
-                <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">
-                  {pnlData.pnl !== 0 ? (
-                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
-                        {pnlData.pnl.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 0,
-                        })}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground text-[10px]">No Trade</span>
-                  )}
-                </div>
-              ) : null}
+                  {pnlData ? (
+                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">
+                      {pnlData.pnl !== 0 ? (
+                        <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                            {pnlData.pnl.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                              maximumFractionDigits: 0,
+                            })}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground text-[10px]">No Trade</span>
+                      )}
+                    </div>
+                  ) : null}
+                </>
+              )}
             </div>
           );
         })}
