@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +21,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 
 const sessionTradeSchema = z.object({
@@ -40,6 +41,7 @@ const tradeSchema = z.object({
   analysisImage: z.string().optional(),
   analysisText: z.string().optional(),
   sessions: z.array(sessionTradeSchema).optional(),
+  chartPerformance: z.string().optional(),
 });
 
 const dayLogSchema = z.object({
@@ -51,26 +53,26 @@ const dayLogSchema = z.object({
 export type DayLog = z.infer<typeof dayLogSchema>;
 
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
+const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
 
-const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
-    const [isEditing, setIsEditing] = React.useState(false);
+const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
     return (
-        <div className="py-3 border-b border-border/20">
+        <Collapsible className="py-3 border-b border-border/20">
             <div className="flex items-center justify-between">
-                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                {!isEditing && (
-                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-0" onClick={() => setIsEditing(true)}>
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add
-                    </Button>
-                )}
+                <CollapsibleTrigger className="flex items-center justify-between w-full group">
+                    <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
+                    <div className="flex items-center">
+                        {actionButton}
+                        <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
+                    </div>
+                </CollapsibleTrigger>
             </div>
-            {isEditing && (
-                <div className="mt-2">
+            <CollapsibleContent>
+                <div className="mt-3">
                     {children}
                 </div>
-            )}
-        </div>
+            </CollapsibleContent>
+        </Collapsible>
     );
 };
 
@@ -323,50 +325,59 @@ export default function LogDayPage() {
                                         <CardTitle className="font-headline text-base">Trade Data</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-4 pt-0">
-                                            <FormField
-                                                control={form.control}
-                                                name="date"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-2 py-3 border-b border-border/20">
-                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
-                                                        <Popover>
-                                                            <PopoverTrigger asChild>
-                                                            <FormControl>
-                                                                <Button
-                                                                variant={"ghost"}
-                                                                className={cn(
-                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
-                                                                    !field.value && "text-muted-foreground"
-                                                                )}
-                                                                >
-                                                                {field.value ? (
-                                                                    format(field.value, "PPP")
-                                                                ) : (
-                                                                    <span>Pick a date</span>
-                                                                )}
-                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                </Button>
-                                                            </FormControl>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0" align="start">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={field.value}
-                                                                onSelect={field.onChange}
-                                                                disabled={(date) =>
-                                                                date > new Date() || date < new Date("1900-01-01")
-                                                                }
-                                                                initialFocus
-                                                            />
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                                />
+                                            <div className="py-3 border-b border-border/20">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="date"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col space-y-2">
+                                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                <FormControl>
+                                                                    <Button
+                                                                    variant={"ghost"}
+                                                                    className={cn(
+                                                                        "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
+                                                                        !field.value && "text-muted-foreground"
+                                                                    )}
+                                                                    >
+                                                                    {field.value ? (
+                                                                        format(field.value, "PPP")
+                                                                    ) : (
+                                                                        <span>Pick a date</span>
+                                                                    )}
+                                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                    </Button>
+                                                                </FormControl>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0" align="start">
+                                                                <Calendar
+                                                                    mode="single"
+                                                                    selected={field.value}
+                                                                    onSelect={field.onChange}
+                                                                    disabled={(date) =>
+                                                                    date > new Date() || date < new Date("1900-01-01")
+                                                                    }
+                                                                    initialFocus
+                                                                />
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                    />
+                                            </div>
                                             
-                                            <div className="space-y-2">
-                                                <TradeDataField label="Sessions">
+                                            <div className="space-y-0">
+                                                <TradeDataField 
+                                                    label="Sessions"
+                                                    actionButton={
+                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-0" onClick={(e) => { e.stopPropagation(); appendSession({ sessionName: '', direction: 'consolidation' }); }}>
+                                                            <Plus className="h-4 w-4" />
+                                                        </Button>
+                                                    }
+                                                >
                                                     <div className="space-y-2">
                                                         {sessionFields.map((field, index) => {
                                                             const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
@@ -415,10 +426,25 @@ export default function LogDayPage() {
                                                                 </div>
                                                             )
                                                         })}
-                                                        <Button type="button" variant="outline" size="sm" onClick={() => appendSession({ sessionName: '', direction: 'consolidation' })}>
-                                                            <Plus className="h-4 w-4 mr-1" /> Add Session
-                                                        </Button>
                                                     </div>
+                                                </TradeDataField>
+                                                 <TradeDataField label="Chart Performance">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.chartPerformance"
+                                                        render={({ field }) => (
+                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select performance..." />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        )}
+                                                    />
                                                 </TradeDataField>
                                                 <TradeDataField label="Instrument">
                                                     <FormField
@@ -482,3 +508,4 @@ export default function LogDayPage() {
   );
 }
 
+    
