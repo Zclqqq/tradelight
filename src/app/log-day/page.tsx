@@ -58,15 +58,13 @@ const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit S
 const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
     return (
         <Collapsible className="py-3 border-b border-border/20">
-            <div className="flex items-center justify-between">
-                <CollapsibleTrigger className="flex items-center justify-between w-full group">
-                    <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                    <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                {actionButton}
-            </div>
+            <CollapsibleTrigger className="flex items-center justify-between w-full group">
+                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
+                <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
+            </CollapsibleTrigger>
             <CollapsibleContent>
-                <div className="mt-3">
+                {actionButton && <div className="flex justify-end">{actionButton}</div>}
+                <div className="mt-2 space-y-2">
                     {children}
                 </div>
             </CollapsibleContent>
@@ -371,60 +369,58 @@ export default function LogDayPage() {
                                                 <TradeDataField 
                                                     label="Sessions"
                                                     actionButton={
-                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-1 -mr-1" onClick={(e) => { e.stopPropagation(); appendSession({ sessionName: '', direction: 'consolidation' }); }}>
+                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-1 -mr-1" onClick={() => appendSession({ sessionName: '', direction: 'consolidation' })}>
                                                             <Plus className="h-4 w-4" />
                                                         </Button>
                                                     }
                                                 >
-                                                    <div className="space-y-2">
-                                                        {sessionFields.map((field, index) => {
-                                                            const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
-                                                            const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === field.sessionName);
-                                                            
-                                                            return (
-                                                                <div key={field.id} className="flex gap-2 items-center">
-                                                                    <FormField
-                                                                        control={form.control}
-                                                                        name={`trades.0.sessions.${index}.sessionName`}
-                                                                        render={({ field }) => (
-                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger>
-                                                                                        <SelectValue placeholder="Session" />
-                                                                                    </SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    {availableOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        )}
-                                                                    />
-                                                                    <FormField
-                                                                        control={form.control}
-                                                                        name={`trades.0.sessions.${index}.direction`}
-                                                                        render={({ field }) => (
-                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger>
-                                                                                        <SelectValue placeholder="Side" />
-                                                                                    </SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="consolidation">Consolidation</SelectItem>
-                                                                                    <SelectItem value="sweep-up">Sweep Up</SelectItem>
-                                                                                    <SelectItem value="sweep-down">Sweep Down</SelectItem>
-                                                                                    <SelectItem value="sweep-both">Sweep Both</SelectItem>
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        )}
-                                                                    />
-                                                                    <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
-                                                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                                                    </Button>
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
+                                                    {sessionFields.map((field, index) => {
+                                                        const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
+                                                        const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === field.sessionName);
+                                                        
+                                                        return (
+                                                            <div key={field.id} className="flex gap-2 items-center">
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`trades.0.sessions.${index}.sessionName`}
+                                                                    render={({ field }) => (
+                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger>
+                                                                                    <SelectValue placeholder="Session" />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                {availableOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    )}
+                                                                />
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`trades.0.sessions.${index}.direction`}
+                                                                    render={({ field }) => (
+                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger>
+                                                                                    <SelectValue placeholder="Side" />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
+                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
+                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    )}
+                                                                />
+                                                                <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
+                                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                                </Button>
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </TradeDataField>
                                                  <TradeDataField label="Chart Performance">
                                                     <FormField
