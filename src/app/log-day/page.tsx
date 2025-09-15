@@ -20,6 +20,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 const tradeSchema = z.object({
@@ -28,11 +29,12 @@ const tradeSchema = z.object({
   entryTime: z.string().optional(),
   exitTime: z.string().optional(),
   contracts: z.coerce.number().optional(),
-  tradeTp: z.coerce.number().optional(),
+  tradeTp: zcoerce.number().optional(),
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional(),
   analysisText: z.string().optional(),
+  sessions: z.array(z.string()).optional(),
 });
 
 const dayLogSchema = z.object({
@@ -42,6 +44,8 @@ const dayLogSchema = z.object({
 });
 
 export type DayLog = z.infer<typeof dayLogSchema>;
+
+const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isEditing, setIsEditing] = React.useState(false);
@@ -101,7 +105,7 @@ export default function LogDayPage() {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [{ instrument: "Summary", pnl: 0 }],
+                trades: [{ instrument: "Summary", pnl: 0, sessions: [] }],
              });
         }
     }, [searchParams, form]);
@@ -349,6 +353,53 @@ export default function LogDayPage() {
                                                 />
                                             
                                             <div className="space-y-2">
+                                                <div className="py-3 border-b border-border/20">
+                                                    <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Sessions</FormLabel>
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.sessions"
+                                                        render={() => (
+                                                            <FormItem className="space-y-2 mt-2">
+                                                                <div className="grid grid-cols-3 gap-2">
+                                                                {sessionOptions.map((item) => (
+                                                                    <FormField
+                                                                    key={item}
+                                                                    control={form.control}
+                                                                    name="trades.0.sessions"
+                                                                    render={({ field }) => {
+                                                                        return (
+                                                                        <FormItem
+                                                                            key={item}
+                                                                            className="flex flex-row items-start space-x-2 space-y-0"
+                                                                        >
+                                                                            <FormControl>
+                                                                            <Checkbox
+                                                                                checked={field.value?.includes(item)}
+                                                                                onCheckedChange={(checked) => {
+                                                                                return checked
+                                                                                    ? field.onChange([...(field.value || []), item])
+                                                                                    : field.onChange(
+                                                                                        field.value?.filter(
+                                                                                        (value) => value !== item
+                                                                                        )
+                                                                                    )
+                                                                                }}
+                                                                            />
+                                                                            </FormControl>
+                                                                            <FormLabel className="text-sm font-normal">
+                                                                            {item}
+                                                                            </FormLabel>
+                                                                        </FormItem>
+                                                                        )
+                                                                    }}
+                                                                    />
+                                                                ))}
+                                                                </div>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
                                                 <TradeDataField label="Instrument">
                                                     <FormField
                                                         control={form.control}
@@ -410,5 +461,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
