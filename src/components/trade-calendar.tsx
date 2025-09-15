@@ -128,8 +128,8 @@ export function TradeCalendar() {
         </div>
       </div>
       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="py-2 border-b border-border/20">
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
+          <div key={day} className={cn("py-2 border-t border-b border-border/20", index === 0 && "border-l", index === 6 && "border-r")}>
             {day}
           </div>
         ))}
@@ -145,9 +145,8 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-t border-l",
+                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-b border-l",
                 (index + 1) % 7 === 0 && "border-r",
-                index >= days.length - 7 && "border-b",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
@@ -155,7 +154,7 @@ export function TradeCalendar() {
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
-              <div className="pb-[65%]"></div>
+              <div className="pt-[75%]"></div>
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
