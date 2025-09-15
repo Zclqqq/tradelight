@@ -78,10 +78,26 @@ export function TradeCalendar() {
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 
+  const startOfCalendar = startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 0 });
+  const endOfCalendar = endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 0 });
+
   const days = eachDayOfInterval({
-    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 0 }),
-    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 0 }),
+    start: startOfCalendar,
+    end: endOfCalendar
   });
+
+  const calendarWeeks = [];
+  for (let i = 0; i < days.length; i += 7) {
+    calendarWeeks.push(days.slice(i, i + 7));
+  }
+
+  // If the last week is completely outside the current month, and has no trades, don't show it.
+  const lastWeek = calendarWeeks[calendarWeeks.length - 1];
+  if (lastWeek && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
+    calendarWeeks.pop();
+  }
+  const calendarDays = calendarWeeks.flat();
+
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -119,30 +135,22 @@ export function TradeCalendar() {
       </div>
       <div className="grid grid-cols-7 border-t border-l border-border/20 text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-b border-r border-border/20">
+          <div key={day} className="py-2 border-r border-b border-border/20">
             {day}
           </div>
         ))}
       </div>
       <div className="grid grid-cols-7 border-l border-border/20">
-        {days.map((day, dayIdx) => {
+        {calendarDays.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
-
-          const hasTrade = (d: Date) => !!dailyPnl[format(d, "yyyy-MM-dd")];
           
-          const noGlowRight = (dayIdx % 7 < 6) && hasTrade(days[dayIdx+1]);
-          const noGlowLeft = (dayIdx % 7 > 0) && hasTrade(days[dayIdx-1]);
-          const noGlowBottom = dayIdx < days.length - 7 && hasTrade(days[dayIdx+7]);
-          const noGlowTop = dayIdx >= 7 && hasTrade(days[dayIdx-7]);
-
-          let boxShadow = "0 0 8px 0";
+          let glowClass = "";
           if (pnlData) {
-            if (noGlowTop) boxShadow = `${boxShadow}, 0 4px 8px 0`;
-            if (noGlowBottom) boxShadow = `${boxShadow}, 0 -4px 8px 0`;
-            if (noGlowLeft) boxShadow = `${boxShadow}, 4px 0 8px 0`;
-            if (noGlowRight) boxShadow = `${boxShadow}, -4px 0 8px 0`;
+            glowClass = pnlData.pnl > 0 
+              ? "shadow-[0_0_8px_theme(colors.chart.1)] ring-1 ring-chart-1" 
+              : "shadow-[0_0_8px_theme(colors.destructive)] ring-1 ring-destructive";
           }
 
           return (
@@ -150,23 +158,20 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-b border-r border-border/20 p-1 h-20",
-                isCurrentMonth && "cursor-pointer hover:bg-accent/50",
+                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-24",
+                isCurrentMonth && "cursor-pointer",
+                isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent z-10",
-                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent z-10",
-                isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
+                pnlData && "z-10",
+                glowClass
               )}
-               style={pnlData ? {
-                boxShadow: `inset 0 0 0 1px hsl(var(${pnlData.pnl > 0 ? '--chart-1' : '--destructive'})), ${boxShadow} hsl(var(${pnlData.pnl > 0 ? '--chart-1' : '--destructive'}))`,
-              } : {}}
             >
               {isCurrentMonth && (
                 <>
                   <time
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
-                      "font-semibold text-[10px] ml-auto",
+                      "font-semibold text-[10px] ml-auto z-20",
                        isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                     )}
                   >
@@ -174,7 +179,7 @@ export function TradeCalendar() {
                   </time>
 
                   {pnlData ? (
-                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">
+                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-20">
                       {pnlData.pnl !== 0 ? (
                         <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
                             {pnlData.pnl.toLocaleString("en-US", {
