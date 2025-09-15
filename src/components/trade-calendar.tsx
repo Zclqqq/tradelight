@@ -78,20 +78,10 @@ export function TradeCalendar() {
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 
-  const daysInMonth = eachDayOfInterval({
-    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 1 }),
-    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 1 }),
+  const days = eachDayOfInterval({
+    start: startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 0 }),
+    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 0 }),
   });
-  
-  const days = daysInMonth.length < 42 
-    ? [
-        ...daysInMonth,
-        ...eachDayOfInterval({
-            start: add(daysInMonth[daysInMonth.length - 1], { days: 1 }),
-            end: add(daysInMonth[daysInMonth.length - 1], { days: 42 - daysInMonth.length })
-        })
-      ]
-    : daysInMonth;
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -128,13 +118,13 @@ export function TradeCalendar() {
         </div>
       </div>
       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="py-2 border-b border-border/20">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div key={day} className="py-2 border-b border-r border-border/20 first:border-l">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-t border-border/20">
+      <div className="grid grid-cols-7 border-l border-border/20">
         {days.map((day, dayIdx) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -145,12 +135,10 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-b p-1 h-20",
-                dayIdx % 7 !== 0 && "border-l",
-                isCurrentMonth && !pnlData && "cursor-pointer hover:bg-accent/50",
-                isCurrentMonth && pnlData && "cursor-pointer",
+                "relative flex flex-col justify-start text-xs transition-colors border-b border-r border-border/20 p-1 h-20",
+                isCurrentMonth && "cursor-pointer hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-[hsl(var(--chart-1))] shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
+                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-transparent shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
                 isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
                 isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
