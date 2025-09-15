@@ -127,15 +127,15 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-t border-l border-border/20">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="py-2 border-r border-b border-border/20">
+          <div key={day} className="py-2 border-b border-border/20">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-b border-border/20">
-        {days.map((day) => {
+      <div className="grid grid-cols-7 border-t border-border/20">
+        {days.map((day, dayIdx) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
@@ -145,19 +145,19 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-r border-t border-border/20 p-1",
-                "h-24", // Adjust height to be more rectangular
+                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-b p-1 h-24",
+                dayIdx % 7 !== 0 && "border-l",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
-                pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
-                pnlData && pnlData.pnl < 0 && "bg-destructive/5 hover:bg-destructive/10 border-destructive",
+                pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/10 hover:bg-[hsl(var(--chart-1))]/20",
+                pnlData && pnlData.pnl < 0 && "bg-destructive/10 hover:bg-destructive/20",
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "absolute top-1 right-1 font-semibold text-[10px]",
+                  "font-semibold text-[10px] ml-auto",
                    isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                 )}
               >
