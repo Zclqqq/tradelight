@@ -32,21 +32,21 @@ const sessionTradeSchema = z.object({
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
   pnl: z.coerce.number(),
-  entryTime: z.string().optional(),
-  exitTime: z.string().optional(),
+  entryTime: z.string().optional().default(""),
+  exitTime: z.string().optional().default(""),
   contracts: z.coerce.number().optional(),
   tradeTp: z.coerce.number().optional(),
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
-  analysisImage: z.string().optional(),
-  analysisText: z.string().optional(),
+  analysisImage: z.string().optional().default(""),
+  analysisText: z.string().optional().default(""),
   sessions: z.array(sessionTradeSchema).optional(),
-  chartPerformance: z.string().optional(),
+  chartPerformance: z.string().optional().default(""),
 });
 
 const dayLogSchema = z.object({
   date: z.date(),
-  notes: z.string().optional(),
+  notes: z.string().optional().default(""),
   trades: z.array(tradeSchema),
 });
 
@@ -55,7 +55,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
 
-const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
+const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     return (
         <Collapsible className="py-3 border-b border-border/20" defaultOpen>
             <CollapsibleTrigger className="flex items-center justify-between w-full group">
@@ -63,7 +63,6 @@ const TradeDataField = ({ label, children, actionButton }: { label: string, chil
                 <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
             </CollapsibleTrigger>
             <CollapsibleContent>
-                {actionButton && <div className="flex justify-end pt-2">{actionButton}</div>}
                 <div className="mt-2 space-y-2">
                     {children}
                 </div>
@@ -88,7 +87,16 @@ export default function LogDayPage() {
         defaultValues: {
             date: new Date(),
             notes: "",
-            trades: [],
+            trades: [{ 
+                instrument: "Summary", 
+                pnl: 0, 
+                sessions: defaultSessions,
+                analysisImage: "",
+                analysisText: "",
+                chartPerformance: "",
+                entryTime: "",
+                exitTime: "",
+            }],
         },
     });
 
@@ -102,31 +110,52 @@ export default function LogDayPage() {
         const date = dateParam ? new Date(dateParam) : new Date();
         const key = `trade-log-${format(date, 'yyyy-MM-dd')}`;
         const savedData = localStorage.getItem(key);
+
+        const emptyTrade = {
+            instrument: "Summary",
+            pnl: 0,
+            sessions: defaultSessions,
+            analysisImage: "",
+            analysisText: "",
+            chartPerformance: "",
+            entryTime: "",
+            exitTime: "",
+            contracts: undefined,
+            tradeTp: undefined,
+            tradeSl: undefined,
+            totalPoints: undefined,
+        };
+
         if (savedData) {
             const parsedData = JSON.parse(savedData);
             parsedData.date = new Date(parsedData.date);
             
-            const savedSessions = parsedData.trades[0]?.sessions || [];
-            const sessionMap = new Map(savedSessions.map((s: any) => [s.sessionName, s.direction]));
+            const savedTrade = parsedData.trades?.[0] || {};
+            
+            const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s.direction]));
             const fullSessions = sessionOptions.map(name => ({
                 sessionName: name,
                 direction: sessionMap.get(name) || "",
             }));
 
-            if (parsedData.trades && parsedData.trades[0]) {
-                parsedData.trades[0].sessions = fullSessions;
-            } else if (parsedData.trades) {
-                 parsedData.trades.push({ instrument: "Summary", pnl: 0, sessions: fullSessions });
-            } else {
-                parsedData.trades = [{ instrument: "Summary", pnl: 0, sessions: fullSessions }];
-            }
+            const tradeWithDefaults = {
+                ...emptyTrade,
+                ...savedTrade,
+                sessions: fullSessions,
+            };
 
-            form.reset(parsedData);
+            const dataWithDefaults = {
+                date: parsedData.date,
+                notes: parsedData.notes || "",
+                trades: [tradeWithDefaults],
+            };
+
+            form.reset(dataWithDefaults);
         } else {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [{ instrument: "Summary", pnl: 0, sessions: defaultSessions }],
+                trades: [emptyTrade],
              });
         }
     }, [searchParams, form]);
@@ -391,14 +420,14 @@ export default function LogDayPage() {
                                             <div className="space-y-0">
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-1">
-                                                        {(form.watch('trades.0.sessions') || []).map((field, index) => (
+                                                        {(form.watch('trades.0.sessions') || []).map((_, index) => (
                                                             <div key={index} className="flex gap-2 items-center justify-between">
                                                                 <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
                                                                 <FormField
                                                                     control={form.control}
                                                                     name={`trades.0.sessions.${index}.direction`}
                                                                     render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} value={field.value || ""} defaultValue="">
+                                                                        <Select onValueChange={field.onChange} value={field.value || ""}>
                                                                             <FormControl>
                                                                                 <SelectTrigger className="w-[180px]">
                                                                                     <SelectValue placeholder="Select Direction" />
@@ -423,7 +452,7 @@ export default function LogDayPage() {
                                                         control={form.control}
                                                         name="trades.0.chartPerformance"
                                                         render={({ field }) => (
-                                                            <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                                                            <Select onValueChange={field.onChange} value={field.value}>
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
@@ -497,3 +526,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
