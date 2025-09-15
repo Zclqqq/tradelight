@@ -2,17 +2,24 @@
 "use client";
 
 import * as React from "react";
-import {
-  TrendingUp,
-} from "lucide-react";
+import Link from "next/link";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { MotivationCard } from "@/components/motivation-card";
 import type { DayLog } from "./log-day/page";
+
+const quotes = [
+    "The secret of getting ahead is getting started.",
+    "It's not whether you get knocked down, it's whether you get up.",
+    "The goal of a successful trader is to make the best trades. Money is secondary.",
+    "The stock market is a device for transferring money from the impatient to the patient.",
+    "In investing, what is comfortable is rarely profitable.",
+    "I will not be a rock star. I will be a legend.",
+    "The four most dangerous words in investing are: 'This time it's different.'",
+    "Don't be afraid to take a big step. You can't cross a chasm in two small jumps."
+];
 
 
 export default function Home() {
@@ -21,6 +28,11 @@ export default function Home() {
       avgWin: 0,
       winRate: 0,
   });
+  const [quote, setQuote] = React.useState('');
+
+  React.useEffect(() => {
+        setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  }, []);
 
   React.useEffect(() => {
       const allLogsRaw = localStorage.getItem('all-trades');
@@ -45,6 +57,7 @@ export default function Home() {
         <h1 className="text-xl font-bold font-headline">
           TradeLight
         </h1>
+        <p className="text-sm font-medium text-muted-foreground italic hidden md:block">"{quote}"</p>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
@@ -53,9 +66,6 @@ export default function Home() {
       <main className="flex-1 p-4 overflow-auto">
         <div className="mx-auto w-full max-w-7xl">
           <div className="flex flex-col gap-4">
-            <div className="w-full">
-                <MotivationCard />
-            </div>
             <div className="grid grid-cols-4 gap-4">
               <div className="col-span-3">
                 <TradeCalendar />
