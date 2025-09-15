@@ -165,7 +165,7 @@ export default function LogDayPage() {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [{...emptyTrade, sessions: defaultSessions.map(s => ({...s, direction: "none"})) }],
+                trades: [{...emptyTrade, sessions: defaultSessions.map(s => ({...s, direction: "none" as const})) }],
              });
         }
     }, [searchParams, form]);
