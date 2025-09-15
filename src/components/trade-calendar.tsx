@@ -127,15 +127,15 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
-          <div key={day} className={cn("py-2 border-t border-b border-border/20", index === 0 && "border-l", index === 6 && "border-r")}>
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-t border-l border-border/20">
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+          <div key={day} className="py-2 border-b border-r border-border/20">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7">
-        {days.map((day, index) => {
+      <div className="grid grid-cols-7 border-l border-border/20">
+        {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
@@ -145,8 +145,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-b border-l",
-                (index + 1) % 7 === 0 && "border-r",
+                "relative flex flex-col justify-start text-xs cursor-pointer transition-colors border-border/20 border-b border-r",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 pnlData && pnlData.pnl > 0 && "bg-[hsl(var(--chart-1))]/5 hover:bg-[hsl(var(--chart-1))]/10 border-[hsl(var(--chart-1))]",
