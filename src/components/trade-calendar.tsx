@@ -154,13 +154,13 @@ export function TradeCalendar() {
               left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')],
               right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')],
             };
-            const color = pnlData.pnl > 0 ? 'var(--chart-1)' : 'var(--destructive)';
+            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
             
             const shadows = [
-              !hasNeighbor.top && `0 -2px 5px -2px hsl(${color})`,
-              !hasNeighbor.bottom && `0 2px 5px -2px hsl(${color})`,
-              !hasNeighbor.left && `-2px 0 5px -2px hsl(${color})`,
-              !hasNeighbor.right && `2px 0 5px -2px hsl(${color})`,
+              !hasNeighbor.top && `inset 0 2px 0 0 ${color}`,
+              !hasNeighbor.bottom && `inset 0 -2px 0 0 ${color}`,
+              !hasNeighbor.left && `inset 2px 0 0 0 ${color}`,
+              !hasNeighbor.right && `inset -2px 0 0 0 ${color}`,
             ].filter(Boolean).join(', ');
 
             dayStyles = { boxShadow: shadows };
@@ -175,8 +175,7 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                pnlData && (pnlData.pnl > 0 ? "bg-[hsl(var(--chart-1))]/10" : "bg-destructive/10")
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30"
               )}
               style={dayStyles}
             >
