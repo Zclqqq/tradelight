@@ -103,7 +103,7 @@ export function TradeCalendar() {
 
 
   return (
-    <div className="p-4 h-full flex flex-col border border-border/20 rounded-lg">
+    <div className="p-4 flex flex-col border border-border/20 rounded-lg">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -124,7 +124,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-6 flex-1">
+      <div className="grid grid-cols-7 grid-rows-6">
         {days.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -178,5 +178,6 @@ export function TradeCalendar() {
     </div>
   );
 }
+
 
 
