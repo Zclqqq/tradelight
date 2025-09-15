@@ -26,7 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both"]),
+  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", ""]),
 });
 
 const tradeSchema = z.object({
@@ -81,6 +81,8 @@ export default function LogDayPage() {
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+    const defaultSessions = sessionOptions.map(name => ({ sessionName: name, direction: "" as const }));
+
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
         defaultValues: {
@@ -95,14 +97,6 @@ export default function LogDayPage() {
         name: "trades",
     });
 
-    const { fields: sessionFields, append: appendSession, remove: removeSession } = useFieldArray({
-        control: form.control,
-        name: "trades.0.sessions",
-    });
-    
-    const watchedSessions = form.watch("trades.0.sessions");
-
-
     React.useEffect(() => {
         const dateParam = searchParams.get('date');
         const date = dateParam ? new Date(dateParam) : new Date();
@@ -110,13 +104,20 @@ export default function LogDayPage() {
         const savedData = localStorage.getItem(key);
         if (savedData) {
             const parsedData = JSON.parse(savedData);
-            parsedData.date = new Date(parsedData.date); // Convert date string back to Date object
+            parsedData.date = new Date(parsedData.date);
+            // Ensure sessions are fully populated
+            const savedSessions = parsedData.trades[0]?.sessions || [];
+            const sessionMap = new Map(savedSessions.map((s: any) => [s.sessionName, s.direction]));
+            parsedData.trades[0].sessions = sessionOptions.map(name => ({
+                sessionName: name,
+                direction: sessionMap.get(name) || "",
+            }));
             form.reset(parsedData);
         } else {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [{ instrument: "Summary", pnl: 0, sessions: [] }],
+                trades: [{ instrument: "Summary", pnl: 0, sessions: defaultSessions }],
              });
         }
     }, [searchParams, form]);
@@ -150,8 +151,15 @@ export default function LogDayPage() {
 
     const onSubmit = (values: z.infer<typeof dayLogSchema>) => {
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
+        // Filter out sessions where no direction was selected
+        const tradesWithFilteredSessions = values.trades.map(trade => ({
+            ...trade,
+            sessions: trade.sessions?.filter(session => session.direction)
+        }));
+        
         const dataToSave = {
             ...values,
+            trades: tradesWithFilteredSessions,
             date: values.date.toISOString(), // a non-serializable value
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
@@ -366,61 +374,31 @@ export default function LogDayPage() {
                                             </div>
                                             
                                             <div className="space-y-0">
-                                                <TradeDataField 
-                                                    label="Sessions"
-                                                    actionButton={
-                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-1 -mr-1" onClick={() => appendSession({ sessionName: '', direction: 'consolidation' })}>
-                                                            <Plus className="h-4 w-4" />
-                                                        </Button>
-                                                    }
-                                                >
-                                                    {sessionFields.map((field, index) => {
-                                                        const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
-                                                        const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === watchedSessions?.[index]?.sessionName);
-                                                        
-                                                        return (
-                                                            <div key={field.id} className="flex gap-2 items-center">
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.sessionName`}
-                                                                    render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger>
-                                                                                    <SelectValue placeholder="Session" />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                {availableOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    )}
-                                                                />
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.direction`}
-                                                                    render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger>
-                                                                                    <SelectValue placeholder="Side" />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
-                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
-                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
-                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    )}
-                                                                />
-                                                                <Button variant="ghost" size="icon" onClick={() => removeSession(index)} className="shrink-0">
-                                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                                </Button>
-                                                            </div>
-                                                        )
-                                                    })}
+                                                <TradeDataField label="Sessions">
+                                                    {(form.watch('trades.0.sessions') || []).map((field, index) => (
+                                                        <div key={index} className="flex gap-2 items-center py-2">
+                                                            <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`trades.0.sessions.${index}.direction`}
+                                                                render={({ field }) => (
+                                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                        <FormControl>
+                                                                            <SelectTrigger className="w-[180px]">
+                                                                                <SelectValue placeholder="Select Direction" />
+                                                                            </SelectTrigger>
+                                                                        </FormControl>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                            <SelectItem value="sweep-up">Sweep Up</SelectItem>
+                                                                            <SelectItem value="sweep-down">Sweep Down</SelectItem>
+                                                                            <SelectItem value="sweep-both">Sweep Both</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    ))}
                                                 </TradeDataField>
                                                  <TradeDataField label="Chart Performance">
                                                     <FormField
@@ -501,9 +479,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
 
     
