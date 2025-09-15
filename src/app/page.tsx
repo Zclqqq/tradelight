@@ -60,10 +60,7 @@ export default function Home() {
             <div className="col-span-1 row-span-2">
               <RecentTrades />
             </div>
-             <div className="col-span-2">
-                <ProgressCard />
-            </div>
-            <div className="col-span-1">
+             <div className="col-span-1">
                <StatCard 
                   title="Net P&L" 
                   value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
@@ -81,7 +78,7 @@ export default function Home() {
                   value={`${stats.winRate.toFixed(0)}%`}
                 />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-3">
                 <MotivationCard />
             </div>
           </div>

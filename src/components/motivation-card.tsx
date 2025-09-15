@@ -24,7 +24,7 @@ export function MotivationCard() {
     }, []);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full min-h-[120px]">
         <CardContent className="text-center flex flex-col items-center justify-center h-full p-4">
             <p className="text-sm font-medium text-muted-foreground italic">"{quote}"</p>
         </CardContent>
