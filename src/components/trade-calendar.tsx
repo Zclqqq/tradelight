@@ -117,9 +117,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 border-t border-l border-border/20 text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-b border-r border-border/20 first:border-l">
+          <div key={day} className="py-2 border-b border-r border-border/20">
             {day}
           </div>
         ))}
@@ -138,8 +138,8 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-b border-r border-border/20 p-1 h-20",
                 isCurrentMonth && "cursor-pointer hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent border-transparent shadow-[0_0_8px_0_hsl(var(--chart-1))] z-10",
-                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent border-transparent shadow-[0_0_8px_0_hsl(var(--destructive))] z-10",
+                isCurrentMonth && pnlData && pnlData.pnl > 0 && "bg-transparent hover:bg-transparent shadow-[inset_0_0_0_1px_hsl(var(--chart-1)),0_0_8px_0_hsl(var(--chart-1))] z-10",
+                isCurrentMonth && pnlData && pnlData.pnl < 0 && "bg-transparent hover:bg-transparent shadow-[inset_0_0_0_1px_hsl(var(--destructive)),0_0_8px_0_hsl(var(--destructive))] z-10",
                 isCurrentMonth && pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
@@ -149,7 +149,7 @@ export function TradeCalendar() {
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
                       "font-semibold text-[10px] ml-auto",
-                      isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
+                       isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                     )}
                   >
                     {format(day, "d")}
