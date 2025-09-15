@@ -57,7 +57,7 @@ const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit S
 
 const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
     return (
-        <Collapsible className="py-3 border-b border-border/20">
+        <Collapsible className="py-3 border-b border-border/20" defaultOpen>
             <CollapsibleTrigger className="flex items-center justify-between w-full group">
                 <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
                 <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
@@ -105,13 +105,22 @@ export default function LogDayPage() {
         if (savedData) {
             const parsedData = JSON.parse(savedData);
             parsedData.date = new Date(parsedData.date);
-            // Ensure sessions are fully populated
+            
             const savedSessions = parsedData.trades[0]?.sessions || [];
             const sessionMap = new Map(savedSessions.map((s: any) => [s.sessionName, s.direction]));
-            parsedData.trades[0].sessions = sessionOptions.map(name => ({
+            const fullSessions = sessionOptions.map(name => ({
                 sessionName: name,
                 direction: sessionMap.get(name) || "",
             }));
+
+            if (parsedData.trades && parsedData.trades[0]) {
+                parsedData.trades[0].sessions = fullSessions;
+            } else if (parsedData.trades) {
+                 parsedData.trades.push({ instrument: "Summary", pnl: 0, sessions: fullSessions });
+            } else {
+                parsedData.trades = [{ instrument: "Summary", pnl: 0, sessions: fullSessions }];
+            }
+
             form.reset(parsedData);
         } else {
              form.reset({
@@ -151,7 +160,7 @@ export default function LogDayPage() {
 
     const onSubmit = (values: z.infer<typeof dayLogSchema>) => {
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
-        // Filter out sessions where no direction was selected
+        
         const tradesWithFilteredSessions = values.trades.map(trade => ({
             ...trade,
             sessions: trade.sessions?.filter(session => session.direction)
@@ -160,14 +169,20 @@ export default function LogDayPage() {
         const dataToSave = {
             ...values,
             trades: tradesWithFilteredSessions,
-            date: values.date.toISOString(), // a non-serializable value
+            date: values.date.toISOString(), 
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
         
-        // Update the main trade list
+        
         const allLogs = Object.keys(localStorage)
             .filter(k => k.startsWith('trade-log-'))
-            .map(k => JSON.parse(localStorage.getItem(k) as string));
+            .map(k => {
+                try {
+                    return JSON.parse(localStorage.getItem(k) as string)
+                } catch {
+                    return null;
+                }
+            }).filter(Boolean);
 
         localStorage.setItem('all-trades', JSON.stringify(allLogs));
         
@@ -375,37 +390,40 @@ export default function LogDayPage() {
                                             
                                             <div className="space-y-0">
                                                 <TradeDataField label="Sessions">
-                                                    {(form.watch('trades.0.sessions') || []).map((field, index) => (
-                                                        <div key={index} className="flex gap-2 items-center py-2">
-                                                            <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`trades.0.sessions.${index}.direction`}
-                                                                render={({ field }) => (
-                                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                        <FormControl>
-                                                                            <SelectTrigger className="w-[180px]">
-                                                                                <SelectValue placeholder="Select Direction" />
-                                                                            </SelectTrigger>
-                                                                        </FormControl>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="consolidation">Consolidation</SelectItem>
-                                                                            <SelectItem value="sweep-up">Sweep Up</SelectItem>
-                                                                            <SelectItem value="sweep-down">Sweep Down</SelectItem>
-                                                                            <SelectItem value="sweep-both">Sweep Both</SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                )}
-                                                            />
-                                                        </div>
-                                                    ))}
+                                                    <div className="space-y-1">
+                                                        {(form.watch('trades.0.sessions') || []).map((field, index) => (
+                                                            <div key={index} className="flex gap-2 items-center justify-between">
+                                                                <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
+                                                                <FormField
+                                                                    control={form.control}
+                                                                    name={`trades.0.sessions.${index}.direction`}
+                                                                    render={({ field }) => (
+                                                                        <Select onValueChange={field.onChange} value={field.value || ""} defaultValue="">
+                                                                            <FormControl>
+                                                                                <SelectTrigger className="w-[180px]">
+                                                                                    <SelectValue placeholder="Select Direction" />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="">-</SelectItem>
+                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
+                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
+                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    )}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </TradeDataField>
                                                  <TradeDataField label="Chart Performance">
                                                     <FormField
                                                         control={form.control}
                                                         name="trades.0.chartPerformance"
                                                         render={({ field }) => (
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
@@ -479,5 +497,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
