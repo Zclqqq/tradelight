@@ -26,7 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", ""]),
+  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none", ""]),
 });
 
 const tradeSchema = z.object({
@@ -55,13 +55,20 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
 
-const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
+const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
+    const [isOpen, setIsOpen] = React.useState(true);
+
     return (
-        <Collapsible className="py-3 border-b border-border/20" defaultOpen>
-            <CollapsibleTrigger className="flex items-center justify-between w-full group">
-                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
-            </CollapsibleTrigger>
+        <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
+            <div className="flex items-center justify-between">
+                <div
+                    className="flex items-center justify-between w-full group cursor-pointer"
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
+                    <ChevronDown className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-180")} />
+                </div>
+            </div>
             <CollapsibleContent>
                 <div className="mt-2 space-y-2">
                     {children}
@@ -96,6 +103,10 @@ export default function LogDayPage() {
                 chartPerformance: "",
                 entryTime: "",
                 exitTime: "",
+                contracts: undefined,
+                tradeTp: undefined,
+                tradeSl: undefined,
+                totalPoints: undefined,
             }],
         },
     });
@@ -114,7 +125,6 @@ export default function LogDayPage() {
         const emptyTrade = {
             instrument: "Summary",
             pnl: 0,
-            sessions: defaultSessions,
             analysisImage: "",
             analysisText: "",
             chartPerformance: "",
@@ -135,7 +145,7 @@ export default function LogDayPage() {
             const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s.direction]));
             const fullSessions = sessionOptions.map(name => ({
                 sessionName: name,
-                direction: sessionMap.get(name) || "",
+                direction: sessionMap.get(name) || "none",
             }));
 
             const tradeWithDefaults = {
@@ -155,7 +165,7 @@ export default function LogDayPage() {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [emptyTrade],
+                trades: [{...emptyTrade, sessions: defaultSessions.map(s => ({...s, direction: "none"})) }],
              });
         }
     }, [searchParams, form]);
@@ -192,7 +202,7 @@ export default function LogDayPage() {
         
         const tradesWithFilteredSessions = values.trades.map(trade => ({
             ...trade,
-            sessions: trade.sessions?.filter(session => session.direction)
+            sessions: trade.sessions?.filter(session => session.direction && session.direction !== "none")
         }));
         
         const dataToSave = {
@@ -421,20 +431,20 @@ export default function LogDayPage() {
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-1">
                                                         {(form.watch('trades.0.sessions') || []).map((_, index) => (
-                                                            <div key={index} className="flex gap-2 items-center justify-between">
+                                                            <div key={index} className="flex gap-2 items-center justify-between py-1">
                                                                 <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
                                                                 <FormField
                                                                     control={form.control}
                                                                     name={`trades.0.sessions.${index}.direction`}
                                                                     render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                             <FormControl>
                                                                                 <SelectTrigger className="w-[180px]">
                                                                                     <SelectValue placeholder="Select Direction" />
                                                                                 </SelectTrigger>
                                                                             </FormControl>
                                                                             <SelectContent>
-                                                                                <SelectItem value="">-</SelectItem>
+                                                                                <SelectItem value="none">-</SelectItem>
                                                                                 <SelectItem value="consolidation">Consolidation</SelectItem>
                                                                                 <SelectItem value="sweep-up">Sweep Up</SelectItem>
                                                                                 <SelectItem value="sweep-down">Sweep Down</SelectItem>
@@ -526,5 +536,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
