@@ -54,9 +54,13 @@ export function RecentTrades() {
                                 </div>
                                 <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>
                             </div>
-                            <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss >= 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
-                                {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                            </p>
+                            {trade.profitOrLoss !== 0 ? (
+                                <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss > 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
+                                    {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                </p>
+                            ) : (
+                                <p className="text-sm text-muted-foreground text-right min-w-[80px]">No Trade</p>
+                            )}
                         </li>
                     ))}
                 </ul>
