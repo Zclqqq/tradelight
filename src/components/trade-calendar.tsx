@@ -155,7 +155,7 @@ export function TradeCalendar() {
                 pnlData && pnlData.pnl === 0 && "hover:bg-muted-foreground/10"
               )}
             >
-              <div className="pb-[75%]"></div>
+              <div className="pb-[65%]"></div>
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
