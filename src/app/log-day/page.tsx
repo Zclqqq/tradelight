@@ -26,7 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none", ""]),
+  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none"]),
 });
 
 const tradeSchema = z.object({
@@ -56,7 +56,7 @@ const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
 
 const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
-    const [isOpen, setIsOpen] = React.useState(true);
+    const [isOpen, setIsOpen] = React.useState(false);
 
     return (
         <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
@@ -87,7 +87,7 @@ export default function LogDayPage() {
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-    const defaultSessions = sessionOptions.map(name => ({ sessionName: name, direction: "" as const }));
+    const defaultSessions = sessionOptions.map(name => ({ sessionName: name, direction: "none" as const }));
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -466,7 +466,7 @@ export default function LogDayPage() {
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
-                                                                    </SelectTrigger>
+                                                                    </Trigger>
                                                                 </FormControl>
                                                                 <SelectContent>
                                                                     {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -536,7 +536,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
