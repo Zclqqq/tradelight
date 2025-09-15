@@ -63,7 +63,7 @@ const TradeDataField = ({ label, children, actionButton }: { label: string, chil
                 <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
             </CollapsibleTrigger>
             <CollapsibleContent>
-                {actionButton && <div className="flex justify-end">{actionButton}</div>}
+                {actionButton && <div className="flex justify-end pt-2">{actionButton}</div>}
                 <div className="mt-2 space-y-2">
                     {children}
                 </div>
@@ -233,18 +233,18 @@ export default function LogDayPage() {
                                             <Input
                                                 ref={pnlInputRef}
                                                 type="number"
-                                                defaultValue={totalPnl}
+                                                defaultValue={fields[0]?.pnl ?? totalPnl}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
                                                 className={cn(
                                                     `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                    totalPnl >= 0 ? 'text-green-500' : 'text-red-500'
+                                                    (fields[0]?.pnl ?? totalPnl) >= 0 ? 'text-green-500' : 'text-red-500'
                                                 )}
                                             />
                                         ) : (
-                                            <p className={`text-4xl font-bold font-headline ${totalPnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                                {totalPnl.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                            <p className={`text-4xl font-bold font-headline ${(fields[0]?.pnl ?? totalPnl) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                                {(fields[0]?.pnl ?? totalPnl).toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                             </p>
                                         )}
                                     </CardContent>
@@ -376,7 +376,7 @@ export default function LogDayPage() {
                                                 >
                                                     {sessionFields.map((field, index) => {
                                                         const selectedSessions = watchedSessions?.map(s => s.sessionName) || [];
-                                                        const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === field.sessionName);
+                                                        const availableOptions = sessionOptions.filter(opt => !selectedSessions.includes(opt) || opt === watchedSessions?.[index]?.sessionName);
                                                         
                                                         return (
                                                             <div key={field.id} className="flex gap-2 items-center">
@@ -501,6 +501,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
