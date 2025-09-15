@@ -91,7 +91,6 @@ export function TradeCalendar() {
     calendarWeeks.push(days.slice(i, i + 7));
   }
 
-  // If the last week is completely outside the current month, and has no trades, don't show it.
   const lastWeek = calendarWeeks[calendarWeeks.length - 1];
   if (lastWeek && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
     calendarWeeks.pop();
@@ -141,16 +140,75 @@ export function TradeCalendar() {
         ))}
       </div>
       <div className="grid grid-cols-7 border-l border-border/20">
-        {calendarDays.map((day) => {
+        {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
           let glowClass = "";
           if (pnlData) {
-            glowClass = pnlData.pnl > 0 
-              ? "shadow-[0_0_8px_theme(colors.chart.1)] ring-1 ring-chart-1" 
-              : "shadow-[0_0_8px_theme(colors.destructive)] ring-1 ring-destructive";
+            const hasNeighbor = {
+              top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')],
+              bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')],
+              left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')],
+              right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')],
+            };
+            const color = pnlData.pnl > 0 ? 'var(--chart-1)' : 'var(--destructive)';
+            
+            const shadows = [
+              !hasNeighbor.top && `0 -2px 5px -2px hsl(${color})`,
+              !hasNeighbor.bottom && `0 2px 5px -2px hsl(${color})`,
+              !hasNeighbor.left && `-2px 0 5px -2px hsl(${color})`,
+              !hasNeighbor.right && `2px 0 5px -2px hsl(${color})`,
+            ].filter(Boolean).join(', ');
+
+            glowClass = `ring-1 ${pnlData.pnl > 0 ? 'ring-chart-1' : 'ring-destructive'}`;
+
+            return (
+              <div
+                key={day.toString()}
+                onClick={() => isCurrentMonth && handleDayClick(day)}
+                className={cn(
+                  "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
+                  isCurrentMonth && "cursor-pointer",
+                  isCurrentMonth && !pnlData && "hover:bg-accent/50",
+                  !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                  pnlData && "z-10",
+                   glowClass
+                )}
+                style={{ boxShadow: shadows }}
+              >
+                {isCurrentMonth && (
+                  <>
+                    <time
+                      dateTime={format(day, "yyyy-MM-dd")}
+                      className={cn(
+                        "font-semibold text-[10px] ml-auto z-20",
+                        isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
+                      )}
+                    >
+                      {format(day, "d")}
+                    </time>
+  
+                    {pnlData ? (
+                      <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-20">
+                        {pnlData.pnl !== 0 ? (
+                          <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                              {pnlData.pnl.toLocaleString("en-US", {
+                                style: "currency",
+                                currency: "USD",
+                                maximumFractionDigits: 0,
+                              })}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-[10px]">No Trade</span>
+                        )}
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            );
           }
 
           return (
@@ -158,12 +216,10 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-24",
+                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                pnlData && "z-10",
-                glowClass
               )}
             >
               {isCurrentMonth && (
