@@ -61,11 +61,9 @@ const TradeDataField = ({ label, children, actionButton }: { label: string, chil
             <div className="flex items-center justify-between">
                 <CollapsibleTrigger className="flex items-center justify-between w-full group">
                     <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                    <div className="flex items-center">
-                        {actionButton}
-                        <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
-                    </div>
+                    <ChevronDown className="h-4 w-4 ml-2 transition-transform group-data-[state=open]:rotate-180" />
                 </CollapsibleTrigger>
+                {actionButton}
             </div>
             <CollapsibleContent>
                 <div className="mt-3">
@@ -373,7 +371,7 @@ export default function LogDayPage() {
                                                 <TradeDataField 
                                                     label="Sessions"
                                                     actionButton={
-                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-0" onClick={(e) => { e.stopPropagation(); appendSession({ sessionName: '', direction: 'consolidation' }); }}>
+                                                        <Button type="button" variant="ghost" size="sm" className="text-primary hover:bg-primary/10 hover:text-primary h-auto p-1 -mr-1" onClick={(e) => { e.stopPropagation(); appendSession({ sessionName: '', direction: 'consolidation' }); }}>
                                                             <Plus className="h-4 w-4" />
                                                         </Button>
                                                     }
