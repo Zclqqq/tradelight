@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, ChevronDown } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, ChevronDown, X, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +22,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 
 const sessionTradeSchema = z.object({
@@ -90,6 +91,35 @@ export default function LogDayPage() {
     const [isEditingPnl, setIsEditingPnl] = React.useState(false);
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    
+    const [models, setModels] = React.useState<string[]>([]);
+    const [popoverOpen, setPopoverOpen] = React.useState(false);
+    const [newModel, setNewModel] = React.useState('');
+
+    React.useEffect(() => {
+        const savedModels = localStorage.getItem('trade-models');
+        if (savedModels) {
+            setModels(JSON.parse(savedModels));
+        }
+    }, []);
+
+    const addModel = (model: string) => {
+        const updatedModels = [...models, model];
+        setModels(updatedModels);
+        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
+        form.setValue('trades.0.model', model);
+        setNewModel('');
+        setPopoverOpen(false);
+    };
+
+    const deleteModel = (modelToDelete: string) => {
+        const updatedModels = models.filter(m => m !== modelToDelete);
+        setModels(updatedModels);
+        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
+        if (form.getValues('trades.0.model') === modelToDelete) {
+            form.setValue('trades.0.model', '');
+        }
+    };
 
     const defaultSessions = sessionOptions.map(name => ({ sessionName: name, direction: "none" as const }));
 
@@ -287,6 +317,10 @@ export default function LogDayPage() {
             pnlInputRef.current.select();
         }
     }, [isEditingPnl]);
+    
+    const filteredModels = newModel
+        ? models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()))
+        : models;
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -485,10 +519,61 @@ export default function LogDayPage() {
                                             
                                             <div className="space-y-0">
                                                  <TradeDataField label="Model">
-                                                     <FormField
+                                                    <FormField
                                                         control={form.control}
                                                         name="trades.0.model"
-                                                        render={({ field }) => <Input placeholder="e.g. AM-Session-Continuation" {...field} />}
+                                                        render={({ field }) => (
+                                                            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
+                                                                    >
+                                                                        {field.value || "Select a model"}
+                                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[300px] p-0">
+                                                                    <div className="p-2">
+                                                                        <Input 
+                                                                            placeholder="Search or create new..."
+                                                                            value={newModel}
+                                                                            onChange={(e) => setNewModel(e.target.value)}
+                                                                        />
+                                                                    </div>
+                                                                    <ScrollArea className="h-[200px]">
+                                                                        {filteredModels.map(model => (
+                                                                            <div key={model} className="flex items-center justify-between p-2 hover:bg-accent">
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className="flex-1 text-left text-sm"
+                                                                                    onClick={() => {
+                                                                                        form.setValue('trades.0.model', model);
+                                                                                        setPopoverOpen(false);
+                                                                                    }}
+                                                                                >
+                                                                                    {model}
+                                                                                </button>
+                                                                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteModel(model)}>
+                                                                                    <X className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </div>
+                                                                        ))}
+                                                                        {filteredModels.length === 0 && newModel && (
+                                                                            <div className="p-2 text-center text-sm text-muted-foreground">No models found.</div>
+                                                                        )}
+                                                                    </ScrollArea>
+                                                                    {newModel && !models.map(m => m.toLowerCase()).includes(newModel.toLowerCase()) && (
+                                                                        <div className="p-2 border-t border-border/20">
+                                                                            <Button type="button" className="w-full" onClick={() => addModel(newModel)}>
+                                                                                Create "{newModel}"
+                                                                            </Button>
+                                                                        </div>
+                                                                    )}
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        )}
                                                     />
                                                 </TradeDataField>
                                                 <TradeDataField label="Entry / Exit Time">
@@ -594,3 +679,4 @@ export default function LogDayPage() {
     </div>
   );
 }
+
