@@ -55,20 +55,15 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
 
-const TradeDataField = ({ label, children, actionButton }: { label: string, children: React.ReactNode, actionButton?: React.ReactNode }) => {
+const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     return (
         <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
-            <div className="flex items-center justify-between">
-                <div
-                    className="flex items-center justify-between w-full group cursor-pointer"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                    <ChevronDown className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-180")} />
-                </div>
-            </div>
+            <CollapsibleTrigger className="flex items-center justify-between w-full group cursor-pointer">
+                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
+                <ChevronDown className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-180")} />
+            </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="mt-2 space-y-2">
                     {children}
