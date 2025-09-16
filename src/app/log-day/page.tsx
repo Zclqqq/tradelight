@@ -127,7 +127,7 @@ export default function LogDayPage() {
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
         defaultValues: {
-            date: new Date(),
+            date: new Date('2024-01-01'),
             notes: "",
             trades: [{ 
                 instrument: "NQ", 
@@ -663,7 +663,7 @@ export default function LogDayPage() {
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
-                                                                    </SelectTrigger>
+                                                                    </Trigger>
                                                                 </FormControl>
                                                                 <SelectContent>
                                                                     {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -684,3 +684,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    

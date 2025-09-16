@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 interface DailyPnl {
   pnl: number;
   tradeCount: number;
+  isLogged: boolean;
 }
 
 export function TradeCalendar() {
@@ -41,14 +42,21 @@ export function TradeCalendar() {
           const allLogs: DayLog[] = JSON.parse(allLogsRaw);
           const pnl: Record<string, DailyPnl> = {};
           allLogs.forEach((log) => {
+            if (!log.date) return;
             const logDate = new Date(log.date);
             const dayKey = format(logDate, "yyyy-MM-dd");
+            
             if (!pnl[dayKey]) {
-              pnl[dayKey] = { pnl: 0, tradeCount: 0 };
+              pnl[dayKey] = { pnl: 0, tradeCount: 0, isLogged: false };
             }
-            const dayPnl = log.trades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
+
+            const dayPnl = log.trades?.reduce((sum, trade) => sum + (trade.pnl || 0), 0) || 0;
+            const hasNotes = !!log.notes;
+            const hasImage = log.trades?.some(t => !!t.analysisImage);
+            
             pnl[dayKey].pnl += dayPnl;
-            pnl[dayKey].tradeCount += log.trades.length;
+            pnl[dayKey].tradeCount += log.trades?.length || 0;
+            pnl[dayKey].isLogged = true;
           });
           setDailyPnl(pnl);
         } catch (error) {
@@ -147,14 +155,14 @@ export function TradeCalendar() {
           const isCurrentMonth = isSameMonth(day, currentDate);
           
           let dayStyles: React.CSSProperties = {};
-          if (pnlData) {
-            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : pnlData.pnl < 0 ? 'hsl(var(--destructive))' : 'hsl(var(--foreground))';
+          if (pnlData && pnlData.pnl !== 0) {
+            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
             
               const hasNeighbor = {
-                top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')] !== undefined,
-                bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')] !== undefined,
-                left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')] !== undefined,
-                right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')] !== undefined,
+                top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')]?.pnl,
+                bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')]?.pnl,
+                left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')]?.pnl,
+                right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')]?.pnl,
               };
             
             const shadows = [
@@ -192,7 +200,7 @@ export function TradeCalendar() {
                     {format(day, "d")}
                   </time>
 
-                  {pnlData ? (
+                  {pnlData?.isLogged ? (
                     <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-10">
                       {pnlData.pnl !== 0 ? (
                         <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
