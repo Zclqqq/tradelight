@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Cormorant Garamond"', 'serif'],
-        headline: ['"Cormorant Garamond"', 'serif'],
+        body: ['"Inter"', 'sans-serif'],
+        headline: ['"Inter"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
