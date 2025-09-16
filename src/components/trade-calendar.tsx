@@ -203,7 +203,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-foreground text-[10px]">No Trade</span>
+                        <span className="text-muted-foreground font-normal text-[10px]">No Trade</span>
                       )}
                     </div>
                   ) : null}
@@ -216,4 +216,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
