@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Inter"', 'sans-serif'],
-        headline: ['"Playfair Display"', 'serif'],
+        body: ['"Lora"', 'serif'],
+        headline: ['"Lora"', 'serif'],
         code: ['monospace'],
       },
       colors: {
