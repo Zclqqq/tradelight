@@ -69,7 +69,7 @@ export default {
       },
       borderRadius: {
         lg: '0px',
-        md: '0px',
+        md: '8px',
         sm: '0px',
       },
       keyframes: {
