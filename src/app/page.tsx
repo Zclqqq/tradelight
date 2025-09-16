@@ -56,7 +56,7 @@ export default function Home() {
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
             <CandlestickChart className="h-6 w-6" />
-            <h1 className="text-2xl font-bold font-headline tracking-tighter">
+            <h1 className="text-2xl font-bold tracking-tighter">
               TradeLight
             </h1>
         </div>
@@ -88,7 +88,7 @@ export default function Home() {
                     value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
                   />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-1">
                 <StatCard 
                     title="Win Rate" 
                     value={`${stats.winRate.toFixed(0)}%`}
