@@ -158,10 +158,10 @@ export function TradeCalendar() {
               };
             
             const shadows = [
-              !hasNeighbor.top && `inset 0 2px 8px -4px ${color}`,
-              !hasNeighbor.bottom && `inset 0 -2px 8px -4px ${color}`,
-              !hasNeighbor.left && `inset 2px 0 8px -4px ${color}`,
-              !hasNeighbor.right && `inset -2px 0 8px -4px ${color}`,
+              !hasNeighbor.top && `inset 0 4px 10px -4px ${color}`,
+              !hasNeighbor.bottom && `inset 0 -4px 10px -4px ${color}`,
+              !hasNeighbor.left && `inset 4px 0 10px -4px ${color}`,
+              !hasNeighbor.right && `inset -4px 0 10px -4px ${color}`,
             ].filter(Boolean).join(', ');
 
             dayStyles = { boxShadow: shadows };
