@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -464,7 +465,7 @@ export default function LogDayPage() {
                                                                             </FormControl>
                                                                             <FormLabel
                                                                                 htmlFor={opt}
-                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-md border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
+                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
                                                                             >
                                                                                 {opt}
                                                                             </FormLabel>

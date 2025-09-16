@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Montserrat"', 'sans-serif'],
-        headline: ['"Montserrat"', 'sans-serif'],
+        body: ['"Cormorant Garamond"', 'serif'],
+        headline: ['"Cormorant Garamond"', 'serif'],
         code: ['monospace'],
       },
       colors: {
@@ -68,9 +68,9 @@ export default {
         },
       },
       borderRadius: {
-        lg: '0.5rem',
-        md: 'calc(0.5rem - 2px)',
-        sm: 'calc(0.5rem - 4px)',
+        lg: '0px',
+        md: '0px',
+        sm: '0px',
       },
       keyframes: {
         'accordion-down': {
