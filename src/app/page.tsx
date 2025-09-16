@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -9,6 +10,7 @@ import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
+import { ProgressTracker } from "@/components/progress-tracker";
 
 const quotes = [
     "The secret of getting ahead is getting started.",
@@ -69,11 +71,11 @@ export default function Home() {
       <main className="flex-1 p-4 overflow-auto">
         <div className="mx-auto w-full max-w-7xl">
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-3">
                 <TradeCalendar />
               </div>
-              <div className="col-span-1">
+              <div className="md:col-span-1">
                 <RecentTrades />
               </div>
               <div className="col-span-1">
@@ -93,6 +95,9 @@ export default function Home() {
                     title="Win Rate" 
                     value={`${stats.winRate.toFixed(0)}%`}
                   />
+              </div>
+              <div className="col-span-1">
+                <ProgressTracker />
               </div>
             </div>
           </div>
