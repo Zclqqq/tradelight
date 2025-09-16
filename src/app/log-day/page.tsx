@@ -54,7 +54,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
-const instrumentOptions = ["NQ", "ES", "YM", "CL", "GC"];
+const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -382,6 +382,38 @@ export default function LogDayPage() {
                                             <div className="py-3 border-b border-border/20">
                                                 <FormField
                                                     control={form.control}
+                                                    name="trades.0.instrument"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <RadioGroup
+                                                                    onValueChange={field.onChange}
+                                                                    value={field.value}
+                                                                    className="flex items-center space-x-2"
+                                                                >
+                                                                    {instrumentOptions.map((opt) => (
+                                                                        <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
+                                                                            <FormControl>
+                                                                                <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
+                                                                            </FormControl>
+                                                                            <FormLabel
+                                                                                htmlFor={opt}
+                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-md border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
+                                                                            >
+                                                                                {opt}
+                                                                            </FormLabel>
+                                                                        </FormItem>
+                                                                    ))}
+                                                                </RadioGroup>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="py-3 border-b border-border/20">
+                                                <FormField
+                                                    control={form.control}
                                                     name="date"
                                                     render={({ field }) => (
                                                         <FormItem className="flex flex-col space-y-2">
@@ -424,39 +456,6 @@ export default function LogDayPage() {
                                             </div>
                                             
                                             <div className="space-y-0">
-                                                <div className="py-3 border-b border-border/20">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.instrument"
-                                                        render={({ field }) => (
-                                                            <FormItem className="space-y-3">
-                                                                <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Instrument</FormLabel>
-                                                                <FormControl>
-                                                                    <RadioGroup
-                                                                        onValueChange={field.onChange}
-                                                                        defaultValue={field.value}
-                                                                        className="flex items-center space-x-2"
-                                                                    >
-                                                                        {instrumentOptions.map((opt) => (
-                                                                            <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
-                                                                                <FormControl>
-                                                                                    <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                                                                                </FormControl>
-                                                                                <FormLabel
-                                                                                    htmlFor={opt}
-                                                                                    className="flex h-8 cursor-pointer items-center justify-center rounded-md border border-input bg-transparent px-3 py-2 text-sm font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
-                                                                                >
-                                                                                    {opt}
-                                                                                </FormLabel>
-                                                                            </FormItem>
-                                                                        ))}
-                                                                    </RadioGroup>
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-1">
                                                         {(form.watch('trades.0.sessions') || []).map((_, index) => (
