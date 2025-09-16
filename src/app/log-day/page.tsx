@@ -404,7 +404,7 @@ export default function LogDayPage() {
                                         <CardTitle className="font-headline text-base">Trade Data</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-4 pt-0">
-                                            <div className="py-3 border-b border-border/20">
+                                            <div className="py-3">
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.instrument"
@@ -436,7 +436,7 @@ export default function LogDayPage() {
                                                     )}
                                                 />
                                             </div>
-                                            <div className="py-3 border-b border-border/20">
+                                            <div className="py-3 border-t border-border/20">
                                                 <FormField
                                                     control={form.control}
                                                     name="date"
