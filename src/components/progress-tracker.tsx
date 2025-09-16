@@ -95,7 +95,7 @@ export function ProgressTracker() {
     };
 
     return (
-        <Card className="h-full">
+        <Card className="h-28">
             <CardHeader>
                 <CardTitle className="font-headline text-lg">Road to Funded</CardTitle>
             </CardHeader>

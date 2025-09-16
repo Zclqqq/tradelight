@@ -11,7 +11,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, children }: StatCardProps) {
   return (
-    <Card className="text-center h-full flex flex-col justify-center">
+    <Card className="text-center h-28 flex flex-col justify-center">
       <CardHeader className="p-4 pb-2">
         <CardTitle className="font-headline text-sm font-medium text-muted-foreground">{title}</CardTitle>
       </CardHeader>
