@@ -75,10 +75,10 @@ export function ProgressTracker() {
         }
         
         const newGoals: Goal[] = [
-            { name: "Log 30 Days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 Days` },
-            { name: "Log 5 Trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 Trades` },
-            { name: "Profitable Model", isCompleted: profitableModel, description: `Best: ${bestWinRate.toFixed(0)}% Win Rate` },
-            { name: "Pass Account", isCompleted: passAccount, description: `Top P&L: ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
+            { name: "Log 30 Days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
+            { name: "Log 5 Trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
+            { name: "Profitable Model", isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
+            { name: "Pass Account", isCompleted: passAccount, description: `Highest model profit is ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
         ];
 
         setGoals(newGoals);
