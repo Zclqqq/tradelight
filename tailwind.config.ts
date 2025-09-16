@@ -12,7 +12,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['"Inter"', 'sans-serif'],
-        headline: ['"Inter"', 'sans-serif'],
+        headline: ['"Playfair Display"', 'serif'],
         code: ['monospace'],
       },
       colors: {
@@ -68,9 +68,9 @@ export default {
         },
       },
       borderRadius: {
-        lg: '0rem',
-        md: '0rem',
-        sm: '0rem',
+        lg: '0.5rem',
+        md: 'calc(0.5rem - 2px)',
+        sm: 'calc(0.5rem - 4px)',
       },
       keyframes: {
         'accordion-down': {

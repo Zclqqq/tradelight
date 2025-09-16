@@ -10,6 +10,7 @@ import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
+import { ProgressCard } from "@/components/progress-card";
 
 const quotes = [
     "The secret of getting ahead is getting started.",
@@ -56,11 +57,12 @@ export default function Home() {
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
+            <CandlestickChart className="h-6 w-6" />
             <h1 className="text-2xl font-bold font-headline tracking-tighter">
               TradeLight
             </h1>
         </div>
-        <p className="text-sm font-light text-muted-foreground italic hidden md:block">"{quote}"</p>
+        <p className="text-sm font-light text-muted-foreground italic absolute left-1/2 -translate-x-1/2 hidden md:block">"{quote}"</p>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
@@ -93,6 +95,9 @@ export default function Home() {
                     title="Win Rate" 
                     value={`${stats.winRate.toFixed(0)}%`}
                   />
+              </div>
+               <div className="col-span-1">
+                <ProgressCard />
               </div>
             </div>
           </div>
