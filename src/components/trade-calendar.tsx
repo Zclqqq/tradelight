@@ -56,7 +56,7 @@ export function TradeCalendar() {
             
             pnl[dayKey].pnl += dayPnl;
             pnl[dayKey].tradeCount += log.trades?.length || 0;
-            pnl[dayKey].isLogged = true;
+            pnl[dayKey].isLogged = log.trades?.length > 0 || hasNotes || hasImage;
           });
           setDailyPnl(pnl);
         } catch (error) {
@@ -155,25 +155,15 @@ export function TradeCalendar() {
           const isCurrentMonth = isSameMonth(day, currentDate);
           
           let dayStyles: React.CSSProperties = {};
-          if (pnlData && pnlData.pnl !== 0) {
-            const color = pnlData.pnl > 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
-            
-              const hasNeighbor = {
-                top: index > 6 && dailyPnl[format(calendarDays[index-7], 'yyyy-MM-dd')]?.pnl,
-                bottom: index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], 'yyyy-MM-dd')]?.pnl,
-                left: index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], 'yyyy-MM-dd')]?.pnl,
-                right: index % 7 !== 6 && dailyPnl[format(calendarDays[index+1], 'yyyy-MM-dd')]?.pnl,
-              };
-            
-            const shadows = [
-              !hasNeighbor.top && `inset 0 4px 10px -4px ${color}`,
-              !hasNeighbor.bottom && `inset 0 -4px 10px -4px ${color}`,
-              !hasNeighbor.left && `inset 4px 0 10px -4px ${color}`,
-              !hasNeighbor.right && `inset -4px 0 10px -4px ${color}`,
-            ].filter(Boolean).join(', ');
-
-            dayStyles = { boxShadow: shadows };
-          }
+           if (pnlData?.isLogged) {
+                if (pnlData.pnl > 0) {
+                    dayStyles.borderTop = '2px solid hsl(var(--chart-1))';
+                } else if (pnlData.pnl < 0) {
+                    dayStyles.borderTop = '2px solid hsl(var(--destructive))';
+                } else {
+                    dayStyles.borderTop = '2px solid hsl(var(--border))';
+                }
+            }
 
 
           return (
@@ -183,7 +173,7 @@ export function TradeCalendar() {
               className={cn(
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
-                isCurrentMonth && !pnlData && "hover:bg-accent/50",
+                isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30"
               )}
               style={dayStyles}
@@ -201,9 +191,9 @@ export function TradeCalendar() {
                   </time>
 
                   {pnlData?.isLogged ? (
-                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-10">
+                    <div className="absolute inset-0 flex items-center justify-center font-bold text-sm z-10 p-1">
                       {pnlData.pnl !== 0 ? (
-                        <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                        <span className={cn('text-center', pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
                             {pnlData.pnl.toLocaleString("en-US", {
                               style: "currency",
                               currency: "USD",
@@ -211,7 +201,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground font-normal text-[10px]">No Trade</span>
+                        <span className="text-muted-foreground font-normal text-[10px] text-center">No Trade</span>
                       )}
                     </div>
                   ) : null}
@@ -224,3 +214,4 @@ export function TradeCalendar() {
     </div>
   );
 }
+
