@@ -3,26 +3,18 @@
 
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, Circle, XCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { DayLog } from '@/app/log-day/page';
 
 interface Goal {
     name: string;
     isCompleted: boolean;
     description: string;
+    shortName: string;
 }
-
-const goalsConfig = [
-    { name: "Log 30 Days", key: "log30Days" },
-    { name: "Log 5 Trades", key: "log5Trades" },
-    { name: "Profitable Model", key: "profitableModel" },
-    { name: "Pass Account", key: "passAccount" },
-];
 
 export function ProgressTracker() {
     const [goals, setGoals] = React.useState<Goal[]>([]);
-    const [progress, setProgress] = React.useState(0);
 
     React.useEffect(() => {
         const allLogsRaw = localStorage.getItem('all-trades');
@@ -75,46 +67,43 @@ export function ProgressTracker() {
         }
         
         const newGoals: Goal[] = [
-            { name: "Log 30 Days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
-            { name: "Log 5 Trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
-            { name: "Profitable Model", isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
-            { name: "Pass Account", isCompleted: passAccount, description: `Highest model profit is ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
+            { name: "Log 30 Days", shortName: "Log 30 days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
+            { name: "Log 5 Trades", shortName: "Log 5 trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
+            { name: "Profitable Model", shortName: "PF model", isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
+            { name: "Pass Account", shortName: "Pass", isCompleted: passAccount, description: `Highest model profit is ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
         ];
 
         setGoals(newGoals);
-        const completedGoals = newGoals.filter(g => g.isCompleted).length;
-        setProgress((completedGoals / newGoals.length) * 100);
-
     }, []);
 
-    const StatusIcon = ({ isCompleted }: { isCompleted: boolean }) => {
-        if (isCompleted) {
-            return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-        }
-        return <Circle className="h-4 w-4 text-muted-foreground/50" />;
-    };
+    if (goals.length === 0) {
+        return (
+             <Card className="h-28 flex items-center justify-center">
+                 <p className="text-muted-foreground">Loading Progress...</p>
+             </Card>
+        )
+    }
 
     return (
-        <Card className="h-28">
-            <CardHeader>
-                <CardTitle className="font-headline text-lg">Road to Funded</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    <Progress value={progress} indicatorClassName={progress === 100 ? "bg-green-500" : ""} />
-                    <ul className="space-y-3 text-sm">
-                        {goals.map(goal => (
-                            <li key={goal.name} className="flex items-start gap-3">
-                                <StatusIcon isCompleted={goal.isCompleted} />
-                                <div className='flex flex-col -mt-0.5'>
-                                  <span className="font-medium">{goal.name}</span>
-                                  <span className="text-xs text-muted-foreground">{goal.description}</span>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </CardContent>
+        <Card className="h-28 flex items-center justify-center p-6">
+            <div className="flex items-center w-full">
+                {goals.map((goal, index) => (
+                    <React.Fragment key={goal.name}>
+                        <span className={cn(
+                            "text-sm font-medium",
+                            goal.isCompleted ? "text-primary" : "text-muted-foreground/60"
+                        )}>
+                            {goal.shortName}
+                        </span>
+                        {index < goals.length - 1 && (
+                             <div className={cn(
+                                "flex-1 h-px mx-4",
+                                goal.isCompleted ? "bg-primary" : "bg-muted-foreground/30"
+                            )} />
+                        )}
+                    </React.Fragment>
+                ))}
+            </div>
         </Card>
     );
 }
