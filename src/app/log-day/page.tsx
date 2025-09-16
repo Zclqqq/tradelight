@@ -25,7 +25,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none"]),
+  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none", "expansion-up", "expansion-down"]),
 });
 
 const tradeSchema = z.object({
@@ -443,6 +443,8 @@ export default function LogDayPage() {
                                                                                 <SelectItem value="sweep-up">Sweep Up</SelectItem>
                                                                                 <SelectItem value="sweep-down">Sweep Down</SelectItem>
                                                                                 <SelectItem value="sweep-both">Sweep Both</SelectItem>
+                                                                                <SelectItem value="expansion-up">Expansion Up</SelectItem>
+                                                                                <SelectItem value="expansion-down">Expansion Down</SelectItem>
                                                                             </SelectContent>
                                                                         </Select>
                                                                     )}
