@@ -40,6 +40,7 @@ export function ProgressTracker() {
         // 3. Profitable Model
         const models = new Map<string, { total: number, wins: number, pnl: number }>();
         allTrades.forEach(trade => {
+            if (!trade.model) return;
             if (!models.has(trade.model)) {
                 models.set(trade.model, { total: 0, wins: 0, pnl: 0 });
             }
@@ -74,10 +75,10 @@ export function ProgressTracker() {
         }
         
         const newGoals: Goal[] = [
-            { name: "Log 30 Days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
-            { name: "Log 5 Trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
-            { name: "Profitable Model", isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
-            { name: "Pass Account", isCompleted: passAccount, description: `Highest model profit is ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}.` }
+            { name: "Log 30 Days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 Days` },
+            { name: "Log 5 Trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 Trades` },
+            { name: "Profitable Model", isCompleted: profitableModel, description: `Best: ${bestWinRate.toFixed(0)}% Win Rate` },
+            { name: "Pass Account", isCompleted: passAccount, description: `Top P&L: ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
         ];
 
         setGoals(newGoals);
@@ -105,7 +106,7 @@ export function ProgressTracker() {
                         {goals.map(goal => (
                             <li key={goal.name} className="flex items-start gap-3">
                                 <StatusIcon isCompleted={goal.isCompleted} />
-                                <div className='flex flex-col'>
+                                <div className='flex flex-col -mt-0.5'>
                                   <span className="font-medium">{goal.name}</span>
                                   <span className="text-xs text-muted-foreground">{goal.description}</span>
                                 </div>
