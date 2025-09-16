@@ -55,6 +55,13 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
+const instrumentPointValues: { [key: string]: number } = {
+    "MNQ": 2,
+    "NQ": 20,
+    "ES": 50,
+    "MES": 5,
+};
+
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -111,6 +118,24 @@ export default function LogDayPage() {
         control: form.control,
         name: "trades",
     });
+
+    const watchedInstrument = form.watch("trades.0.instrument");
+    const watchedPoints = form.watch("trades.0.totalPoints");
+    const watchedContracts = form.watch("trades.0.contracts");
+
+    React.useEffect(() => {
+        const pointValue = instrumentPointValues[watchedInstrument] || 0;
+        const points = watchedPoints || 0;
+        const contracts = watchedContracts || 0;
+        
+        if (points !== 0 && contracts !== 0) {
+            const calculatedPnl = points * pointValue * contracts;
+            if (form.getValues("trades.0.pnl") !== calculatedPnl) {
+                form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
+            }
+        }
+    }, [watchedInstrument, watchedPoints, watchedContracts, form]);
+
 
     React.useEffect(() => {
         const dateParam = searchParams.get('date');
