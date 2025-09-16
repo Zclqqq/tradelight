@@ -321,6 +321,10 @@ export default function LogDayPage() {
     const filteredModels = newModel
         ? models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()))
         : models;
+        
+    const pnlValue = fields[0]?.pnl ?? totalPnl;
+    const pnlColorClass = pnlValue > 0 ? 'text-green-500' : pnlValue < 0 ? 'text-red-500' : 'text-foreground';
+
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -353,18 +357,18 @@ export default function LogDayPage() {
                                             <Input
                                                 ref={pnlInputRef}
                                                 type="number"
-                                                defaultValue={fields[0]?.pnl ?? totalPnl}
+                                                defaultValue={pnlValue}
                                                 onBlur={handlePnlBlur}
                                                 onKeyDown={handlePnlKeyDown}
                                                 className={cn(
                                                     `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                    (fields[0]?.pnl ?? totalPnl) >= 0 ? 'text-green-500' : 'text-red-500'
+                                                    pnlColorClass
                                                 )}
                                             />
                                         ) : (
-                                            <p className={`text-4xl font-bold font-headline ${(fields[0]?.pnl ?? totalPnl) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                                {(fields[0]?.pnl ?? totalPnl).toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                            <p className={cn(`text-4xl font-bold font-headline`, pnlColorClass)}>
+                                                {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                             </p>
                                         )}
                                     </CardContent>
@@ -679,4 +683,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
