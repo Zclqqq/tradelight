@@ -31,6 +31,7 @@ const sessionTradeSchema = z.object({
 
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
+  model: z.string().optional().default(""),
   pnl: z.coerce.number(),
   entryTime: z.string().optional().default(""),
   exitTime: z.string().optional().default(""),
@@ -104,6 +105,7 @@ export default function LogDayPage() {
                 analysisImage: "",
                 analysisText: "",
                 chartPerformance: "",
+                model: "",
                 entryTime: "",
                 exitTime: "",
                 contracts: 0,
@@ -149,6 +151,7 @@ export default function LogDayPage() {
             analysisImage: "",
             analysisText: "",
             chartPerformance: "",
+            model: "",
             entryTime: "",
             exitTime: "",
             contracts: 0,
@@ -481,6 +484,55 @@ export default function LogDayPage() {
                                             </div>
                                             
                                             <div className="space-y-0">
+                                                 <TradeDataField label="Model">
+                                                     <FormField
+                                                        control={form.control}
+                                                        name="trades.0.model"
+                                                        render={({ field }) => <Input placeholder="e.g. AM-Session-Continuation" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                                <TradeDataField label="Entry / Exit Time">
+                                                    <div className="flex justify-start gap-2">
+                                                        <FormField
+                                                            control={form.control}
+                                                            name="trades.0.entryTime"
+                                                            render={({ field }) => <Input type="time" {...field} />}
+                                                        />
+                                                        <FormField
+                                                            control={form.control}
+                                                            name="trades.0.exitTime"
+                                                            render={({ field }) => <Input type="time" {...field} />}
+                                                        />
+                                                    </div>
+                                                </TradeDataField>
+                                                <TradeDataField label="Contracts">
+                                                     <FormField
+                                                        control={form.control}
+                                                        name="trades.0.contracts"
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                                <TradeDataField label="Points">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="trades.0.totalPoints"
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                    />
+                                                </TradeDataField>
+                                                <TradeDataField label="TP / SL">
+                                                    <div className="flex gap-2">
+                                                         <FormField
+                                                            control={form.control}
+                                                            name="trades.0.tradeTp"
+                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                                        />
+                                                         <FormField
+                                                            control={form.control}
+                                                            name="trades.0.tradeSl"
+                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                                        />
+                                                    </div>
+                                                </TradeDataField>
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-1">
                                                         {(form.watch('trades.0.sessions') || []).map((_, index) => (
@@ -528,48 +580,6 @@ export default function LogDayPage() {
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                    />
-                                                </TradeDataField>
-                                                <TradeDataField label="Entry / Exit Time">
-                                                    <div className="flex justify-start gap-2">
-                                                        <FormField
-                                                            control={form.control}
-                                                            name="trades.0.entryTime"
-                                                            render={({ field }) => <Input type="time" {...field} />}
-                                                        />
-                                                        <FormField
-                                                            control={form.control}
-                                                            name="trades.0.exitTime"
-                                                            render={({ field }) => <Input type="time" {...field} />}
-                                                        />
-                                                    </div>
-                                                </TradeDataField>
-                                                <TradeDataField label="Contracts">
-                                                     <FormField
-                                                        control={form.control}
-                                                        name="trades.0.contracts"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
-                                                    />
-                                                </TradeDataField>
-                                                <TradeDataField label="TP / SL">
-                                                    <div className="flex gap-2">
-                                                         <FormField
-                                                            control={form.control}
-                                                            name="trades.0.tradeTp"
-                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
-                                                        />
-                                                         <FormField
-                                                            control={form.control}
-                                                            name="trades.0.tradeSl"
-                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
-                                                        />
-                                                    </div>
-                                                </TradeDataField>
-                                                <TradeDataField label="Points">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.totalPoints"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
                                                     />
                                                 </TradeDataField>
                                             </div>
