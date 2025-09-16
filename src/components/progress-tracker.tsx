@@ -10,7 +10,7 @@ interface Goal {
     name: string;
     isCompleted: boolean;
     description: string;
-    shortName: string;
+    shortName: React.ReactNode;
 }
 
 export function ProgressTracker() {
@@ -67,9 +67,9 @@ export function ProgressTracker() {
         }
         
         const newGoals: Goal[] = [
-            { name: "Log 30 Days", shortName: "Log 30 days", isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
-            { name: "Log 5 Trades", shortName: "Log 5 trades", isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
-            { name: "Profitable Model", shortName: "PF model", isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
+            { name: "Log 30 Days", shortName: <>Log<br/>30 days</>, isCompleted: log30Days, description: `${loggedDaysCount} / 30 days logged.` },
+            { name: "Log 5 Trades", shortName: <>Log<br/>5 trades</>, isCompleted: log5Trades, description: `${loggedTradesCount} / 5 trades logged.` },
+            { name: "Profitable Model", shortName: <>PF<br/>model</>, isCompleted: profitableModel, description: `Best model has a ${bestWinRate.toFixed(0)}% win rate.` },
             { name: "Pass Account", shortName: "Pass", isCompleted: passAccount, description: `Highest model profit is ${bestPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}` }
         ];
 
@@ -90,7 +90,7 @@ export function ProgressTracker() {
                 {goals.map((goal, index) => (
                     <React.Fragment key={goal.name}>
                         <span className={cn(
-                            "text-sm font-medium",
+                            "text-sm font-medium text-center",
                             goal.isCompleted ? "text-primary" : "text-muted-foreground/60"
                         )}>
                             {goal.shortName}
