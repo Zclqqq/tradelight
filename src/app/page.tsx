@@ -9,7 +9,6 @@ import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
-import { ProgressCard } from "@/components/progress-card";
 
 const quotes = [
     "The secret of getting ahead is getting started.",
@@ -89,14 +88,11 @@ export default function Home() {
                     value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
                   />
               </div>
-              <div className="col-span-1">
+              <div className="col-span-2">
                 <StatCard 
                     title="Win Rate" 
                     value={`${stats.winRate.toFixed(0)}%`}
                   />
-              </div>
-               <div className="col-span-1">
-                <ProgressCard />
               </div>
             </div>
           </div>
