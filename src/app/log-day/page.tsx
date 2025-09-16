@@ -52,7 +52,7 @@ const dayLogSchema = z.object({
 export type DayLog = z.infer<typeof dayLogSchema>;
 
 const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM"];
-const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP"];
+const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
