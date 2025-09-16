@@ -70,7 +70,7 @@ const TradeDataField = ({ label, children }: { label: string, children: React.Re
         <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="flex items-center justify-between w-full group cursor-pointer">
                 <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                <ChevronDown className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-180")} />
+                <Plus className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-45")} />
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="mt-2 space-y-2">
