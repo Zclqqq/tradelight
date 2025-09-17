@@ -622,7 +622,7 @@ export default function LogDayPage() {
                                                             render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
                                                         />
                                                     </div>
-ax                                                </TradeDataField>
+                                                </TradeDataField>
                                                 <TradeDataField label="Sessions">
                                                     <div className="space-y-1">
                                                         {(form.watch('trades.0.sessions') || []).map((_, index) => (
