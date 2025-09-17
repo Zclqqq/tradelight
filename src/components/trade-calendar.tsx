@@ -51,12 +51,13 @@ export function TradeCalendar() {
             }
 
             const dayPnl = log.trades?.reduce((sum, trade) => sum + (trade.pnl || 0), 0) || 0;
-            const hasNotes = !!log.notes;
             const hasImage = log.trades?.some(t => !!t.analysisImage);
             
             pnl[dayKey].pnl += dayPnl;
             pnl[dayKey].tradeCount += log.trades?.length || 0;
-            pnl[dayKey].isLogged = log.trades?.length > 0 || hasNotes || hasImage;
+            
+            // A day is considered logged if there's PNL, or if there's an image with no PNL ("No Trade" day).
+            pnl[dayKey].isLogged = dayPnl !== 0 || (hasImage && dayPnl === 0);
           });
           setDailyPnl(pnl);
         } catch (error) {
@@ -214,4 +215,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
