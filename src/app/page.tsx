@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { CandlestickChart } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -39,27 +39,29 @@ export default function Home() {
   }, []);
 
   React.useEffect(() => {
-      const allLogsRaw = localStorage.getItem('all-trades');
-      if (allLogsRaw) {
-          const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-          const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
+      if (typeof window !== 'undefined') {
+        const allLogsRaw = localStorage.getItem('all-trades');
+        if (allLogsRaw) {
+            const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+            const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
 
-          const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
-          const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
-          const avgWin = winningTrades.length > 0
-            ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
-            : 0;
-          const winRate = allTrades.length > 0 ? (winningTrades.length / allTrades.length) * 100 : 0;
-          
-          setStats({ netPnl, avgWin, winRate });
+            const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
+            const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
+            const avgWin = winningTrades.length > 0
+              ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
+              : 0;
+            const winRate = allTrades.length > 0 ? (winningTrades.length / allTrades.length) * 100 : 0;
+            
+            setStats({ netPnl, avgWin, winRate });
+        }
       }
-  }, []);
+  }, [isClient]);
 
   return (
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
-            <CandlestickChart className="h-6 w-6" />
+            <Logo className="h-6 w-6" />
             <h1 className="text-2xl font-bold tracking-tighter">
               TradeLight
             </h1>
