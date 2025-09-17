@@ -663,7 +663,7 @@ export default function LogDayPage() {
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
-                                                                    </Trigger>
+                                                                    </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
                                                                     {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -684,3 +684,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
