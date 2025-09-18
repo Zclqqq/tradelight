@@ -205,7 +205,7 @@ export default function LogDayPage() {
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, isPnlManuallySet, form.getValues, form.setValue]);
+    }, [watchedInstrument, watchedPoints, watchedContracts, isPnlManuallySet, form]);
 
 
     React.useEffect(() => {
@@ -346,7 +346,7 @@ export default function LogDayPage() {
                                                 <FormItem>
                                                     <FormControl>
                                                         <div className="relative">
-                                                             <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold font-headline", pnlColorClass)}>
+                                                            <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
@@ -365,6 +365,9 @@ export default function LogDayPage() {
                                                                     field.onChange(value === '' ? undefined : Number(value));
                                                                 }}
                                                                 onBlur={() => {
+                                                                    if(field.value === undefined) {
+                                                                        field.onChange(0);
+                                                                    }
                                                                     const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
                                                                     if (calculatedPnl === field.value) {
                                                                        setIsPnlManuallySet(false);
@@ -739,3 +742,6 @@ export default function LogDayPage() {
   );
 }
 
+
+
+    
