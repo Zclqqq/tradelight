@@ -29,7 +29,9 @@ import { useDebounce } from "use-debounce";
 
 const sessionTradeSchema = z.object({
   sessionName: z.string(),
-  direction: z.enum(["consolidation", "sweep-up", "sweep-down", "sweep-both", "none", "expansion-up", "expansion-down"]),
+  action: z.enum(["none", "consolidation", "displacement", "retracement", "reversal"]).default("none"),
+  direction: z.enum(["none", "up", "down"]).default("none"),
+  sweep: z.enum(["none", "high", "low", "both"]).default("none"),
 });
 
 const tradeSchema = z.object({
@@ -123,7 +125,12 @@ export default function LogDayPage() {
         }
     };
 
-    const defaultSessions = sessionOptions.map(name => ({ sessionName: name, direction: "none" as const }));
+    const defaultSessions = sessionOptions.map(name => ({
+      sessionName: name,
+      action: "none" as const,
+      direction: "none" as const,
+      sweep: "none" as const
+    }));
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -161,7 +168,7 @@ export default function LogDayPage() {
         
         const tradesWithFilteredSessions = values.trades.map(trade => ({
             ...trade,
-            sessions: trade.sessions?.filter(session => session.direction && session.direction !== "none")
+            sessions: trade.sessions?.filter(session => session.action && session.action !== "none")
         }));
         
         const dataToSave = {
@@ -236,11 +243,16 @@ export default function LogDayPage() {
             
             const savedTrade = parsedData.trades?.[0] || {};
             
-            const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s.direction]));
-            const fullSessions = sessionOptions.map(name => ({
-                sessionName: name,
-                direction: sessionMap.get(name) || "none",
-            }));
+            const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
+            const fullSessions = sessionOptions.map(name => {
+                const savedSession = sessionMap.get(name);
+                return {
+                    sessionName: name,
+                    action: savedSession?.action || "none",
+                    direction: savedSession?.direction || "none",
+                    sweep: savedSession?.sweep || "none",
+                };
+            });
 
             const tradeWithDefaults = {
                 ...emptyTrade,
@@ -259,7 +271,7 @@ export default function LogDayPage() {
              form.reset({
                 date: date,
                 notes: "",
-                trades: [{...emptyTrade, sessions: defaultSessions.map(s => ({...s, direction: "none" as const})) }],
+                trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
     }, [searchParams, form]);
@@ -638,34 +650,73 @@ export default function LogDayPage() {
                                                     </div>
                                                 </TradeDataField>
                                                 <TradeDataField label="Sessions">
-                                                    <div className="space-y-1">
-                                                        {(form.watch('trades.0.sessions') || []).map((_, index) => (
-                                                            <div key={index} className="flex gap-2 items-center justify-between py-1">
-                                                                <span className="flex-1 font-semibold text-sm">{sessionOptions[index]}</span>
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.direction`}
-                                                                    render={({ field }) => (
-                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger className="w-[180px]">
-                                                                                    <SelectValue placeholder="Select Direction" />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="none">-</SelectItem>
-                                                                                <SelectItem value="consolidation">Consolidation</SelectItem>
-                                                                                <SelectItem value="sweep-up">Sweep Up</SelectItem>
-                                                                                <SelectItem value="sweep-down">Sweep Down</SelectItem>
-                                                                                <SelectItem value="sweep-both">Sweep Both</SelectItem>
-                                                                                <SelectItem value="expansion-up">Expansion Up</SelectItem>
-                                                                                <SelectItem value="expansion-down">Expansion Down</SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
+                                                    <div className="space-y-2">
+                                                        {(form.watch('trades.0.sessions') || []).map((session, index) => {
+                                                          const selectedAction = session.action;
+                                                          return (
+                                                            <div key={index} className="space-y-2 p-2 border border-border/20 rounded-md">
+                                                                <div className="flex gap-2 items-center justify-between">
+                                                                    <span className="flex-1 font-semibold text-sm">{sessionOptions[index]}</span>
+                                                                </div>
+                                                                <div className="grid grid-cols-1 gap-2">
+                                                                    <FormField
+                                                                        control={form.control}
+                                                                        name={`trades.0.sessions.${index}.action`}
+                                                                        render={({ field }) => (
+                                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                                <FormControl>
+                                                                                    <SelectTrigger><SelectValue placeholder="Action" /></SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="none">-</SelectItem>
+                                                                                    <SelectItem value="consolidation">Consolidation</SelectItem>
+                                                                                    <SelectItem value="displacement">Displacement</SelectItem>
+                                                                                    <SelectItem value="retracement">Retracement</SelectItem>
+                                                                                    <SelectItem value="reversal">Reversal</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        )}
+                                                                    />
+                                                                    {selectedAction && selectedAction !== 'none' && selectedAction !== 'consolidation' && (
+                                                                        <FormField
+                                                                            control={form.control}
+                                                                            name={`trades.0.sessions.${index}.direction`}
+                                                                            render={({ field }) => (
+                                                                                <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                                    <FormControl>
+                                                                                        <SelectTrigger><SelectValue placeholder="Direction" /></SelectTrigger>
+                                                                                    </FormControl>
+                                                                                    <SelectContent>
+                                                                                        <SelectItem value="none">-</SelectItem>
+                                                                                        <SelectItem value="up">Up</SelectItem>
+                                                                                        <SelectItem value="down">Down</SelectItem>
+                                                                                    </SelectContent>
+                                                                                </Select>
+                                                                            )}
+                                                                        />
                                                                     )}
-                                                                />
+                                                                    {selectedAction && selectedAction !== 'none' && (
+                                                                      <FormField
+                                                                            control={form.control}
+                                                                            name={`trades.0.sessions.${index}.sweep`}
+                                                                            render={({ field }) => (
+                                                                                <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                                    <FormControl>
+                                                                                        <SelectTrigger><SelectValue placeholder="Sweep" /></SelectTrigger>
+                                                                                    </FormControl>
+                                                                                    <SelectContent>
+                                                                                        <SelectItem value="none">-</SelectItem>
+                                                                                        <SelectItem value="high">High</SelectItem>
+                                                                                        <SelectItem value="low">Low</SelectItem>
+                                                                                        <SelectItem value="both">Both</SelectItem>
+                                                                                    </SelectContent>
+                                                                                </Select>
+                                                                            )}
+                                                                        />
+                                                                    )}
+                                                                </div>
                                                             </div>
-                                                        ))}
+                                                        )})}
                                                     </div>
                                                 </TradeDataField>
                                                  <TradeDataField label="Chart Performance">
