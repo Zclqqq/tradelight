@@ -166,7 +166,10 @@ export default function LogDayPage() {
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
         const dataToSave = {
             ...values,
-            date: values.date.toISOString(), 
+            date: values.date.toISOString(),
+            trades: values.trades.map(trade => ({
+                ...trade,
+            }))
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
         
@@ -345,16 +348,17 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className="relative flex items-center">
-                                                            <span className={cn("text-4xl font-bold font-headline pl-3", pnlColorClass)}>
+                                                        <div className="relative">
+                                                            <span className={cn("absolute left-3 top-1/2 -translate-y-1/2 text-2xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
+                                                                    `text-2xl font-bold font-headline h-14 pl-8 border-2 bg-transparent`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                                    pnlColorClass
+                                                                    pnlColorClass,
+                                                                    pnlValue > 0 ? 'border-green-500/50 focus-visible:ring-green-500' : pnlValue < 0 ? 'border-red-500/50 focus-visible:ring-red-500' : ''
                                                                 )}
                                                                 {...field}
                                                                 onChange={(e) => {
@@ -362,9 +366,8 @@ export default function LogDayPage() {
                                                                     field.onChange(e.target.valueAsNumber || 0);
                                                                 }}
                                                                 onBlur={() => {
-                                                                    if (
-                                                                        (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0) === field.value
-                                                                    ) {
+                                                                    const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
+                                                                    if (calculatedPnl === field.value) {
                                                                        setIsPnlManuallySet(false);
                                                                     }
                                                                 }}
