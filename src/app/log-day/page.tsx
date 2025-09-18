@@ -272,7 +272,7 @@ export default function LogDayPage() {
              });
         }
         setIsInitialLoad(false);
-    }, [searchParams, form]);
+    }, [searchParams]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -525,7 +525,13 @@ export default function LogDayPage() {
                                                                 <Calendar
                                                                     mode="single"
                                                                     selected={field.value}
-                                                                    onSelect={field.onChange}
+                                                                    onSelect={(date) => {
+                                                                        if (date) {
+                                                                            const newKey = `trade-log-${format(date, 'yyyy-MM-dd')}`;
+                                                                            router.push(`/log-day?date=${format(date, 'yyyy-MM-dd')}`);
+                                                                            field.onChange(date);
+                                                                        }
+                                                                    }}
                                                                     disabled={(date) =>
                                                                     date > new Date() || date < new Date("1900-01-01")
                                                                     }
