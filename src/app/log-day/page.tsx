@@ -272,7 +272,7 @@ export default function LogDayPage() {
              });
         }
         setIsInitialLoad(false);
-    }, [searchParams]);
+    }, [searchParams, form]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -352,7 +352,7 @@ export default function LogDayPage() {
                                                 <FormItem>
                                                     <FormControl>
                                                         <div className="relative">
-                                                            <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold font-headline", pnlColorClass)}>
+                                                            <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
@@ -727,7 +727,7 @@ export default function LogDayPage() {
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue placeholder="Select performance..." />
-                                                                    </SelectTrigger>
+                                                                    </Trigger>
                                                                 </FormControl>
                                                                 <SelectContent>
                                                                     {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -749,5 +749,3 @@ export default function LogDayPage() {
   );
 }
 
-    
-    
