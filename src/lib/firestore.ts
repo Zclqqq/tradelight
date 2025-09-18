@@ -4,19 +4,25 @@ import { db } from "./firebase";
 import type { DayLog } from "@/app/log-day/page";
 import { format } from "date-fns";
 
-// We need to convert Date objects to Firestore Timestamps before saving
-// and convert them back to Date objects after fetching.
-const convertDatesToTimestamps = (data: any): any => {
+const sanitizeDataForFirestore = (data: any): any => {
+    if (data === undefined) {
+        return null;
+    }
     if (data instanceof Date) {
         return Timestamp.fromDate(data);
     }
     if (Array.isArray(data)) {
-        return data.map(convertDatesToTimestamps);
+        return data.map(sanitizeDataForFirestore);
     }
     if (typeof data === 'object' && data !== null) {
         const newData: { [key: string]: any } = {};
         for (const key in data) {
-            newData[key] = convertDatesToTimestamps(data[key]);
+            // Firestore does not support undefined values
+            if (data[key] !== undefined) {
+                newData[key] = sanitizeDataForFirestore(data[key]);
+            } else {
+                newData[key] = null;
+            }
         }
         return newData;
     }
@@ -45,7 +51,7 @@ export async function saveDayLog(userId: string, dayLog: DayLog): Promise<void> 
     const dayKey = format(dayLog.date, 'yyyy-MM-dd');
     const docRef = doc(db, "users", userId, "tradeLogs", dayKey);
     
-    const dataToSave = convertDatesToTimestamps(dayLog);
+    const dataToSave = sanitizeDataForFirestore(dayLog);
 
     await setDoc(docRef, dataToSave, { merge: true });
 }
@@ -75,5 +81,3 @@ export async function getTradeLogs(userId: string): Promise<DayLog[]> {
     
     return logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
-
-    
