@@ -52,7 +52,6 @@ export default function Home() {
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="w-24"></div>
         <div className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-4">
-            <div className="absolute inset-0 transition-all duration-300 ease-in-out group-hover:bg-white/10 group-hover:[mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_60%)]"></div>
             <span className="text-2xl font-bold font-headline tracking-widest">TRADE</span>
             <Logo className="h-8 w-8" />
             <span className="text-2xl font-bold font-headline tracking-widest">LIGHT</span>

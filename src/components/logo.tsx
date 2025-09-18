@@ -7,13 +7,13 @@ export function Logo({ className }: { className?: string }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
-      className={cn("transition-all duration-300", className)}
+      className={cn("transition-all duration-300 group", className)}
       fill="none"
       stroke="hsl(var(--foreground))"
       strokeWidth="3"
     >
       <path d="M50 5 L95 50 L50 95 L5 50 Z" />
-      <path d="M50 15 L85 50 L50 85 L15 50 Z" transform="rotate(2 50 50)" />
+      <path d="M50 15 L85 50 L50 85 L15 50 Z" className="transition-transform duration-300 ease-in-out group-hover:rotate-[2deg]" />
     </svg>
   );
 }
