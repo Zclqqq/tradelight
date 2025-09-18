@@ -345,14 +345,14 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className={cn("relative flex items-center border-2 bg-transparent h-14", pnlValue > 0 ? 'border-green-500/50' : pnlValue < 0 ? 'border-red-500/50' : 'border-input')}>
+                                                        <div className="relative flex items-center border border-input bg-transparent h-14">
                                                             <span className={cn("text-2xl font-bold font-headline pl-4", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-2xl font-bold font-headline h-full border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0`,
+                                                                    `text-2xl font-bold font-headline h-full border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
@@ -736,6 +736,4 @@ export default function LogDayPage() {
   );
 }
 
-    
-    
     
