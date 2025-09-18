@@ -31,13 +31,14 @@ export default function Home() {
             try {
                 const allLogs: DayLog[] = JSON.parse(allLogsRaw);
                 const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
+                const tradesWithPnl = allTrades.filter(trade => trade.pnl !== 0);
 
                 const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
                 const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
                 const avgWin = winningTrades.length > 0
                   ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
                   : 0;
-                const winRate = allTrades.length > 0 ? (winningTrades.length / allTrades.length) * 100 : 0;
+                const winRate = tradesWithPnl.length > 0 ? (winningTrades.length / tradesWithPnl.length) * 100 : 0;
                 
                 setStats({ netPnl, avgWin, winRate });
             } catch (e) {
@@ -51,10 +52,10 @@ export default function Home() {
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="w-24"></div>
-        <div className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-4">
-            <span className="text-xl font-bold font-headline tracking-wider">TRADE</span>
-            <Logo className="h-6 w-6" />
-            <span className="text-xl font-bold font-headline tracking-wider">LIGHT</span>
+        <div className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
+            <span className="text-lg font-headline tracking-wide">TRADE</span>
+            <Logo className="h-5 w-5" />
+            <span className="text-lg font-headline tracking-wide">LIGHT</span>
         </div>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
