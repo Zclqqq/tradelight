@@ -748,5 +748,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
