@@ -349,13 +349,13 @@ export default function LogDayPage() {
                                                 <FormItem>
                                                     <FormControl>
                                                         <div className="relative">
-                                                            <span className={cn("absolute left-3 top-1/2 -translate-y-1/2 text-2xl font-bold font-headline", pnlColorClass)}>
+                                                            <span className={cn("absolute left-3 top-1/2 -translate-y-1/2 font-bold font-headline", pnlColorClass)} style={{ fontSize: '1.5rem', lineHeight: '2rem' }}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-2xl font-bold font-headline h-14 pl-8 border-2 bg-transparent`,
+                                                                    `text-2xl font-bold font-headline h-14 pl-8 border-2 bg-transparent text-center`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass,
                                                                     pnlValue > 0 ? 'border-green-500/50 focus-visible:ring-green-500' : pnlValue < 0 ? 'border-red-500/50 focus-visible:ring-red-500' : ''
