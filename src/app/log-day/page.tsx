@@ -92,13 +92,12 @@ export default function LogDayPage() {
     const { toast } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [isEditingPnl, setIsEditingPnl] = React.useState(false);
-    const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     
     const [models, setModels] = React.useState<string[]>([]);
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
+    const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
 
     React.useEffect(() => {
         const savedModels = localStorage.getItem('trade-models');
@@ -203,17 +202,17 @@ export default function LogDayPage() {
     const watchedContracts = form.watch("trades.0.contracts");
 
     React.useEffect(() => {
+        if (isPnlManuallySet) return;
+
         const pointValue = instrumentPointValues[watchedInstrument] || 0;
         const points = watchedPoints || 0;
         const contracts = watchedContracts || 0;
         
-        if (points !== 0 && contracts !== 0) {
-            const calculatedPnl = points * pointValue * contracts;
-            if (form.getValues("trades.0.pnl") !== calculatedPnl) {
-                form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
-            }
+        const calculatedPnl = points * pointValue * contracts;
+        if (form.getValues("trades.0.pnl") !== calculatedPnl) {
+            form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, form]);
+    }, [watchedInstrument, watchedPoints, watchedContracts, form, isPnlManuallySet]);
 
 
     React.useEffect(() => {
@@ -315,43 +314,9 @@ export default function LogDayPage() {
         router.push('/');
     };
     
-    const allTrades = form.watch("trades");
-    const totalPnl = allTrades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
     const analysisImage = form.watch("trades.0.analysisImage");
-
-
-    const handlePnlDoubleClick = () => {
-        setIsEditingPnl(true);
-    };
-
-    const handlePnlBlur = () => {
-        setIsEditingPnl(false);
-    };
-
-    const handlePnlKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            const newPnl = parseFloat(event.currentTarget.value);
-            if (!isNaN(newPnl) && fields[0]) {
-                update(0, {...fields[0], pnl: newPnl });
-            }
-            setIsEditingPnl(false);
-        } else if (event.key === 'Escape') {
-            setIsEditingPnl(false);
-        }
-    };
-    
-    React.useEffect(() => {
-        if (isEditingPnl && pnlInputRef.current) {
-            pnlInputRef.current.focus();
-            pnlInputRef.current.select();
-        }
-    }, [isEditingPnl]);
-    
-    const filteredModels = newModel
-        ? models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()))
-        : models;
         
-    const pnlValue = fields[0]?.pnl ?? totalPnl;
+    const pnlValue = form.watch("trades.0.pnl") || 0;
     const pnlColorClass = pnlValue > 0 ? 'text-green-500' : pnlValue < 0 ? 'text-red-500' : 'text-foreground';
 
 
@@ -379,25 +344,42 @@ export default function LogDayPage() {
                                     <CardHeader>
                                         <CardTitle className="font-headline text-base font-normal">PNL</CardTitle>
                                     </CardHeader>
-                                    <CardContent onDoubleClick={handlePnlDoubleClick}>
-                                        {isEditingPnl ? (
-                                            <Input
-                                                ref={pnlInputRef}
-                                                type="number"
-                                                defaultValue={pnlValue}
-                                                onBlur={handlePnlBlur}
-                                                onKeyDown={handlePnlKeyDown}
-                                                className={cn(
-                                                    `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
-                                                    `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                    pnlColorClass
-                                                )}
-                                            />
-                                        ) : (
-                                            <p className={cn(`text-4xl font-bold font-headline`, pnlColorClass)}>
-                                                {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                            </p>
-                                        )}
+                                    <CardContent>
+                                        <FormField
+                                            control={form.control}
+                                            name="trades.0.pnl"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <span className={cn("absolute left-0 top-1/2 -translate-y-1/2 text-4xl font-bold font-headline", pnlColorClass)}>
+                                                                $
+                                                            </span>
+                                                            <Input
+                                                                type="number"
+                                                                className={cn(
+                                                                    `text-4xl font-bold font-headline h-auto p-0 pl-7 border-0 focus-visible:ring-0 bg-transparent`,
+                                                                    `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
+                                                                    pnlColorClass
+                                                                )}
+                                                                {...field}
+                                                                onChange={(e) => {
+                                                                    setIsPnlManuallySet(true);
+                                                                    field.onChange(e.target.valueAsNumber || 0);
+                                                                }}
+                                                                onBlur={() => {
+                                                                    if (
+                                                                        (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0) === field.value
+                                                                    ) {
+                                                                       setIsPnlManuallySet(false);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
                                     </CardContent>
                                 </Card>
                                 <Card onPaste={handleImagePaste} className="overflow-hidden">
@@ -480,7 +462,10 @@ export default function LogDayPage() {
                                                         <FormItem>
                                                             <FormControl>
                                                                 <RadioGroup
-                                                                    onValueChange={field.onChange}
+                                                                    onValueChange={(value) => {
+                                                                        field.onChange(value);
+                                                                        setIsPnlManuallySet(false);
+                                                                    }}
                                                                     value={field.value}
                                                                     className="flex items-center space-x-2"
                                                                 >
@@ -625,14 +610,22 @@ export default function LogDayPage() {
                                                      <FormField
                                                         control={form.control}
                                                         name="trades.0.contracts"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} 
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            setIsPnlManuallySet(false);
+                                                        }} />}
                                                     />
                                                 </TradeDataField>
                                                 <TradeDataField label="Points">
                                                     <FormField
                                                         control={form.control}
                                                         name="trades.0.totalPoints"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} 
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            setIsPnlManuallySet(false);
+                                                        }}/>}
                                                     />
                                                 </TradeDataField>
                                                 <TradeDataField label="TP / SL">
@@ -749,3 +742,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
