@@ -129,7 +129,7 @@ export function TradeCalendar() {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold font-headline">
+        <h2 className="text-lg font-normal font-headline">
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
