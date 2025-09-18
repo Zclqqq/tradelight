@@ -61,7 +61,7 @@ export default function Home() {
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
-            <Logo className="h-6 w-6" />
+            <Logo className="h-8 w-8" />
         </div>
         <p className="text-sm font-light text-muted-foreground italic absolute left-1/2 -translate-x-1/2 hidden md:block">"{quote}"</p>
         <Button variant="outline" asChild>
