@@ -7,31 +7,19 @@ export function Logo({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
       className={className}
+      fill="none"
+      stroke="hsl(var(--foreground))"
+      strokeWidth="2"
     >
-      <style>
-        {`
-          .candle-wick { stroke: hsl(var(--muted-foreground)); stroke-width: 2; }
-          .candle-bg-body { fill: hsl(var(--card-foreground)); }
-          .candle-fg-body {
-            fill: hsl(var(--background));
-            stroke: hsl(var(--muted-foreground));
-            stroke-width: 1;
-            transition: fill 0.2s ease-in-out;
-          }
-          svg:hover .candle-fg-body {
-            fill: hsl(var(--card-foreground));
-          }
-        `}
-      </style>
-      {/* Background Candle */}
       <g transform="rotate(45 50 50)">
-        <line className="candle-wick" x1="50" y1="10" x2="50" y2="90" />
-        <rect className="candle-bg-body" x="35" y="20" width="30" height="60" rx="2" />
+        <line x1="50" y1="10" x2="50" y2="25" />
+        <line x1="50" y1="75" x2="50" y2="90" />
+        <rect x="40" y="25" width="20" height="50" rx="1" />
       </g>
-      {/* Foreground Candle */}
       <g transform="rotate(-45 50 50)">
-        <line className="candle-wick" x1="50" y1="10" x2="50" y2="90" />
-        <rect className="candle-fg-body" x="35" y="20" width="30" height="60" rx="2" />
+        <line x1="50" y1="10" x2="50" y2="25" />
+        <line x1="50" y1="75" x2="50" y2="90" />
+        <rect x="40" y="25" width="20" height="50" rx="1" />
       </g>
     </svg>
   );
