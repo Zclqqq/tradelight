@@ -68,6 +68,12 @@ const instrumentPointValues: { [key: string]: number } = {
     "MES": 5,
 };
 
+const defaultSessions = sessionOptions.map(name => ({
+  sessionName: name,
+  action: "none" as const,
+  direction: "none" as const,
+  sweep: "none" as const
+}));
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -124,13 +130,6 @@ export default function LogDayPage() {
             form.setValue('trades.0.model', '');
         }
     };
-
-    const defaultSessions = sessionOptions.map(name => ({
-      sessionName: name,
-      action: "none" as const,
-      direction: "none" as const,
-      sweep: "none" as const
-    }));
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -273,7 +272,7 @@ export default function LogDayPage() {
              });
         }
         setIsInitialLoad(false);
-    }, [searchParams, form, defaultSessions]);
+    }, [searchParams]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -750,4 +749,5 @@ export default function LogDayPage() {
   );
 }
 
+    
     
