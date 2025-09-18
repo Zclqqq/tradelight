@@ -174,7 +174,7 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                !isCurrentMonth && "bg-transparent text-transparent pointer-events-none",
                 pnlData?.isLogged ? 'border-2' : 'border-border/20'
               )}
               style={dayStyles}
@@ -207,7 +207,7 @@ export function TradeCalendar() {
                     </div>
                   ) : null}
                 </>
-              ) : <div className="h-full"></div>}
+              ) : null}
             </div>
           );
         })}
