@@ -13,7 +13,6 @@ import {
   add,
   sub,
   isToday as isTodayDateFns,
-  differenceInCalendarDays,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -86,23 +85,12 @@ export function TradeCalendar() {
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
-  
-  const calendarStart = startOfWeek(firstDayOfCurrentMonth);
-  const calendarEnd = endOfWeek(endOfMonth(currentDate));
+  const lastDayOfCurrentMonth = endOfMonth(currentDate);
 
-  let days;
-  // Ensure we always have a 6-week grid
-  if (differenceInCalendarDays(endOfWeek(endOfMonth(currentDate)), startOfWeek(startOfMonth(currentDate))) < 41) {
-    days = eachDayOfInterval({
-        start: calendarStart,
-        end: add(calendarEnd, { weeks: 1 })
-    });
-  } else {
-      days = eachDayOfInterval({
-          start: calendarStart,
-          end: calendarEnd
-      });
-  }
+  const days = eachDayOfInterval({
+    start: startOfWeek(firstDayOfCurrentMonth),
+    end: endOfWeek(lastDayOfCurrentMonth),
+  });
 
 
   function nextMonth() {
@@ -147,7 +135,7 @@ export function TradeCalendar() {
         ))}
       </div>
       <div className="grid grid-cols-7 border-l border-border/20">
-        {days.map((day, index) => {
+        {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
