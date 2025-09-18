@@ -37,7 +37,7 @@ const sessionTradeSchema = z.object({
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
   model: z.string().optional().default(""),
-  pnl: z.coerce.number(),
+  pnl: z.coerce.number().optional(),
   entryTime: z.string().optional().default(""),
   exitTime: z.string().optional().default(""),
   contracts: z.coerce.number().optional(),
@@ -146,10 +146,10 @@ export default function LogDayPage() {
                 model: "",
                 entryTime: "",
                 exitTime: "",
-                contracts: 0,
-                tradeTp: 0,
-                tradeSl: 0,
-                totalPoints: 0,
+                contracts: undefined,
+                tradeTp: undefined,
+                tradeSl: undefined,
+                totalPoints: undefined,
             }],
         },
     });
@@ -223,10 +223,10 @@ export default function LogDayPage() {
             model: "",
             entryTime: "",
             exitTime: "",
-            contracts: 0,
-            tradeTp: 0,
-            tradeSl: 0,
-            totalPoints: 0,
+            contracts: undefined,
+            tradeTp: undefined,
+            tradeSl: undefined,
+            totalPoints: undefined,
         };
 
         if (savedData) {
@@ -266,7 +266,7 @@ export default function LogDayPage() {
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
-    }, [searchParams, form]);
+    }, [searchParams, form, defaultSessions]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -351,6 +351,7 @@ export default function LogDayPage() {
                                                             </span>
                                                             <Input
                                                                 type="number"
+                                                                placeholder="0"
                                                                 className={cn(
                                                                     `text-3xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-12`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
@@ -359,7 +360,8 @@ export default function LogDayPage() {
                                                                 {...field}
                                                                 onChange={(e) => {
                                                                     setIsPnlManuallySet(true);
-                                                                    field.onChange(e.target.valueAsNumber || 0);
+                                                                    const value = e.target.value;
+                                                                    field.onChange(value === '' ? undefined : Number(value));
                                                                 }}
                                                                 onBlur={() => {
                                                                     const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
@@ -605,7 +607,7 @@ export default function LogDayPage() {
                                                         name="trades.0.contracts"
                                                         render={({ field }) => <Input type="number" placeholder="0" {...field} 
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber);
                                                             setIsPnlManuallySet(false);
                                                         }} />}
                                                     />
@@ -616,7 +618,7 @@ export default function LogDayPage() {
                                                         name="trades.0.totalPoints"
                                                         render={({ field }) => <Input type="number" placeholder="0" {...field} 
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber);
                                                             setIsPnlManuallySet(false);
                                                         }}/>}
                                                     />
@@ -626,12 +628,12 @@ export default function LogDayPage() {
                                                          <FormField
                                                             control={form.control}
                                                             name="trades.0.tradeTp"
-                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} onChange={(e) => field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} />}
                                                         />
                                                          <FormField
                                                             control={form.control}
                                                             name="trades.0.tradeSl"
-                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} onChange={(e) => field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} />}
                                                         />
                                                     </div>
                                                 </TradeDataField>
@@ -736,4 +738,3 @@ export default function LogDayPage() {
   );
 }
 
-    
