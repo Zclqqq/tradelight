@@ -98,6 +98,7 @@ export default function LogDayPage() {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
+    const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
     React.useEffect(() => {
         const savedModels = localStorage.getItem('trade-models');
@@ -163,10 +164,15 @@ export default function LogDayPage() {
     const [debouncedForm] = useDebounce(watchedForm, 500);
 
     const saveChanges = React.useCallback((values: DayLog) => {
+        if (!values.date) return;
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
         const dataToSave = {
             ...values,
             date: values.date.toISOString(),
+            trades: values.trades.map(trade => ({
+                ...trade,
+                 sessions: trade.sessions,
+            }))
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
         
@@ -184,10 +190,10 @@ export default function LogDayPage() {
     }, []);
 
     React.useEffect(() => {
-        if (form.formState.isDirty) {
+        if (!isInitialLoad) {
            saveChanges(debouncedForm);
         }
-    }, [debouncedForm, form.formState.isDirty, saveChanges]);
+    }, [debouncedForm, saveChanges, isInitialLoad]);
 
 
     const watchedInstrument = form.watch("trades.0.instrument");
@@ -266,6 +272,7 @@ export default function LogDayPage() {
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
+        setIsInitialLoad(false);
     }, [searchParams, form, defaultSessions]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -365,9 +372,10 @@ export default function LogDayPage() {
                                                                     field.onChange(value === '' ? undefined : Number(value));
                                                                 }}
                                                                 onBlur={() => {
-                                                                    if(field.value === undefined) {
+                                                                    if (field.value === undefined) {
                                                                         field.onChange(0);
                                                                     }
+                                                                    // Check if the manual value is the same as what would be auto-calculated
                                                                     const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
                                                                     if (calculatedPnl === field.value) {
                                                                        setIsPnlManuallySet(false);
@@ -741,11 +749,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-
-
-    
-
-    
 
     
