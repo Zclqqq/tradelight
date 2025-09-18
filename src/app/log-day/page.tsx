@@ -3,9 +3,9 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, ChevronDown, X, ChevronsUpDown } from "lucide-react";
+import { ArrowLeft, Plus, CalendarIcon, Upload, X, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
@@ -184,18 +184,18 @@ export default function LogDayPage() {
     const watchedPoints = form.watch("trades.0.totalPoints");
     const watchedContracts = form.watch("trades.0.contracts");
 
-    React.useEffect(() => {
+    const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
 
-        const pointValue = instrumentPointValues[watchedInstrument] || 0;
-        const points = watchedPoints || 0;
-        const contracts = watchedContracts || 0;
+        const pointValue = instrumentPointValues[form.getValues("trades.0.instrument")] || 0;
+        const points = form.getValues("trades.0.totalPoints") || 0;
+        const contracts = form.getValues("trades.0.contracts") || 0;
         
         const calculatedPnl = points * pointValue * contracts;
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, isPnlManuallySet, form]);
+    }, [isPnlManuallySet, form]);
 
 
     React.useEffect(() => {
@@ -320,7 +320,7 @@ export default function LogDayPage() {
                     </a>
                 </Button>
                 <h1 className="text-xl font-bold font-headline text-center">
-                    Today's Recap {format(form.watch("date"), "M/d/yy")}
+                    Recap for {format(form.watch("date"), "M/d/yy")}
                 </h1>
                 <div className="w-10"></div>
             </header>
@@ -361,13 +361,10 @@ export default function LogDayPage() {
                                                                         const value = e.target.value;
                                                                         field.onChange(value === '' ? undefined : Number(value));
                                                                     }}
-                                                                    onBlur={() => {
-                                                                        if (field.value === undefined) {
-                                                                            // field.onChange(0); // This was changed based on user feedback
-                                                                        }
-                                                                        // Check if the manual value is the same as what would be auto-calculated
+                                                                    onBlur={(e) => {
+                                                                        const value = e.target.valueAsNumber;
                                                                         const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
-                                                                        if (calculatedPnl === field.value) {
+                                                                        if (value === calculatedPnl) {
                                                                            setIsPnlManuallySet(false);
                                                                         }
                                                                     }}
@@ -462,6 +459,7 @@ export default function LogDayPage() {
                                                                         onValueChange={(value) => {
                                                                             field.onChange(value);
                                                                             setIsPnlManuallySet(false);
+                                                                            updatePnl();
                                                                         }}
                                                                         value={field.value}
                                                                         className="flex items-center space-x-2"
@@ -518,7 +516,6 @@ export default function LogDayPage() {
                                                                         selected={field.value}
                                                                         onSelect={(date) => {
                                                                             if (date) {
-                                                                                const newKey = `trade-log-${format(date, 'yyyy-MM-dd')}`;
                                                                                 router.push(`/log-day?date=${format(date, 'yyyy-MM-dd')}`);
                                                                                 field.onChange(date);
                                                                             }
@@ -617,6 +614,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
+                                                                updatePnl();
                                                             }} />}
                                                         />
                                                     </TradeDataField>
@@ -628,6 +626,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
+                                                                updatePnl();
                                                             }}/>}
                                                         />
                                                     </TradeDataField>

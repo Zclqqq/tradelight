@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
 import { getTradeLogs } from "@/lib/firestore";
+import { Logo } from "@/components/logo";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -37,15 +38,17 @@ export default function Home() {
   }, [user, loading, router]);
   
   const fetchLogs = React.useCallback(async () => {
-    if (isClient && user) {
+    if (user) {
         const logs = await getTradeLogs(user.uid);
         setAllLogs(logs);
     }
-  }, [isClient, user]);
+  }, [user]);
 
   React.useEffect(() => {
+    if (isClient) {
       fetchLogs();
-  }, [fetchLogs]);
+    }
+  }, [isClient, fetchLogs]);
 
   React.useEffect(() => {
     if (allLogs.length > 0) {
@@ -78,9 +81,10 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Logo className="w-8 h-8" />
+          <h1 className="text-xl font-bold font-headline">TradeLight</h1>
         </div>
-        <div/>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
