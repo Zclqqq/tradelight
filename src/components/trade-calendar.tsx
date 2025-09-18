@@ -126,7 +126,7 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 border-t border-l border-border/20 text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 border-t border-l border-border/20 text-xs text-center font-normal text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="py-2 border-r border-b border-border/20">
             {day}
@@ -152,7 +152,7 @@ export function TradeCalendar() {
 
           return (
             <div
-              key={day.toString()}
+              key={day.toISOString()}
               onClick={() => handleDayClick(day)}
               className={cn(
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
