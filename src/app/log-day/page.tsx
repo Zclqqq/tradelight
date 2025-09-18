@@ -199,6 +199,7 @@ export default function LogDayPage() {
 
 
     React.useEffect(() => {
+        let isMounted = true;
         const dateParam = searchParams.get('date');
         const date = dateParam ? new Date(dateParam) : new Date();
 
@@ -219,6 +220,8 @@ export default function LogDayPage() {
 
         if (user) {
             getDayLog(user.uid, date).then(savedData => {
+                if (!isMounted) return;
+
                 if (savedData) {
                     const savedTrade = savedData.trades?.[0] || {};
                     
@@ -256,6 +259,11 @@ export default function LogDayPage() {
                 setIsInitialLoad(false);
             });
         }
+        
+        return () => {
+            isMounted = false;
+        };
+
     }, [searchParams, user, form]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -744,3 +752,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
