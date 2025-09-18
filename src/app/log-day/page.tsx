@@ -294,15 +294,14 @@ export default function LogDayPage() {
         }
     };
     
-    const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const handleBackClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        saveChanges(form.getValues()).then(() => {
-            toast({
-                title: "Changes Saved!",
-                description: "Your recap has been updated.",
-            });
-            router.push('/');
+        await saveChanges(form.getValues());
+        toast({
+            title: "Changes Saved!",
+            description: "Your recap has been updated.",
         });
+        router.push('/');
     };
     
     const analysisImage = form.watch("trades.0.analysisImage");
@@ -324,9 +323,9 @@ export default function LogDayPage() {
         <div className="flex flex-col min-h-screen text-foreground">
             <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
                 <Button variant="ghost" size="icon" asChild>
-                    <a href="/" onClick={handleBackClick}>
+                    <Link href="/" onClick={handleBackClick}>
                         <ArrowLeft />
-                    </a>
+                    </Link>
                 </Button>
                 <h1 className="text-xl font-bold font-headline text-center">
                     Recap for {format(form.watch("date"), "M/d/yy")}
@@ -753,3 +752,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
