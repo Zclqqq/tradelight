@@ -44,7 +44,7 @@ export function RecentTrades() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle className="font-headline text-lg">Recent Trades</CardTitle>
+        <CardTitle className="font-headline text-lg font-normal">Recent Trades</CardTitle>
       </CardHeader>
       <CardContent className="pt-2 flex-1 min-h-0">
         <ScrollArea className="h-full">
@@ -54,7 +54,7 @@ export function RecentTrades() {
                         <li key={trade.id} className="flex justify-between items-center gap-4">
                             <div className="flex items-center gap-3 shrink-0">
                                 <div className="w-10 text-center">
-                                    <p className="font-bold text-sm">{format(trade.date, "d")}</p>
+                                    <p className="font-semibold text-sm">{format(trade.date, "d")}</p>
                                     <p className="text-xs text-muted-foreground">{format(trade.date, "MMM")}</p>
                                 </div>
                                 <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>

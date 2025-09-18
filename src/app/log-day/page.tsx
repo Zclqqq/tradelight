@@ -73,7 +73,7 @@ const TradeDataField = ({ label, children }: { label: string, children: React.Re
     return (
         <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="flex items-center justify-between w-full group cursor-pointer">
-                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
+                <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">{label}</span>
                 <Plus className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-45")} />
             </CollapsibleTrigger>
             <CollapsibleContent>
@@ -365,7 +365,7 @@ export default function LogDayPage() {
                             <div className="lg:col-span-2 space-y-6">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">PNL</CardTitle>
+                                        <CardTitle className="font-headline text-base font-normal">PNL</CardTitle>
                                     </CardHeader>
                                     <CardContent onDoubleClick={handlePnlDoubleClick}>
                                         {isEditingPnl ? (
@@ -390,7 +390,7 @@ export default function LogDayPage() {
                                 </Card>
                                 <Card onPaste={handleImagePaste} className="overflow-hidden">
                                      <CardHeader>
-                                        <CardTitle className="font-headline text-base">Chart</CardTitle>
+                                        <CardTitle className="font-headline text-base font-normal">Chart</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-0">
                                         <div className="flex flex-col text-left">
@@ -435,7 +435,7 @@ export default function LogDayPage() {
                                 </Card>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">Notes</CardTitle>
+                                        <CardTitle className="font-headline text-base font-normal">Notes</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-4">
                                         <FormField
@@ -457,7 +457,7 @@ export default function LogDayPage() {
                             <div className="lg:col-span-1">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">Trade Data</CardTitle>
+                                        <CardTitle className="font-headline text-base font-normal">Trade Data</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-4 pt-0">
                                             <div className="py-3">
@@ -479,7 +479,7 @@ export default function LogDayPage() {
                                                                             </FormControl>
                                                                             <FormLabel
                                                                                 htmlFor={opt}
-                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
+                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-semibold ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
                                                                             >
                                                                                 {opt}
                                                                             </FormLabel>
@@ -498,7 +498,7 @@ export default function LogDayPage() {
                                                     name="date"
                                                     render={({ field }) => (
                                                         <FormItem className="flex flex-col space-y-2">
-                                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                            <FormLabel className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                             <Popover>
                                                                 <PopoverTrigger asChild>
                                                                 <FormControl>
@@ -641,7 +641,7 @@ export default function LogDayPage() {
                                                     <div className="space-y-1">
                                                         {(form.watch('trades.0.sessions') || []).map((_, index) => (
                                                             <div key={index} className="flex gap-2 items-center justify-between py-1">
-                                                                <span className="flex-1 font-medium text-sm">{sessionOptions[index]}</span>
+                                                                <span className="flex-1 font-semibold text-sm">{sessionOptions[index]}</span>
                                                                 <FormField
                                                                     control={form.control}
                                                                     name={`trades.0.sessions.${index}.direction`}

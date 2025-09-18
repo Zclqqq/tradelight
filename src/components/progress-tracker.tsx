@@ -34,7 +34,7 @@ export function ProgressTracker() {
     return (
         <Card className="h-28 flex flex-col justify-center p-4">
             <CardHeader className="p-0 pb-2">
-                <CardTitle className="font-headline text-sm font-medium text-muted-foreground flex justify-between">
+                <CardTitle className="font-headline text-sm font-normal text-muted-foreground flex justify-between">
                     <span>LOG 30 DAYS</span>
                     <span>{dayCount}/{goal}</span>
                 </CardTitle>
