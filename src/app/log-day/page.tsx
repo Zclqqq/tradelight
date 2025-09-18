@@ -205,7 +205,7 @@ export default function LogDayPage() {
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, form, isPnlManuallySet]);
+    }, [watchedInstrument, watchedPoints, watchedContracts, isPnlManuallySet, form.getValues, form.setValue]);
 
 
     React.useEffect(() => {
@@ -351,13 +351,14 @@ export default function LogDayPage() {
                                                             </span>
                                                             <Input
                                                                 type="number"
-                                                                placeholder="0"
+                                                                placeholder=""
                                                                 className={cn(
                                                                     `text-3xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-12`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
                                                                 {...field}
+                                                                value={field.value ?? ""}
                                                                 onChange={(e) => {
                                                                     setIsPnlManuallySet(true);
                                                                     const value = e.target.value;
