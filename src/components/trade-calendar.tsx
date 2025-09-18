@@ -157,11 +157,11 @@ export function TradeCalendar() {
           let dayStyles: React.CSSProperties = {};
            if (pnlData?.isLogged) {
                 if (pnlData.pnl > 0) {
-                    dayStyles.borderTop = '2px solid hsl(var(--chart-1))';
+                    dayStyles.borderColor = 'hsl(var(--chart-1))';
                 } else if (pnlData.pnl < 0) {
-                    dayStyles.borderTop = '2px solid hsl(var(--destructive))';
+                    dayStyles.borderColor = 'hsl(var(--destructive))';
                 } else {
-                    dayStyles.borderTop = '2px solid hsl(var(--border))';
+                    dayStyles.borderColor = 'hsl(var(--border))';
                 }
             }
 
@@ -171,10 +171,11 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
+                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30"
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                pnlData?.isLogged ? 'border-2' : 'border-border/20'
               )}
               style={dayStyles}
             >
