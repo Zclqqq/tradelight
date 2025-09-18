@@ -104,6 +104,13 @@ export function TradeCalendar() {
   if (lastWeek && calendarWeeks.length > 5 && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
     calendarWeeks.pop();
   }
+  
+  // Check if the first week is entirely outside the current month.
+  const firstWeek = calendarWeeks[0];
+  if (firstWeek && firstWeek.every(day => !isSameMonth(day, currentDate))) {
+      calendarWeeks.shift();
+  }
+
   const calendarDays = calendarWeeks.flat();
 
 
