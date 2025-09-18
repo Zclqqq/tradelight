@@ -13,6 +13,7 @@ interface FlatTrade {
     date: Date;
     instrument: string;
     profitOrLoss: number;
+    isNoTrade: boolean;
 }
 
 export function RecentTrades() {
@@ -22,14 +23,18 @@ export function RecentTrades() {
         const allLogsRaw = localStorage.getItem('all-trades');
         if (allLogsRaw) {
             const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-            const flatTrades: FlatTrade[] = allLogs.flatMap((log, logIndex) => 
-                log.trades.map((trade, tradeIndex) => ({
+            const flatTrades: FlatTrade[] = allLogs.flatMap((log, logIndex) => {
+                const hasImage = log.trades?.some(t => !!t.analysisImage);
+                
+                return log.trades.map((trade, tradeIndex) => ({
                     id: `${logIndex}-${tradeIndex}`,
                     date: new Date(log.date),
                     instrument: trade.instrument,
                     profitOrLoss: trade.pnl,
-                }))
-            )
+                    isNoTrade: hasImage && trade.pnl === 0
+                }));
+            })
+            .filter(trade => trade.profitOrLoss !== 0 || trade.isNoTrade)
             .sort((a, b) => b.date.getTime() - a.date.getTime());
             
             setRecentTrades(flatTrades);
@@ -54,12 +59,12 @@ export function RecentTrades() {
                                 </div>
                                 <p className="font-semibold text-sm w-16 truncate">{trade.instrument}</p>
                             </div>
-                            {trade.profitOrLoss !== 0 ? (
+                            {trade.isNoTrade ? (
+                                <p className="text-sm text-muted-foreground text-right min-w-[80px]">No Trade</p>
+                            ) : (
                                 <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss > 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
                                     {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                 </p>
-                            ) : (
-                                <p className="text-sm text-muted-foreground text-right min-w-[80px]">No Trade</p>
                             )}
                         </li>
                     ))}
@@ -74,5 +79,3 @@ export function RecentTrades() {
     </Card>
   );
 }
-
-    

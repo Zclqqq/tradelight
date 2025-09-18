@@ -56,7 +56,6 @@ export function TradeCalendar() {
             pnl[dayKey].pnl += dayPnl;
             pnl[dayKey].tradeCount += log.trades?.length || 0;
             
-            // A day is considered logged if there's PNL, or if there's an image with no PNL ("No Trade" day).
             pnl[dayKey].isLogged = dayPnl !== 0 || (hasImage && dayPnl === 0);
           });
           setDailyPnl(pnl);
