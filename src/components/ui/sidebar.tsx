@@ -80,10 +80,6 @@ function Sidebar() {
 
   return (
     <div className='flex flex-col border-r h-full'>
-      <div className='flex items-center justify-center my-4 bg-black text-white p-2 rounded-md'>
-        <CandlestickChart size={32} />
-        <h1 className='text-2xl font-bold ml-2'>TradeLight</h1>
-      </div>
       <div className='flex flex-col items-start'>
         <TooltipProvider>
           {navItems.map((item) => (

@@ -3,7 +3,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Logo } from "@/components/logo";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -52,11 +51,7 @@ export default function Home() {
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="w-24"></div>
-        <div className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
-            <span className="text-lg font-headline tracking-wide">TRADE</span>
-            <Logo className="h-5 w-5" />
-            <span className="text-lg font-headline tracking-wide">LIGHT</span>
-        </div>
+        <div></div>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
