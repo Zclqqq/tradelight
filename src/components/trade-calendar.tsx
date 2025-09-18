@@ -12,7 +12,8 @@ import {
   startOfWeek,
   add,
   sub,
-  isToday as isTodayDateFns
+  isToday as isTodayDateFns,
+  differenceInCalendarDays,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -85,10 +86,24 @@ export function TradeCalendar() {
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
-  const days = eachDayOfInterval({
-    start: startOfWeek(firstDayOfCurrentMonth),
-    end: endOfWeek(endOfMonth(currentDate)),
-  });
+  
+  const calendarStart = startOfWeek(firstDayOfCurrentMonth);
+  const calendarEnd = endOfWeek(endOfMonth(currentDate));
+
+  let days;
+  // Ensure we always have a 6-week grid
+  if (differenceInCalendarDays(endOfWeek(endOfMonth(currentDate)), startOfWeek(startOfMonth(currentDate))) < 41) {
+    days = eachDayOfInterval({
+        start: calendarStart,
+        end: add(calendarEnd, { weeks: 1 })
+    });
+  } else {
+      days = eachDayOfInterval({
+          start: calendarStart,
+          end: calendarEnd
+      });
+  }
+
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -148,14 +163,13 @@ export function TradeCalendar() {
                 }
             }
 
-
           return (
             <div
               key={day.toString()}
               onClick={() => handleDayClick(day)}
               className={cn(
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
-                 isCurrentMonth ? "cursor-pointer hover:bg-accent/50" : "text-muted-foreground/50 bg-accent/20 cursor-pointer hover:bg-accent/50",
+                 isCurrentMonth ? "cursor-pointer hover:bg-accent/50" : "text-muted-foreground/50 bg-transparent cursor-pointer hover:bg-accent/50",
                 pnlData?.isLogged ? 'border-2' : 'border-border/20'
               )}
               style={dayStyles}
