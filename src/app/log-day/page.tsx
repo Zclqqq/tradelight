@@ -4,7 +4,6 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { ArrowLeft, Plus, CalendarIcon, Upload, X, ChevronsUpDown } from "lucide-react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -294,8 +293,7 @@ export default function LogDayPage() {
         }
     };
     
-    const handleBackClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
+    const handleBackClick = async () => {
         await saveChanges(form.getValues());
         toast({
             title: "Changes Saved!",
@@ -322,10 +320,8 @@ export default function LogDayPage() {
     return (
         <div className="flex flex-col min-h-screen text-foreground">
             <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
-                <Button variant="ghost" size="icon" asChild>
-                    <Link href="/" onClick={handleBackClick}>
-                        <ArrowLeft />
-                    </Link>
+                <Button variant="ghost" size="icon" onClick={handleBackClick}>
+                    <ArrowLeft />
                 </Button>
                 <h1 className="text-xl font-bold font-headline text-center">
                     Recap for {format(form.watch("date"), "M/d/yy")}
@@ -752,5 +748,7 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
 
     
