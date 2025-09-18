@@ -8,40 +8,16 @@ export function Logo({ className }: { className?: string }) {
       viewBox="0 0 100 100"
       className={className}
     >
-      <g transform="rotate(-45 50 50) translate(-10, -10)">
-        <line
-          x1="30"
-          y1="10"
-          x2="30"
-          y2="90"
-          stroke="hsl(var(--muted-foreground))"
-          strokeWidth="2"
-        />
-        <rect
-          x="20"
-          y="25"
-          width="20"
-          height="50"
-          fill="hsl(var(--destructive))"
-        />
-      </g>
-      <g transform="rotate(45 50 50) translate(10, -10)">
-        <line
-          x1="70"
-          y1="10"
-          x2="70"
-          y2="90"
-          stroke="hsl(var(--muted-foreground))"
-          strokeWidth="2"
-        />
-        <rect
-          x="60"
-          y="25"
-          width="20"
-          height="50"
-          fill="hsl(var(--chart-1))"
-        />
-      </g>
+        {/* White Candle (background) */}
+        <g transform="rotate(45 50 50)">
+            <line x1="50" y1="10" x2="50" y2="90" stroke="hsl(var(--muted-foreground))" strokeWidth="2" />
+            <rect x="40" y="25" width="20" height="50" fill="hsl(var(--card-foreground))" />
+        </g>
+        {/* Black Candle (foreground) */}
+        <g transform="rotate(-45 50 50)">
+            <line x1="50" y1="10" x2="50" y2="90" stroke="hsl(var(--muted-foreground))" strokeWidth="2" />
+            <rect x="40" y="25" width="20" height="50" fill="hsl(var(--background))" stroke="hsl(var(--muted-foreground))" strokeWidth="1"/>
+        </g>
     </svg>
   );
 }
