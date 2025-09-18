@@ -52,9 +52,9 @@ export default function Home() {
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="w-24"></div>
         <div className="flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
-            <span className="text-xl font-bold font-headline">TRADE</span>
-            <Logo className="h-8 w-8" />
-            <span className="text-xl font-bold font-headline">LIGHT</span>
+            <span className="text-xl font-bold font-headline tracking-wider">TRADE</span>
+            <Logo className="h-10 w-10" />
+            <span className="text-xl font-bold font-headline tracking-wider">LIGHT</span>
         </div>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
