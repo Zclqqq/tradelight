@@ -26,12 +26,12 @@ export function Logo({ className }: { className?: string }) {
       {/* Background Candle */}
       <g transform="rotate(45 50 50)">
         <line className="candle-wick" x1="50" y1="10" x2="50" y2="90" />
-        <rect className="candle-bg-body" x="40" y="25" width="20" height="50" />
+        <rect className="candle-bg-body" x="35" y="20" width="30" height="60" rx="2" />
       </g>
       {/* Foreground Candle */}
       <g transform="rotate(-45 50 50)">
         <line className="candle-wick" x1="50" y1="10" x2="50" y2="90" />
-        <rect className="candle-fg-body" x="40" y="25" width="20" height="50" />
+        <rect className="candle-fg-body" x="35" y="20" width="30" height="60" rx="2" />
       </g>
     </svg>
   );
