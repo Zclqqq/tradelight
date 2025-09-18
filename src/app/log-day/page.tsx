@@ -319,6 +319,7 @@ export default function LogDayPage() {
     const pnlValue = form.watch("trades.0.pnl") || 0;
     const pnlColorClass = pnlValue > 0 ? 'text-green-500' : pnlValue < 0 ? 'text-red-500' : 'text-foreground';
 
+    const filteredModels = models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()));
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -351,14 +352,14 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className="relative">
-                                                            <span className={cn("absolute left-0 top-1/2 -translate-y-1/2 text-4xl font-bold font-headline", pnlColorClass)}>
+                                                        <div className="relative flex items-center">
+                                                            <span className={cn("text-4xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-4xl font-bold font-headline h-auto p-0 pl-7 border-0 focus-visible:ring-0 bg-transparent`,
+                                                                    `text-4xl font-bold font-headline h-auto p-0 pl-2 border-0 focus-visible:ring-0 bg-transparent`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
@@ -742,5 +743,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
