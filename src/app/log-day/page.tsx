@@ -23,7 +23,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDebounce } from "use-debounce";
 import { useAuth } from "@/context/auth-context";
 import { getDayLog, saveDayLog } from "@/lib/firestore";
 
@@ -106,8 +105,7 @@ export default function LogDayPage() {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
-    const [isInitialLoad, setIsInitialLoad] = React.useState(true);
-
+    
     React.useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
@@ -161,23 +159,6 @@ export default function LogDayPage() {
             }],
         },
     });
-    
-    const watchedForm = form.watch();
-    const [debouncedForm] = useDebounce(watchedForm, 1000);
-
-    const saveChanges = React.useCallback(async (values: DayLog) => {
-        if (!values.date || !user) return;
-        
-        await saveDayLog(user.uid, values);
-
-    }, [user]);
-
-    React.useEffect(() => {
-        if (!isInitialLoad) {
-           saveChanges(debouncedForm);
-        }
-    }, [debouncedForm, saveChanges, isInitialLoad]);
-
 
     const watchedInstrument = form.watch("trades.0.instrument");
     const watchedPoints = form.watch("trades.0.totalPoints");
@@ -193,7 +174,7 @@ export default function LogDayPage() {
         
         const calculatedPnl = points * pointValue * contracts;
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
-            form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
+            form.setValue("trades.0.pnl", calculatedPnl);
         }
     }, [isPnlManuallySet, form]);
 
@@ -256,7 +237,6 @@ export default function LogDayPage() {
                         trades: [{...emptyTrade, sessions: defaultSessions }],
                     });
                 }
-                setIsInitialLoad(false);
             });
         }
         
@@ -294,12 +274,14 @@ export default function LogDayPage() {
     };
     
     const handleBackClick = async () => {
-        await saveChanges(form.getValues());
-        toast({
-            title: "Changes Saved!",
-            description: "Your recap has been updated.",
-        });
-        router.push('/');
+        if(user) {
+            await saveDayLog(user.uid, form.getValues());
+            toast({
+                title: "Changes Saved!",
+                description: "Your recap has been updated.",
+            });
+            router.push('/');
+        }
     };
     
     const analysisImage = form.watch("trades.0.analysisImage");
@@ -748,7 +730,5 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
 
     

@@ -17,11 +17,9 @@ const sanitizeDataForFirestore = (data: any): any => {
     if (typeof data === 'object' && data !== null) {
         const newData: { [key: string]: any } = {};
         for (const key in data) {
-            // Firestore does not support undefined values
-            if (data[key] !== undefined) {
-                newData[key] = sanitizeDataForFirestore(data[key]);
-            } else {
-                newData[key] = null;
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                const value = data[key];
+                newData[key] = sanitizeDataForFirestore(value);
             }
         }
         return newData;
@@ -81,3 +79,5 @@ export async function getTradeLogs(userId: string): Promise<DayLog[]> {
     
     return logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
+
+    
