@@ -13,11 +13,20 @@ export function ProgressTracker() {
 
     React.useEffect(() => {
         const allLogsRaw = localStorage.getItem('all-trades');
-        const allLogs: DayLog[] = allLogsRaw ? JSON.parse(allLogsRaw) : [];
-        const loggedDaysCount = new Set(allLogs.map(log => new Date(log.date).toDateString())).size;
-        
-        setDayCount(loggedDaysCount);
-        setProgress((loggedDaysCount / goal) * 100);
+        if (allLogsRaw) {
+            const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+
+            const loggedDays = allLogs.filter(log => {
+                const dayPnl = log.trades?.reduce((sum, trade) => sum + (trade.pnl || 0), 0) || 0;
+                const hasImage = log.trades?.some(t => !!t.analysisImage);
+                return dayPnl !== 0 || (hasImage && dayPnl === 0);
+            });
+
+            const loggedDaysCount = new Set(loggedDays.map(log => new Date(log.date).toDateString())).size;
+            
+            setDayCount(loggedDaysCount);
+            setProgress((loggedDaysCount / goal) * 100);
+        }
 
     }, []);
 
@@ -36,4 +45,3 @@ export function ProgressTracker() {
         </Card>
     );
 }
-
