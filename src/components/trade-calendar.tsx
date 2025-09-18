@@ -85,34 +85,10 @@ export function TradeCalendar() {
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
-
-  const startOfCalendar = startOfWeek(firstDayOfCurrentMonth, { weekStartsOn: 0 });
-  const endOfCalendar = endOfWeek(endOfMonth(firstDayOfCurrentMonth), { weekStartsOn: 0 });
-
   const days = eachDayOfInterval({
-    start: startOfCalendar,
-    end: endOfCalendar
+    start: startOfWeek(firstDayOfCurrentMonth),
+    end: endOfWeek(endOfMonth(currentDate)),
   });
-
-  const calendarWeeks = [];
-  for (let i = 0; i < days.length; i += 7) {
-    calendarWeeks.push(days.slice(i, i + 7));
-  }
-
-  // Check if the last week is entirely outside the current month and has no PNL data
-  const lastWeek = calendarWeeks[calendarWeeks.length - 1];
-  if (lastWeek && calendarWeeks.length > 5 && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
-    calendarWeeks.pop();
-  }
-  
-  // Check if the first week is entirely outside the current month.
-  const firstWeek = calendarWeeks[0];
-  if (firstWeek && firstWeek.every(day => !isSameMonth(day, currentDate))) {
-      calendarWeeks.shift();
-  }
-
-  const calendarDays = calendarWeeks.flat();
-
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -156,7 +132,7 @@ export function TradeCalendar() {
         ))}
       </div>
       <div className="grid grid-cols-7 border-l border-border/20">
-        {calendarDays.map((day, index) => {
+        {days.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
@@ -179,7 +155,7 @@ export function TradeCalendar() {
               onClick={() => handleDayClick(day)}
               className={cn(
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
-                 isCurrentMonth ? "cursor-pointer hover:bg-accent/50" : "text-muted-foreground/50",
+                 isCurrentMonth ? "cursor-pointer hover:bg-accent/50" : "text-muted-foreground/50 bg-accent/20 cursor-pointer hover:bg-accent/50",
                 pnlData?.isLogged ? 'border-2' : 'border-border/20'
               )}
               style={dayStyles}
@@ -189,6 +165,7 @@ export function TradeCalendar() {
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
                       "font-semibold text-[10px] ml-auto z-10",
+                       !isCurrentMonth && "text-muted-foreground",
                       isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                     )}
                   >
