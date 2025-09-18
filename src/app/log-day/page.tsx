@@ -310,7 +310,7 @@ export default function LogDayPage() {
     const analysisImage = form.watch("trades.0.analysisImage");
         
     const pnlValue = form.watch("trades.0.pnl") || 0;
-    const pnlColorClass = pnlValue > 0 ? 'text-green-500' : pnlValue < 0 ? 'text-red-500' : 'text-foreground';
+    const pnlColorClass = pnlValue > 0 ? 'text-[hsl(var(--chart-1))]' : pnlValue < 0 ? 'text-destructive' : 'text-foreground';
 
     const filteredModels = models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()));
 
@@ -345,14 +345,14 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className="relative flex items-center border border-input bg-transparent h-14">
-                                                            <span className={cn("text-2xl font-bold font-headline pl-4", pnlColorClass)}>
+                                                        <div className="relative">
+                                                             <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-2xl font-bold font-headline h-full border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
+                                                                    `text-2xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-10`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
