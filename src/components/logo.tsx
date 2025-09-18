@@ -1,26 +1,19 @@
 
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
-      className={className}
+      className={cn("transition-all duration-300", className)}
       fill="none"
       stroke="hsl(var(--foreground))"
-      strokeWidth="2"
+      strokeWidth="3"
     >
-      <g transform="rotate(45 50 50)">
-        <line x1="50" y1="10" x2="50" y2="25" />
-        <line x1="50" y1="75" x2="50" y2="90" />
-        <rect x="40" y="25" width="20" height="50" rx="1" />
-      </g>
-      <g transform="rotate(-45 50 50)">
-        <line x1="50" y1="10" x2="50" y2="25" />
-        <line x1="50" y1="75" x2="50" y2="90" />
-        <rect x="40" y="25" width="20" height="50" rx="1" />
-      </g>
+      <path d="M50 5 L95 50 L50 95 L5 50 Z" />
+      <path d="M50 15 L85 50 L50 85 L15 50 Z" transform="rotate(2 50 50)" />
     </svg>
   );
 }
