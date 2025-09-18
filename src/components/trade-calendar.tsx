@@ -169,17 +169,14 @@ export function TradeCalendar() {
           return (
             <div
               key={day.toString()}
-              onClick={() => isCurrentMonth && handleDayClick(day)}
+              onClick={() => handleDayClick(day)}
               className={cn(
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border p-1 h-20",
-                isCurrentMonth && "cursor-pointer",
-                isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-transparent pointer-events-none",
+                 isCurrentMonth ? "cursor-pointer hover:bg-accent/50" : "text-muted-foreground/50",
                 pnlData?.isLogged ? 'border-2' : 'border-border/20'
               )}
               style={dayStyles}
             >
-              {isCurrentMonth ? (
                 <>
                   <time
                     dateTime={format(day, "yyyy-MM-dd")}
@@ -207,7 +204,6 @@ export function TradeCalendar() {
                     </div>
                   ) : null}
                 </>
-              ) : null}
             </div>
           );
         })}
