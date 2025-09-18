@@ -372,7 +372,7 @@ export default function LogDayPage() {
                                                                 }}
                                                                 onBlur={() => {
                                                                     if (field.value === undefined) {
-                                                                        field.onChange(0);
+                                                                        // field.onChange(0); // This was changed based on user feedback
                                                                     }
                                                                     // Check if the manual value is the same as what would be auto-calculated
                                                                     const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
@@ -748,4 +748,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
