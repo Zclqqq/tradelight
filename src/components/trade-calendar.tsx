@@ -161,7 +161,7 @@ export function TradeCalendar() {
                 } else if (pnlData.pnl < 0) {
                     dayStyles.borderColor = 'hsl(var(--destructive))';
                 } else {
-                    dayStyles.borderColor = 'hsl(var(--border))';
+                    dayStyles.borderColor = 'hsl(var(--ring))';
                 }
             }
 
