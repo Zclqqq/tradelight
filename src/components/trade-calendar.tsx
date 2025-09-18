@@ -85,11 +85,10 @@ export function TradeCalendar() {
   }, []);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
-  const lastDayOfCurrentMonth = endOfMonth(currentDate);
 
   const days = eachDayOfInterval({
     start: startOfWeek(firstDayOfCurrentMonth),
-    end: endOfWeek(lastDayOfCurrentMonth),
+    end: endOfWeek(endOfMonth(firstDayOfCurrentMonth)),
   });
 
 
