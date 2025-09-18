@@ -12,11 +12,13 @@ import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
-import { getTradeLogs } from "@/lib/firestore";
+import { getTradeLogs, saveDayLog } from "@/lib/firestore";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   
   const [allLogs, setAllLogs] = React.useState<DayLog[]>([]);
   const [stats, setStats] = React.useState({
@@ -25,9 +27,17 @@ export default function Home() {
       winRate: 0,
   });
   const [isClient, setIsClient] = React.useState(false);
+  const [hasLocalData, setHasLocalData] = React.useState(false);
 
   React.useEffect(() => {
         setIsClient(true);
+        // Check for old local storage data
+        for (let i = 0; i < localStorage.length; i++) {
+            if (localStorage.key(i)?.startsWith('trade-log-')) {
+                setHasLocalData(true);
+                break;
+            }
+        }
   }, []);
 
   React.useEffect(() => {
@@ -35,16 +45,17 @@ export default function Home() {
       router.push('/login');
     }
   }, [user, loading, router]);
+  
+  const fetchLogs = React.useCallback(async () => {
+    if (isClient && user) {
+        const logs = await getTradeLogs(user.uid);
+        setAllLogs(logs);
+    }
+  }, [isClient, user]);
 
   React.useEffect(() => {
-      if (isClient && user) {
-        const fetchLogs = async () => {
-            const logs = await getTradeLogs(user.uid);
-            setAllLogs(logs);
-        };
-        fetchLogs();
-      }
-  }, [isClient, user]);
+      fetchLogs();
+  }, [fetchLogs]);
 
   React.useEffect(() => {
     if (allLogs.length > 0) {
@@ -66,6 +77,57 @@ export default function Home() {
     }
   }, [allLogs]);
 
+  const handleMigrateData = async () => {
+    if (!user) {
+        toast({
+            title: "Migration Failed",
+            description: "You must be logged in to migrate data.",
+            variant: "destructive"
+        });
+        return;
+    }
+
+    const keysToRemove: string[] = [];
+    let migratedCount = 0;
+
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('trade-log-')) {
+                const item = localStorage.getItem(key);
+                if (item) {
+                    const dayLog = JSON.parse(item) as DayLog;
+                    // Ensure date is a valid Date object before saving
+                    dayLog.date = new Date(dayLog.date);
+                    await saveDayLog(user.uid, dayLog);
+                    keysToRemove.push(key);
+                    migratedCount++;
+                }
+            }
+        }
+
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+        });
+
+        toast({
+            title: "Migration Complete!",
+            description: `Successfully migrated ${migratedCount} day logs to your account.`,
+        });
+        setHasLocalData(false);
+        // Refresh data from firestore
+        fetchLogs();
+
+    } catch (error) {
+        console.error("Migration error:", error);
+        toast({
+            title: "Migration Failed",
+            description: "An error occurred while migrating your data. Please try again.",
+            variant: "destructive"
+        });
+    }
+  };
+
   if (loading || !user) {
     return (
         <div className="flex items-center justify-center h-screen">
@@ -77,8 +139,14 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="w-24"></div>
-        <div></div>
+        <div className="flex items-center gap-4">
+             {hasLocalData && (
+                <Button variant="secondary" onClick={handleMigrateData}>
+                    Migrate Local Data
+                </Button>
+            )}
+        </div>
+        <div/>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
         </Button>
