@@ -8,18 +8,25 @@ const sanitizeDataForFirestore = (data: any): any => {
     if (data === undefined) {
         return null;
     }
+    if (data === null) {
+        return null;
+    }
     if (data instanceof Date) {
         return Timestamp.fromDate(data);
     }
     if (Array.isArray(data)) {
-        return data.map(sanitizeDataForFirestore);
+        return data.map(item => sanitizeDataForFirestore(item));
     }
-    if (typeof data === 'object' && data !== null) {
+    if (typeof data === 'object') {
         const newData: { [key: string]: any } = {};
         for (const key in data) {
             if (Object.prototype.hasOwnProperty.call(data, key)) {
                 const value = data[key];
-                newData[key] = sanitizeDataForFirestore(value);
+                if (value !== undefined) {
+                    newData[key] = sanitizeDataForFirestore(value);
+                } else {
+                    newData[key] = null;
+                }
             }
         }
         return newData;
@@ -46,7 +53,7 @@ const convertTimestampsToDates = (data: any): any => {
 
 
 export async function saveDayLog(userId: string, dayLog: DayLog): Promise<void> {
-    const dayKey = format(dayLog.date, 'yyyy-MM-dd');
+    const dayKey = format(new Date(dayLog.date), 'yyyy-MM-dd');
     const docRef = doc(db, "users", userId, "tradeLogs", dayKey);
     
     const dataToSave = sanitizeDataForFirestore(dayLog);
@@ -79,5 +86,3 @@ export async function getTradeLogs(userId: string): Promise<DayLog[]> {
     
     return logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
-
-    

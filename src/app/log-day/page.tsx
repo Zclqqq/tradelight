@@ -140,7 +140,7 @@ export default function LogDayPage() {
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
         defaultValues: {
-            date: new Date('2024-01-01'),
+            date: new Date(),
             notes: "",
             trades: [{ 
                 instrument: "NQ", 
@@ -176,7 +176,7 @@ export default function LogDayPage() {
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
             form.setValue("trades.0.pnl", calculatedPnl);
         }
-    }, [isPnlManuallySet, form]);
+    }, [form, isPnlManuallySet]);
 
 
     React.useEffect(() => {
@@ -598,7 +598,7 @@ export default function LogDayPage() {
                                                             name="trades.0.contracts"
                                                             render={({ field }) => <Input type="number" placeholder="0" {...field} 
                                                             onChange={(e) => {
-                                                                field.onChange(e.target.value === '' ? 0 : e.target.valueAsNumber);
+                                                                field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
                                                                 updatePnl();
                                                             }} />}
@@ -610,7 +610,7 @@ export default function LogDayPage() {
                                                             name="trades.0.totalPoints"
                                                             render={({ field }) => <Input type="number" placeholder="0" {...field} 
                                                             onChange={(e) => {
-                                                                field.onChange(e.target.value === '' ? 0 : e.target.valueAsNumber);
+                                                                field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
                                                                 updatePnl();
                                                             }}/>}
@@ -621,12 +621,12 @@ export default function LogDayPage() {
                                                              <FormField
                                                                 control={form.control}
                                                                 name="trades.0.tradeTp"
-                                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} onChange={(e) => field.onChange(e.target.value === '' ? 0 : e.target.valueAsNumber)} />}
+                                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} onChange={(e) => field.onChange(e.target.value === '' ? null : e.target.valueAsNumber)} />}
                                                             />
                                                              <FormField
                                                                 control={form.control}
                                                                 name="trades.0.tradeSl"
-                                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} onChange={(e) => field.onChange(e.target.value === '' ? 0 : e.target.valueAsNumber)} />}
+                                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} onChange={(e) => field.onChange(e.target.value === '' ? null : e.target.valueAsNumber)} />}
                                                             />
                                                         </div>
                                                     </TradeDataField>
@@ -730,5 +730,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
