@@ -346,13 +346,13 @@ export default function LogDayPage() {
                                                 <FormItem>
                                                     <FormControl>
                                                         <div className="relative">
-                                                             <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold font-headline", pnlColorClass)}>
+                                                             <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold font-headline", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-2xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-10`,
+                                                                    `text-3xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-12`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
