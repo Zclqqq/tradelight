@@ -6,17 +6,18 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import type { DayLog } from '@/app/log-day/page';
 
-export function ProgressTracker() {
+interface ProgressTrackerProps {
+    logs: DayLog[];
+}
+
+export function ProgressTracker({ logs }: ProgressTrackerProps) {
     const [progress, setProgress] = React.useState(0);
     const [dayCount, setDayCount] = React.useState(0);
     const goal = 30;
 
     React.useEffect(() => {
-        const allLogsRaw = localStorage.getItem('all-trades');
-        if (allLogsRaw) {
-            const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-
-            const loggedDays = allLogs.filter(log => {
+        if (logs) {
+            const loggedDays = logs.filter(log => {
                 const dayPnl = log.trades?.reduce((sum, trade) => sum + (trade.pnl || 0), 0) || 0;
                 const hasImage = log.trades?.some(t => !!t.analysisImage);
                 return dayPnl !== 0 || (hasImage && dayPnl === 0);
@@ -28,7 +29,7 @@ export function ProgressTracker() {
             setProgress((loggedDaysCount / goal) * 100);
         }
 
-    }, []);
+    }, [logs]);
 
 
     return (

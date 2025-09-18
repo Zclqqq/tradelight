@@ -3,6 +3,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -10,8 +12,13 @@ import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
+import { getTradeLogs } from "@/lib/firestore";
 
 export default function Home() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  
+  const [allLogs, setAllLogs] = React.useState<DayLog[]>([]);
   const [stats, setStats] = React.useState({
       netPnl: 0,
       avgWin: 0,
@@ -24,28 +31,48 @@ export default function Home() {
   }, []);
 
   React.useEffect(() => {
-      if (isClient) {
-        const allLogsRaw = localStorage.getItem('all-trades');
-        if (allLogsRaw) {
-            try {
-                const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-                const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
-                const tradesWithPnl = allTrades.filter(trade => trade.pnl !== 0);
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
 
-                const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
-                const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
-                const avgWin = winningTrades.length > 0
-                  ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
-                  : 0;
-                const winRate = tradesWithPnl.length > 0 ? (winningTrades.length / tradesWithPnl.length) * 100 : 0;
-                
-                setStats({ netPnl, avgWin, winRate });
-            } catch (e) {
-                console.error("Failed to parse trade logs", e);
-            }
-        }
+  React.useEffect(() => {
+      if (isClient && user) {
+        const fetchLogs = async () => {
+            const logs = await getTradeLogs(user.uid);
+            setAllLogs(logs);
+        };
+        fetchLogs();
       }
-  }, [isClient]);
+  }, [isClient, user]);
+
+  React.useEffect(() => {
+    if (allLogs.length > 0) {
+        try {
+            const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
+            const tradesWithPnl = allTrades.filter(trade => trade.pnl !== 0);
+
+            const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
+            const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
+            const avgWin = winningTrades.length > 0
+              ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
+              : 0;
+            const winRate = tradesWithPnl.length > 0 ? (winningTrades.length / tradesWithPnl.length) * 100 : 0;
+            
+            setStats({ netPnl, avgWin, winRate });
+        } catch (e) {
+            console.error("Failed to parse trade logs", e);
+        }
+    }
+  }, [allLogs]);
+
+  if (loading || !user) {
+    return (
+        <div className="flex items-center justify-center h-screen">
+            <p>Loading...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen text-foreground">
@@ -62,10 +89,10 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-3">
-                {isClient && <TradeCalendar />}
+                {isClient && <TradeCalendar logs={allLogs} />}
               </div>
               <div className="md:col-span-1">
-                <RecentTrades />
+                <RecentTrades logs={allLogs} />
               </div>
               <div className="col-span-1">
                 <StatCard 
@@ -86,7 +113,7 @@ export default function Home() {
                   />
               </div>
               <div className="col-span-1">
-                <ProgressTracker />
+                <ProgressTracker logs={allLogs} />
               </div>
             </div>
           </div>

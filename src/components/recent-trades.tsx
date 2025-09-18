@@ -16,14 +16,16 @@ interface FlatTrade {
     isNoTrade: boolean;
 }
 
-export function RecentTrades() {
+interface RecentTradesProps {
+    logs: DayLog[];
+}
+
+export function RecentTrades({ logs }: RecentTradesProps) {
     const [recentTrades, setRecentTrades] = React.useState<FlatTrade[]>([]);
 
     React.useEffect(() => {
-        const allLogsRaw = localStorage.getItem('all-trades');
-        if (allLogsRaw) {
-            const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-            const flatTrades: FlatTrade[] = allLogs.flatMap((log, logIndex) => {
+        if (logs) {
+            const flatTrades: FlatTrade[] = logs.flatMap((log, logIndex) => {
                 const hasImage = log.trades?.some(t => !!t.analysisImage);
                 
                 return log.trades.map((trade, tradeIndex) => ({
@@ -39,7 +41,7 @@ export function RecentTrades() {
             
             setRecentTrades(flatTrades);
         }
-    }, []);
+    }, [logs]);
 
   return (
     <Card className="h-full flex flex-col">

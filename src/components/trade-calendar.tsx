@@ -26,7 +26,11 @@ interface DailyPnl {
   isLogged: boolean;
 }
 
-export function TradeCalendar() {
+interface TradeCalendarProps {
+    logs: DayLog[];
+}
+
+export function TradeCalendar({ logs }: TradeCalendarProps) {
   const router = useRouter();
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [today, setToday] = React.useState<Date | null>(null);
@@ -36,12 +40,9 @@ export function TradeCalendar() {
     const initializeCalendar = () => {
       setToday(new Date());
       
-      const allLogsRaw = localStorage.getItem('all-trades');
-      if (allLogsRaw) {
         try {
-          const allLogs: DayLog[] = JSON.parse(allLogsRaw);
           const pnl: Record<string, DailyPnl> = {};
-          allLogs.forEach((log) => {
+          logs.forEach((log) => {
             if (!log.date) return;
             const logDate = new Date(log.date);
             const dayKey = format(logDate, "yyyy-MM-dd");
@@ -60,29 +61,14 @@ export function TradeCalendar() {
           });
           setDailyPnl(pnl);
         } catch (error) {
-          console.error("Failed to parse trade logs from localStorage", error);
+          console.error("Failed to parse trade logs from props", error);
           setDailyPnl({});
         }
-      } else {
-        setDailyPnl({});
-      }
     };
     
     initializeCalendar();
 
-    const handleStorageChange = () => {
-        initializeCalendar();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also re-initialize when the component mounts, in case of navigation
-    initializeCalendar();
-
-    return () => {
-        window.removeEventListener('storage', handleStorageChange);
-    }
-  }, []);
+  }, [logs]);
 
   const firstDayOfCurrentMonth = startOfMonth(currentDate);
 

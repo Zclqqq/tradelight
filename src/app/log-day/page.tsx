@@ -25,6 +25,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDebounce } from "use-debounce";
+import { useAuth } from "@/context/auth-context";
+import { getDayLog, saveDayLog } from "@/lib/firestore";
 
 
 const sessionTradeSchema = z.object({
@@ -99,6 +101,7 @@ export default function LogDayPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const { user, loading } = useAuth();
     
     const [models, setModels] = React.useState<string[]>([]);
     const [popoverOpen, setPopoverOpen] = React.useState(false);
@@ -106,6 +109,12 @@ export default function LogDayPage() {
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
     const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
+    React.useEffect(() => {
+        if (!loading && !user) {
+            router.push('/login');
+        }
+    }, [user, loading, router]);
+    
     React.useEffect(() => {
         const savedModels = localStorage.getItem('trade-models');
         if (savedModels) {
@@ -153,40 +162,16 @@ export default function LogDayPage() {
             }],
         },
     });
-
-    const { fields, append, remove, update } = useFieldArray({
-        control: form.control,
-        name: "trades",
-    });
     
     const watchedForm = form.watch();
-    const [debouncedForm] = useDebounce(watchedForm, 500);
+    const [debouncedForm] = useDebounce(watchedForm, 1000);
 
-    const saveChanges = React.useCallback((values: DayLog) => {
-        if (!values.date) return;
-        const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
-        const dataToSave = {
-            ...values,
-            date: values.date.toISOString(),
-            trades: values.trades.map(trade => ({
-                ...trade,
-                 sessions: trade.sessions,
-            }))
-        };
-        localStorage.setItem(key, JSON.stringify(dataToSave));
+    const saveChanges = React.useCallback(async (values: DayLog) => {
+        if (!values.date || !user) return;
         
-        const allLogs = Object.keys(localStorage)
-            .filter(k => k.startsWith('trade-log-'))
-            .map(k => {
-                try {
-                    return JSON.parse(localStorage.getItem(k) as string)
-                } catch {
-                    return null;
-                }
-            }).filter(Boolean);
+        await saveDayLog(user.uid, values);
 
-        localStorage.setItem('all-trades', JSON.stringify(allLogs));
-    }, []);
+    }, [user]);
 
     React.useEffect(() => {
         if (!isInitialLoad) {
@@ -216,8 +201,6 @@ export default function LogDayPage() {
     React.useEffect(() => {
         const dateParam = searchParams.get('date');
         const date = dateParam ? new Date(dateParam) : new Date();
-        const key = `trade-log-${format(date, 'yyyy-MM-dd')}`;
-        const savedData = localStorage.getItem(key);
 
         const emptyTrade = {
             instrument: "NQ",
@@ -234,45 +217,46 @@ export default function LogDayPage() {
             totalPoints: undefined,
         };
 
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            parsedData.date = new Date(parsedData.date);
-            
-            const savedTrade = parsedData.trades?.[0] || {};
-            
-            const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
-            const fullSessions = sessionOptions.map(name => {
-                const savedSession = sessionMap.get(name);
-                return {
-                    sessionName: name,
-                    action: savedSession?.action || "none",
-                    direction: savedSession?.direction || "none",
-                    sweep: savedSession?.sweep || "none",
-                };
+        if (user) {
+            getDayLog(user.uid, date).then(savedData => {
+                if (savedData) {
+                    const savedTrade = savedData.trades?.[0] || {};
+                    
+                    const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
+                    const fullSessions = sessionOptions.map(name => {
+                        const savedSession = sessionMap.get(name);
+                        return {
+                            sessionName: name,
+                            action: savedSession?.action || "none",
+                            direction: savedSession?.direction || "none",
+                            sweep: savedSession?.sweep || "none",
+                        };
+                    });
+
+                    const tradeWithDefaults = {
+                        ...emptyTrade,
+                        ...savedTrade,
+                        sessions: fullSessions,
+                    };
+
+                    const dataWithDefaults = {
+                        date: new Date(savedData.date),
+                        notes: savedData.notes || "",
+                        trades: [tradeWithDefaults],
+                    };
+
+                    form.reset(dataWithDefaults);
+                } else {
+                    form.reset({
+                        date: date,
+                        notes: "",
+                        trades: [{...emptyTrade, sessions: defaultSessions }],
+                    });
+                }
+                setIsInitialLoad(false);
             });
-
-            const tradeWithDefaults = {
-                ...emptyTrade,
-                ...savedTrade,
-                sessions: fullSessions,
-            };
-
-            const dataWithDefaults = {
-                date: parsedData.date,
-                notes: parsedData.notes || "",
-                trades: [tradeWithDefaults],
-            };
-
-            form.reset(dataWithDefaults);
-        } else {
-             form.reset({
-                date: date,
-                notes: "",
-                trades: [{...emptyTrade, sessions: defaultSessions }],
-             });
         }
-        setIsInitialLoad(false);
-    }, [searchParams]);
+    }, [searchParams, user, form]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -303,14 +287,13 @@ export default function LogDayPage() {
     
     const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        if (form.formState.isDirty) {
-            saveChanges(form.getValues());
+        saveChanges(form.getValues()).then(() => {
             toast({
                 title: "Changes Saved!",
                 description: "Your recap has been updated.",
             });
-        }
-        router.push('/');
+            router.push('/');
+        });
     };
     
     const analysisImage = form.watch("trades.0.analysisImage");
@@ -320,6 +303,14 @@ export default function LogDayPage() {
 
     const filteredModels = models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()));
 
+    if (loading || !user) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    
     return (
         <div className="flex flex-col min-h-screen text-foreground">
             <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
