@@ -167,9 +167,6 @@ export default function LogDayPage() {
         const dataToSave = {
             ...values,
             date: values.date.toISOString(),
-            trades: values.trades.map(trade => ({
-                ...trade,
-            }))
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
         
@@ -355,7 +352,7 @@ export default function LogDayPage() {
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-2xl font-bold font-headline h-full border-0 bg-transparent text-center w-full focus-visible:ring-0 focus-visible:ring-offset-0`,
+                                                                    `text-2xl font-bold font-headline h-full border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
@@ -739,5 +736,6 @@ export default function LogDayPage() {
   );
 }
 
+    
     
     
