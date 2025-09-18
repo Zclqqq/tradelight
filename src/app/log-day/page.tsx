@@ -164,15 +164,8 @@ export default function LogDayPage() {
 
     const saveChanges = React.useCallback((values: DayLog) => {
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
-        
-        const tradesWithFilteredSessions = values.trades.map(trade => ({
-            ...trade,
-            sessions: trade.sessions?.filter(session => session.action && session.action !== "none")
-        }));
-        
         const dataToSave = {
             ...values,
-            trades: tradesWithFilteredSessions,
             date: values.date.toISOString(), 
         };
         localStorage.setItem(key, JSON.stringify(dataToSave));
@@ -352,14 +345,14 @@ export default function LogDayPage() {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className="relative">
-                                                            <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3 text-4xl font-bold font-headline", pnlColorClass)}>
+                                                        <div className="relative flex items-center">
+                                                            <span className={cn("text-4xl font-bold font-headline pl-3", pnlColorClass)}>
                                                                 $
                                                             </span>
                                                             <Input
                                                                 type="number"
                                                                 className={cn(
-                                                                    `text-4xl font-bold font-headline h-auto p-0 pl-10 border-0 focus-visible:ring-0 bg-transparent`,
+                                                                    `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
                                                                     `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                     pnlColorClass
                                                                 )}
@@ -743,3 +736,5 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
