@@ -577,7 +577,7 @@ export default function LogDayPage() {
                                                                                 >
                                                                                     {model}
                                                                                 </button>
-                                                                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteModel(model)}>
+                                                                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={()={() => deleteModel(model)}}>
                                                                                     <X className="h-4 w-4" />
                                                                                 </Button>
                                                                             </div>
