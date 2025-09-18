@@ -665,7 +665,7 @@ export default function LogDayPage() {
                                                                         render={({ field }) => (
                                                                             <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                                 <FormControl>
-                                                                                    <SelectTrigger><SelectValue placeholder="פעולה" /></SelectTrigger>
+                                                                                    <SelectTrigger><SelectValue placeholder="Action" /></SelectTrigger>
                                                                                 </FormControl>
                                                                                 <SelectContent>
                                                                                     <SelectItem value="none">-</SelectItem>
@@ -684,12 +684,12 @@ export default function LogDayPage() {
                                                                             render={({ field }) => (
                                                                                 <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                                     <FormControl>
-                                                                                        <SelectTrigger><SelectValue placeholder="כיוון" /></SelectTrigger>
+                                                                                        <SelectTrigger><SelectValue placeholder="Direction" /></SelectTrigger>
                                                                                     </FormControl>
                                                                                     <SelectContent>
                                                                                         <SelectItem value="none">-</SelectItem>
-                                                                                        <SelectItem value="up">התרחב למעלה</SelectItem>
-                                                                                        <SelectItem value="down">התרחב למטה</SelectItem>
+                                                                                        <SelectItem value="up">Expansion Up</SelectItem>
+                                                                                        <SelectItem value="down">Expansion Down</SelectItem>
                                                                                     </SelectContent>
                                                                                 </Select>
                                                                             )}
@@ -702,13 +702,13 @@ export default function LogDayPage() {
                                                                             render={({ field }) => (
                                                                                 <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                                     <FormControl>
-                                                                                        <SelectTrigger><SelectValue placeholder="סוויפ" /></SelectTrigger>
+                                                                                        <SelectTrigger><SelectValue placeholder="Sweep" /></SelectTrigger>
                                                                                     </FormControl>
                                                                                     <SelectContent>
                                                                                         <SelectItem value="none">-</SelectItem>
-                                                                                        <SelectItem value="high">לקח גבוה</SelectItem>
-                                                                                        <SelectItem value="low">לקח נמוך</SelectItem>
-                                                                                        <SelectItem value="both">שניהם</SelectItem>
+                                                                                        <SelectItem value="high">Sweep High</SelectItem>
+                                                                                        <SelectItem value="low">Sweep Low</SelectItem>
+                                                                                        <SelectItem value="both">Sweep Both</SelectItem>
                                                                                     </SelectContent>
                                                                                 </Select>
                                                                             )}
