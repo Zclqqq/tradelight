@@ -81,3 +81,5 @@ export function RecentTrades({ logs }: RecentTradesProps) {
     </Card>
   );
 }
+
+    

@@ -86,3 +86,5 @@ export async function getTradeLogs(userId: string): Promise<DayLog[]> {
     
     return logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
+
+    

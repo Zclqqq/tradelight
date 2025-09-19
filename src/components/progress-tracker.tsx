@@ -46,3 +46,5 @@ export function ProgressTracker({ logs }: ProgressTrackerProps) {
         </Card>
     );
 }
+
+    

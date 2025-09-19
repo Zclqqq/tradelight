@@ -182,3 +182,5 @@ export function TradeCalendar({ logs }: TradeCalendarProps) {
     </div>
   );
 }
+
+    
