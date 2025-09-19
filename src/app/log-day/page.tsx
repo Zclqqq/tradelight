@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { Plus, CalendarIcon, Upload, X, ChevronsUpDown } from "lucide-react";
+import { Plus, CalendarIcon, Upload, X, ChevronsUpDown, ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -304,7 +304,11 @@ export default function LogDayPage() {
     return (
         <div className="flex flex-col min-h-screen text-foreground">
             <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
-                <div className="w-10"></div>
+                <div className="w-10">
+                    <Button variant="ghost" size="icon" onClick={handleBackClick}>
+                        <ArrowLeft />
+                    </Button>
+                </div>
                 <h1 className="text-xl font-bold font-headline text-center">
                     Recap for {format(form.watch("date"), "M/d/yy")}
                 </h1>
@@ -330,19 +334,19 @@ export default function LogDayPage() {
                                                         <FormControl>
                                                             <div className="relative">
                                                                 <div className={cn("flex items-center", pnlColorClass)}>
-                                                                    <span className="text-3xl font-bold font-headline">
+                                                                    <span className="text-5xl font-bold font-headline">
                                                                         $
                                                                     </span>
                                                                     <Input
                                                                         type="number"
                                                                         placeholder="0"
                                                                         className={cn(
-                                                                            `text-3xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
+                                                                            `text-5xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
                                                                             `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                             pnlColorClass
                                                                         )}
                                                                         {...field}
-                                                                        value={field.value ?? ""}
+                                                                        value={field.value === 0 ? '' : (field.value ?? '')}
                                                                         onChange={(e) => {
                                                                             const value = e.target.value;
                                                                             field.onChange(value === '' ? null : Number(value));
@@ -732,7 +736,5 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
 
     
