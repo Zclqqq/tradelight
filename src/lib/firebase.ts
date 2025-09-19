@@ -1,7 +1,7 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqBTEoc5EVfYi1jX8yGsz6m8eHLehvZKY",
