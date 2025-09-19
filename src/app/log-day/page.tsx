@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
+import { useDebounce } from "use-debounce";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,6 +131,30 @@ export default function LogDayPage() {
         },
     });
 
+    const watchedForm = form.watch();
+    const [debouncedForm] = useDebounce(watchedForm, 1500);
+
+    React.useEffect(() => {
+      const performSave = async () => {
+        if (user && form.formState.isDirty) {
+          try {
+            await saveDayLog(user.uid, form.getValues());
+            // Optionally, show a subtle saving indicator instead of a toast
+            console.log("Autosaved");
+          } catch (error) {
+            console.error("Autosave failed", error);
+            toast({
+              title: "Autosave Failed",
+              description: "Could not save your changes.",
+              variant: "destructive",
+            });
+          }
+        }
+      };
+      performSave();
+    }, [debouncedForm, user, form, toast]);
+
+
     const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
 
@@ -145,19 +170,8 @@ export default function LogDayPage() {
         }
     }, [form, isPnlManuallySet]);
     
-    const handleBackClick = async () => {
-        try {
-            await saveDayLog(user!.uid, form.getValues());
-            toast({ title: "Changes Saved!" });
-            router.push('/');
-        } catch (error) {
-            console.error("Failed to save data", error);
-            toast({
-                title: "Save Failed",
-                description: "Could not save your changes. Please try again.",
-                variant: "destructive",
-            });
-        }
+    const handleBackClick = () => {
+        router.push('/');
     };
     
     React.useEffect(() => {
@@ -339,7 +353,7 @@ export default function LogDayPage() {
                                                                     </span>
                                                                     <Input
                                                                         type="number"
-                                                                        placeholder="0"
+                                                                        placeholder=""
                                                                         className={cn(
                                                                             `text-5xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
                                                                             `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
@@ -349,7 +363,7 @@ export default function LogDayPage() {
                                                                         value={field.value === 0 ? '' : (field.value ?? '')}
                                                                         onChange={(e) => {
                                                                             const value = e.target.value;
-                                                                            field.onChange(value === '' ? null : Number(value));
+                                                                            field.onChange(value === '' ? 0 : Number(value));
                                                                             setIsPnlManuallySet(true);
                                                                         }}
                                                                          onBlur={() => {
