@@ -77,6 +77,23 @@ const defaultSessions = sessionOptions.map(name => ({
   sweep: "none" as const
 }));
 
+const emptyTrade = {
+    instrument: "NQ",
+    model: "",
+    pnl: 0,
+    entryTime: "",
+    exitTime: "",
+    contracts: 0,
+    tradeTp: 0,
+    tradeSl: 0,
+    totalPoints: 0,
+    analysisImage: "",
+    analysisText: "",
+    chartPerformance: "",
+    sessions: defaultSessions,
+};
+
+
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -113,46 +130,29 @@ export default function LogDayPage() {
         defaultValues: {
             date: new Date(),
             notes: "",
-            trades: [{ 
-                instrument: "MNQ", 
-                pnl: 0, 
-                sessions: defaultSessions,
-                analysisImage: "",
-                analysisText: "",
-                chartPerformance: "",
-                model: "",
-                entryTime: "",
-                exitTime: "",
-                contracts: 0,
-                tradeTp: 0,
-                tradeSl: 0,
-                totalPoints: 0,
-            }],
+            trades: [emptyTrade],
         },
     });
-    
-    const performSave = React.useCallback(async (data: DayLog) => {
-        if (user) {
-          try {
-            await saveDayLog(user.uid, data);
 
+    const performSave = React.useCallback(async (data: DayLog) => {
+        if (!user) return;
+        try {
+            await saveDayLog(user.uid, data);
             const dayKey = format(new Date(data.date), 'yyyy-MM-dd');
             localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(data));
-            console.log("Autosaved to Firestore and localStorage");
-          } catch (error) {
+        } catch (error) {
             console.error("Autosave failed", error);
             toast({
-              title: "Autosave Failed",
-              description: "Could not save your changes.",
-              variant: "destructive",
+                title: "Autosave Failed",
+                description: "Could not save your changes.",
+                variant: "destructive",
             });
-          }
         }
-      }, [user, toast]);
+    }, [user, toast]);
 
     const debouncedSave = useDebouncedCallback((data: DayLog) => {
         performSave(data);
-    }, 1000);
+    }, 2000);
 
     React.useEffect(() => {
         const subscription = form.watch((value) => {
@@ -214,36 +214,19 @@ export default function LogDayPage() {
 
     
     React.useEffect(() => {
-        let isMounted = true;
+        if (!user) return;
+
         const dateParam = searchParams.get('date');
         const date = dateParam ? new Date(dateParam) : new Date();
-
-        const emptyTrade = {
-            instrument: "NQ",
-            pnl: 0,
-            analysisImage: "",
-            analysisText: "",
-            chartPerformance: "",
-            model: "",
-            entryTime: "",
-            exitTime: "",
-            contracts: 0,
-            tradeTp: 0,
-            tradeSl: 0,
-            totalPoints: 0,
-        };
+        const dayKey = format(date, 'yyyy-MM-dd');
         
         const loadData = async () => {
-            if (!user) return;
-
-            const dayKey = format(date, 'yyyy-MM-dd');
-            const localDataStr = localStorage.getItem(`dayLog-${dayKey}`);
+            const localDataStr = localStorage.getItem(`dayKey-${dayKey}`);
             let dataToLoad: DayLog | null = null;
-
+            
             if (localDataStr) {
                 try {
                     dataToLoad = JSON.parse(localDataStr) as DayLog;
-                    console.log("Loaded from localStorage");
                 } catch (e) {
                     console.error("Failed to parse localStorage data", e);
                 }
@@ -251,17 +234,13 @@ export default function LogDayPage() {
 
             if (!dataToLoad) {
                 dataToLoad = await getDayLog(user.uid, date);
-                 if (dataToLoad) {
-                    console.log("Loaded from Firestore");
+                if (dataToLoad) {
                     localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(dataToLoad));
                 }
             }
             
-            if (!isMounted) return;
-
             if (dataToLoad) {
                 const savedTrade = dataToLoad.trades?.[0] || {};
-                
                 const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
                 const fullSessions = sessionOptions.map(name => {
                     const savedSession = sessionMap.get(name);
@@ -273,35 +252,21 @@ export default function LogDayPage() {
                     };
                 });
 
-                const tradeWithDefaults = {
-                    ...emptyTrade,
-                    ...savedTrade,
-                    sessions: fullSessions,
-                };
-
-                const dataWithDefaults = {
+                form.reset({
                     date: new Date(dataToLoad.date),
                     notes: dataToLoad.notes || "",
-                    trades: [tradeWithDefaults],
-                };
-
-                form.reset(dataWithDefaults);
+                    trades: [{ ...emptyTrade, ...savedTrade, sessions: fullSessions }],
+                });
             } else {
                 form.reset({
                     date: date,
                     notes: "",
-                    trades: [{...emptyTrade, sessions: defaultSessions }],
+                    trades: [emptyTrade],
                 });
             }
-            setTimeout(() => form.reset(form.getValues()), 100);
         };
 
         loadData();
-        
-        return () => {
-            isMounted = false;
-        };
-
     }, [searchParams, user, form]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -313,7 +278,6 @@ export default function LogDayPage() {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
-                        form.trigger();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -327,17 +291,14 @@ export default function LogDayPage() {
             const reader = new FileReader();
             reader.onload = (e) => {
                 form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
-                form.trigger();
             };
             reader.readAsDataURL(file);
         }
     };
     
     const analysisImage = form.watch("trades.0.analysisImage");
-        
     const pnlValue = form.watch("trades.0.pnl") || 0;
     const pnlColorClass = pnlValue > 0 ? 'text-[hsl(var(--chart-1))]' : pnlValue < 0 ? 'text-destructive' : 'text-foreground';
-
     const filteredModels = models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()));
 
     if (loading || !user) {
@@ -497,7 +458,7 @@ export default function LogDayPage() {
                                                                         onValueChange={(value) => {
                                                                             field.onChange(value);
                                                                             setIsPnlManuallySet(false);
-                                                                            updatePnl();
+                                                                            setTimeout(updatePnl, 0);
                                                                         }}
                                                                         value={field.value}
                                                                         className="flex items-center space-x-2"
@@ -556,7 +517,6 @@ export default function LogDayPage() {
                                                                             if (date) {
                                                                                 performSave(form.getValues());
                                                                                 router.push(`/log-day?date=${format(date, 'yyyy-MM-dd')}`);
-                                                                                field.onChange(date);
                                                                             }
                                                                         }}
                                                                         disabled={(date) =>
@@ -653,7 +613,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
-                                                                updatePnl();
+                                                                setTimeout(updatePnl, 0);
                                                             }} />}
                                                         />
                                                     </TradeDataField>
@@ -665,7 +625,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
-                                                                updatePnl();
+                                                                setTimeout(updatePnl, 0);
                                                             }}/>}
                                                         />
                                                     </TradeDataField>
@@ -783,3 +743,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
