@@ -164,24 +164,23 @@ export default function LogDayPage() {
     const watchedInstrument = form.watch("trades.0.instrument");
     const watchedPoints = form.watch("trades.0.totalPoints");
     const watchedContracts = form.watch("trades.0.contracts");
-    const watchedPnl = form.watch("trades.0.pnl");
-
+    
     const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
-        
+
         const instrument = form.getValues("trades.0.instrument") || "NQ";
         const points = form.getValues("trades.0.totalPoints") || 0;
         const contracts = form.getValues("trades.0.contracts") || 0;
-        
+
         const pointValue = instrumentPointValues[instrument] || 0;
-        
         const calculatedPnl = points * pointValue * contracts;
 
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
     }, [form, isPnlManuallySet]);
-    
+
+
     React.useEffect(() => {
         updatePnl();
     }, [watchedInstrument, watchedPoints, watchedContracts, updatePnl]);
@@ -359,22 +358,15 @@ export default function LogDayPage() {
                                                                     {...field}
                                                                     value={field.value ?? ""}
                                                                     onChange={(e) => {
-                                                                        setIsPnlManuallySet(true);
                                                                         const value = e.target.value;
-                                                                        field.onChange(value === '' ? 0 : Number(value));
+                                                                        field.onChange(value === '' ? null : Number(value));
+                                                                        setIsPnlManuallySet(true);
                                                                     }}
-                                                                    onBlur={() => {
+                                                                     onBlur={() => {
                                                                         const pnl = form.getValues("trades.0.pnl");
-                                                                        const instrument = form.getValues("trades.0.instrument") || "NQ";
-                                                                        const points = form.getValues("trades.0.totalPoints") || 0;
-                                                                        const contracts = form.getValues("trades.0.contracts") || 0;
-                                                                        const pointValue = instrumentPointValues[instrument] || 0;
-                                                                        const calculatedPnl = points * pointValue * contracts;
-                                                                        
-                                                                        if (pnl !== calculatedPnl) {
-                                                                            setIsPnlManuallySet(true);
-                                                                        } else {
+                                                                        if (pnl === null || pnl === 0) {
                                                                             setIsPnlManuallySet(false);
+                                                                            updatePnl();
                                                                         }
                                                                     }}
                                                                 />
