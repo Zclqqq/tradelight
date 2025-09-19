@@ -135,11 +135,11 @@ export default function LogDayPage() {
     const [debouncedForm] = useDebounce(watchedForm, 1500);
 
     React.useEffect(() => {
+      let isMounted = true;
       const performSave = async () => {
-        if (user && form.formState.isDirty) {
+        if (user && form.formState.isDirty && isMounted) {
           try {
             await saveDayLog(user.uid, form.getValues());
-            // Optionally, show a subtle saving indicator instead of a toast
             console.log("Autosaved");
           } catch (error) {
             console.error("Autosave failed", error);
@@ -152,6 +152,9 @@ export default function LogDayPage() {
         }
       };
       performSave();
+      return () => {
+          isMounted = false;
+      };
     }, [debouncedForm, user, form, toast]);
 
 
@@ -191,7 +194,7 @@ export default function LogDayPage() {
         const updatedModels = [...models, model];
         setModels(updatedModels);
         localStorage.setItem('trade-models', JSON.stringify(updatedModels));
-        form.setValue('trades.0.model', model);
+        form.setValue('trades.0.model', model, { shouldDirty: true });
         setNewModel('');
         setPopoverOpen(false);
     };
@@ -346,15 +349,15 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="flex items-start">
-                                                                <span className={cn("text-6xl font-bold font-headline leading-none", pnlColorClass)}>
+                                                            <div className="relative">
+                                                                <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3 text-3xl font-bold font-headline", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
                                                                     placeholder="0"
                                                                     className={cn(
-                                                                        `text-2xl font-bold font-headline h-auto border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 -ml-1`,
+                                                                        `text-3xl font-bold font-headline h-auto border-border/20 bg-transparent focus-visible:ring-ring focus-visible:ring-offset-background p-3 pl-10 text-right`,
                                                                         `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                         pnlColorClass
                                                                     )}
@@ -748,5 +751,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
