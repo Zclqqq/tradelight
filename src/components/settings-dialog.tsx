@@ -19,7 +19,6 @@ import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import { FormItem, FormControl } from "./ui/form";
 
 const themes = [
     { name: "Default", value: "theme-default", colors: ["#080808", "#FAFAFA"] },
@@ -162,12 +161,10 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
                 className="flex items-center space-x-2"
             >
                 {fonts.map((font) => (
-                    <FormItem key={font.value} className="flex items-center space-x-1 space-y-0">
-                        <FormControl>
-                             <RadioGroupItem value={font.value} id={font.value} />
-                        </FormControl>
+                    <div key={font.value} className="flex items-center space-x-1 space-y-0">
+                        <RadioGroupItem value={font.value} id={font.value} />
                         <Label htmlFor={font.value} className="font-normal">{font.name}</Label>
-                    </FormItem>
+                    </div>
                 ))}
             </RadioGroup>
           </div>
