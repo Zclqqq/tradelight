@@ -271,25 +271,6 @@ export default function LogDayPage() {
         }
     };
     
-    const handleBackClick = async () => {
-        if (!user) return;
-        try {
-            await saveDayLog(user.uid, form.getValues());
-            toast({
-                title: "Changes Saved!",
-                description: "Your recap has been updated.",
-            });
-            router.push('/');
-        } catch (error) {
-            console.error("Failed to save log:", error);
-            toast({
-                title: "Save Failed",
-                description: "Could not save your changes. Please try again.",
-                variant: "destructive",
-            });
-        }
-    };
-    
     const analysisImage = form.watch("trades.0.analysisImage");
         
     const pnlValue = form.watch("trades.0.pnl") || 0;
@@ -308,9 +289,7 @@ export default function LogDayPage() {
     return (
         <div className="flex flex-col min-h-screen text-foreground">
             <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
-                <Button variant="ghost" size="icon" onClick={handleBackClick}>
-                    <ArrowLeft />
-                </Button>
+                <div className="w-10"></div>
                 <h1 className="text-xl font-bold font-headline text-center">
                     Recap for {format(form.watch("date"), "M/d/yy")}
                 </h1>
@@ -736,3 +715,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
