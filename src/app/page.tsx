@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
-import { LogOut } from "lucide-react";
+import { Settings } from "lucide-react";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -16,15 +16,7 @@ import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
 import { getTradeLogs } from "@/lib/firestore";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { SettingsDialog } from "@/components/settings-dialog";
 
 
 export default function Home() {
@@ -38,6 +30,7 @@ export default function Home() {
       winRate: 0,
   });
   const [isClient, setIsClient] = React.useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   React.useEffect(() => {
         setIsClient(true);
@@ -100,69 +93,60 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen text-foreground">
-      <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="flex items-center gap-4">
-            {user && (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="secondary" className="rounded-full">
-                            {user.displayName || user.email}
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleLogout}>
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Log out</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )}
-        </div>
-        <Button variant="outline" asChild>
-          <Link href="/log-day">Log Day</Link>
-        </Button>
-      </header>
+    <>
+      <SettingsDialog 
+        isOpen={isSettingsOpen} 
+        onOpenChange={setIsSettingsOpen} 
+        onLogout={handleLogout}
+      />
+      <div className="flex flex-col h-screen text-foreground">
+        <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
+          <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)}>
+                  <Settings />
+              </Button>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/log-day">Log Day</Link>
+          </Button>
+        </header>
 
-      <main className="flex-1 p-4 overflow-auto">
-        <div className="mx-auto w-full max-w-7xl">
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-3">
-                {isClient && <TradeCalendar logs={allLogs} />}
-              </div>
-              <div className="md:col-span-1">
-                <RecentTrades logs={allLogs} />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Net P&L" 
-                    value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
-                />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Avg Trade Win" 
-                    value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+        <main className="flex-1 p-4 overflow-auto">
+          <div className="mx-auto w-full max-w-7xl">
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-3">
+                  {isClient && <TradeCalendar logs={allLogs} />}
+                </div>
+                <div className="md:col-span-1">
+                  <RecentTrades logs={allLogs} />
+                </div>
+                <div className="col-span-1">
+                  <StatCard 
+                      title="Net P&L" 
+                      value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
                   />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Win Rate" 
-                    value={`${stats.winRate.toFixed(0)}%`}
-                  />
-              </div>
-              <div className="col-span-1">
-                <ProgressTracker logs={allLogs} />
+                </div>
+                <div className="col-span-1">
+                  <StatCard 
+                      title="Avg Trade Win" 
+                      value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                    />
+                </div>
+                <div className="col-span-1">
+                  <StatCard 
+                      title="Win Rate" 
+                      value={`${stats.winRate.toFixed(0)}%`}
+                    />
+                </div>
+                <div className="col-span-1">
+                  <ProgressTracker logs={allLogs} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
-
-    
