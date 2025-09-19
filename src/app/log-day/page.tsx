@@ -139,8 +139,13 @@ export default function LogDayPage() {
       const performSave = async () => {
         if (user && form.formState.isDirty && isMounted) {
           try {
-            await saveDayLog(user.uid, form.getValues());
-            console.log("Autosaved");
+            const values = form.getValues();
+            await saveDayLog(user.uid, values);
+
+            const dayKey = format(new Date(values.date), 'yyyy-MM-dd');
+            localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(values));
+
+            console.log("Autosaved to Firestore and localStorage");
           } catch (error) {
             console.error("Autosave failed", error);
             toast({
@@ -228,47 +233,70 @@ export default function LogDayPage() {
             tradeSl: 0,
             totalPoints: 0,
         };
+        
+        const loadData = async () => {
+            if (!user) return;
 
-        if (user) {
-            getDayLog(user.uid, date).then(savedData => {
-                if (!isMounted) return;
+            const dayKey = format(date, 'yyyy-MM-dd');
+            const localDataStr = localStorage.getItem(`dayLog-${dayKey}`);
+            let dataToLoad: DayLog | null = null;
 
-                if (savedData) {
-                    const savedTrade = savedData.trades?.[0] || {};
-                    
-                    const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
-                    const fullSessions = sessionOptions.map(name => {
-                        const savedSession = sessionMap.get(name);
-                        return {
-                            sessionName: name,
-                            action: savedSession?.action || "none",
-                            direction: savedSession?.direction || "none",
-                            sweep: savedSession?.sweep || "none",
-                        };
-                    });
-
-                    const tradeWithDefaults = {
-                        ...emptyTrade,
-                        ...savedTrade,
-                        sessions: fullSessions,
-                    };
-
-                    const dataWithDefaults = {
-                        date: new Date(savedData.date),
-                        notes: savedData.notes || "",
-                        trades: [tradeWithDefaults],
-                    };
-
-                    form.reset(dataWithDefaults);
-                } else {
-                    form.reset({
-                        date: date,
-                        notes: "",
-                        trades: [{...emptyTrade, sessions: defaultSessions }],
-                    });
+            if (localDataStr) {
+                try {
+                    dataToLoad = JSON.parse(localDataStr) as DayLog;
+                    console.log("Loaded from localStorage");
+                } catch (e) {
+                    console.error("Failed to parse localStorage data", e);
                 }
-            });
-        }
+            }
+
+            if (!dataToLoad) {
+                dataToLoad = await getDayLog(user.uid, date);
+                 if (dataToLoad) {
+                    console.log("Loaded from Firestore");
+                    localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(dataToLoad));
+                }
+            }
+            
+            if (!isMounted) return;
+
+            if (dataToLoad) {
+                const savedTrade = dataToLoad.trades?.[0] || {};
+                
+                const sessionMap = new Map((savedTrade.sessions || []).map((s: any) => [s.sessionName, s]));
+                const fullSessions = sessionOptions.map(name => {
+                    const savedSession = sessionMap.get(name);
+                    return {
+                        sessionName: name,
+                        action: savedSession?.action || "none",
+                        direction: savedSession?.direction || "none",
+                        sweep: savedSession?.sweep || "none",
+                    };
+                });
+
+                const tradeWithDefaults = {
+                    ...emptyTrade,
+                    ...savedTrade,
+                    sessions: fullSessions,
+                };
+
+                const dataWithDefaults = {
+                    date: new Date(dataToLoad.date),
+                    notes: dataToLoad.notes || "",
+                    trades: [tradeWithDefaults],
+                };
+
+                form.reset(dataWithDefaults);
+            } else {
+                form.reset({
+                    date: date,
+                    notes: "",
+                    trades: [{...emptyTrade, sessions: defaultSessions }],
+                });
+            }
+        };
+
+        loadData();
         
         return () => {
             isMounted = false;
