@@ -336,7 +336,7 @@ export default function LogDayPage() {
     const analysisImage = form.watch("trades.0.analysisImage");
         
     const pnlValue = form.watch("trades.0.pnl") || 0;
-    const pnlColorClass = pnlValue > 0 ? 'text-[hsl(var(--chart-1))]' : pnlValue < 0 ? 'text-[hsl(var(--destructive))]' : 'text-foreground';
+    const pnlColorClass = pnlValue > 0 ? 'text-[hsl(var(--chart-1))]' : pnlValue < 0 ? 'text-destructive' : 'text-foreground';
 
     const filteredModels = models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()));
 
@@ -379,7 +379,7 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="flex items-baseline">
+                                                            <div className="flex items-center">
                                                                 <span className={cn("text-3xl font-bold", pnlColorClass)}>
                                                                     $
                                                                 </span>
@@ -388,7 +388,7 @@ export default function LogDayPage() {
                                                                     placeholder="0"
                                                                     className={cn(
                                                                         "p-0 h-auto border-0 text-3xl font-bold bg-transparent focus-visible:ring-0",
-                                                                        "w-full",
+                                                                        "flex-1",
                                                                         pnlColorClass,
                                                                         "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                                     )}
@@ -782,3 +782,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
