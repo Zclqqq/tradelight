@@ -5,6 +5,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
@@ -13,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
 import { getTradeLogs } from "@/lib/firestore";
-import { Logo } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
@@ -71,6 +72,15 @@ export default function Home() {
     }
   }, [allLogs]);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
+  };
+
   if (loading || !user) {
     return (
         <div className="flex items-center justify-center h-screen">
@@ -83,11 +93,8 @@ export default function Home() {
     <div className="flex flex-col h-screen text-foreground">
       <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Logo className="w-8 h-8" />
-            <h1 className="text-xl font-bold font-headline">TradeLight</h1>
-          </div>
           {user && <Badge variant="secondary">{user.displayName || user.email}</Badge>}
+           <Button variant="ghost" size="sm" onClick={handleLogout}>Log Out</Button>
         </div>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>
