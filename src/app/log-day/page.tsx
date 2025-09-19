@@ -105,6 +105,7 @@ export default function LogDayPage() {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
+
     
     React.useEffect(() => {
         if (!loading && !user) {
@@ -163,21 +164,28 @@ export default function LogDayPage() {
     const watchedInstrument = form.watch("trades.0.instrument");
     const watchedPoints = form.watch("trades.0.totalPoints");
     const watchedContracts = form.watch("trades.0.contracts");
+    const watchedPnl = form.watch("trades.0.pnl");
 
     const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
-
-        const instrument = form.getValues("trades.0.instrument");
-        const pointValue = instrumentPointValues[instrument] || 0;
+        
+        const instrument = form.getValues("trades.0.instrument") || "NQ";
         const points = form.getValues("trades.0.totalPoints") || 0;
         const contracts = form.getValues("trades.0.contracts") || 0;
         
+        const pointValue = instrumentPointValues[instrument] || 0;
+        
         const calculatedPnl = points * pointValue * contracts;
+
         if (form.getValues("trades.0.pnl") !== calculatedPnl) {
-            form.setValue("trades.0.pnl", calculatedPnl);
+            form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
     }, [form, isPnlManuallySet]);
-
+    
+    React.useEffect(() => {
+        updatePnl();
+    }, [watchedInstrument, watchedPoints, watchedContracts, updatePnl]);
+    
 
     React.useEffect(() => {
         let isMounted = true;
@@ -274,13 +282,21 @@ export default function LogDayPage() {
     };
     
     const handleBackClick = async () => {
-        if(user) {
+        if (!user) return;
+        try {
             await saveDayLog(user.uid, form.getValues());
             toast({
                 title: "Changes Saved!",
                 description: "Your recap has been updated.",
             });
             router.push('/');
+        } catch (error) {
+            console.error("Failed to save log:", error);
+            toast({
+                title: "Save Failed",
+                description: "Could not save your changes. Please try again.",
+                variant: "destructive",
+            });
         }
     };
     
@@ -347,11 +363,18 @@ export default function LogDayPage() {
                                                                         const value = e.target.value;
                                                                         field.onChange(value === '' ? 0 : Number(value));
                                                                     }}
-                                                                    onBlur={(e) => {
-                                                                        const value = e.target.valueAsNumber;
-                                                                        const calculatedPnl = (watchedPoints || 0) * (instrumentPointValues[watchedInstrument] || 0) * (watchedContracts || 0);
-                                                                        if (value === calculatedPnl) {
-                                                                           setIsPnlManuallySet(false);
+                                                                    onBlur={() => {
+                                                                        const pnl = form.getValues("trades.0.pnl");
+                                                                        const instrument = form.getValues("trades.0.instrument") || "NQ";
+                                                                        const points = form.getValues("trades.0.totalPoints") || 0;
+                                                                        const contracts = form.getValues("trades.0.contracts") || 0;
+                                                                        const pointValue = instrumentPointValues[instrument] || 0;
+                                                                        const calculatedPnl = points * pointValue * contracts;
+                                                                        
+                                                                        if (pnl !== calculatedPnl) {
+                                                                            setIsPnlManuallySet(true);
+                                                                        } else {
+                                                                            setIsPnlManuallySet(false);
                                                                         }
                                                                     }}
                                                                 />
@@ -445,7 +468,6 @@ export default function LogDayPage() {
                                                                         onValueChange={(value) => {
                                                                             field.onChange(value);
                                                                             setIsPnlManuallySet(false);
-                                                                            updatePnl();
                                                                         }}
                                                                         value={field.value}
                                                                         className="flex items-center space-x-2"
@@ -600,7 +622,6 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
-                                                                updatePnl();
                                                             }} />}
                                                         />
                                                     </TradeDataField>
@@ -612,7 +633,6 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
-                                                                updatePnl();
                                                             }}/>}
                                                         />
                                                     </TradeDataField>
@@ -730,3 +750,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
