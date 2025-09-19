@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 
 const themes = [
+    { name: "Light", value: "light", colors: ["#FFFFFF", "#000000"] },
     { name: "Default", value: "theme-default", colors: ["#080808", "#FAFAFA"] },
     { name: "Zinc", value: "theme-zinc", colors: ["#18181B", "#FAFAFA"] },
     { name: "Rose", value: "theme-rose", colors: ["#26000b", "#FFE4E6"] },
@@ -60,20 +61,22 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
     setSelectedFont(storedFont);
     setParticlesEnabled(storedParticles);
     
-    document.body.className = `font-body antialiased text-foreground bg-background font-light ${storedTheme} ${storedFont}`;
+    document.documentElement.className = `${storedTheme}`;
+    document.body.className = `font-body antialiased text-foreground bg-background font-light ${storedFont}`;
 
   }, [user]);
 
   const handleThemeChange = (theme: string) => {
     const currentFont = localStorage.getItem("app-font") || "font-body";
-    document.body.className = `font-body antialiased text-foreground bg-background font-light ${theme} ${currentFont}`;
+    document.documentElement.className = `${theme}`;
+    document.body.className = `font-body antialiased text-foreground bg-background font-light ${currentFont}`;
     localStorage.setItem("app-theme", theme);
     setSelectedTheme(theme);
   };
   
   const handleFontChange = (font: string) => {
-    const currentTheme = localStorage.getItem("app-theme") || "theme-default";
-    document.body.className = `font-body antialiased text-foreground bg-background font-light ${currentTheme} ${font}`;
+    document.body.classList.remove("font-body", "font-mono");
+    document.body.classList.add(font);
     localStorage.setItem("app-font", font);
     setSelectedFont(font);
   };
@@ -133,7 +136,7 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
 
           <div className="space-y-3">
             <Label>Theme</Label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
                 {themes.map((theme) => (
                     <button
                         key={theme.value}

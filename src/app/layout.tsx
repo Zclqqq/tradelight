@@ -23,27 +23,34 @@ export default function RootLayout({
 
   useEffect(() => {
     setIsClient(true);
-    const handleStorageChange = () => {
+    
+    const handleThemeAndParticles = () => {
+      const storedTheme = localStorage.getItem("app-theme") || "theme-default";
+      const storedFont = localStorage.getItem("app-font") || "font-body";
       const storedParticles = localStorage.getItem("app-particles") === "true";
+      
+      document.documentElement.className = storedTheme;
+      document.body.classList.add(storedFont);
       setParticlesEnabled(storedParticles);
     };
 
-    handleStorageChange(); // Set initial value
+    handleThemeAndParticles();
 
-    window.addEventListener('storage', handleStorageChange);
-    
-    const customEvent = 'onLocalStorageChange';
-    window.addEventListener(customEvent, handleStorageChange);
+    const storageChangeHandler = () => {
+      handleThemeAndParticles();
+    };
 
+    window.addEventListener('storage', storageChangeHandler);
+    window.addEventListener('onLocalStorageChange', storageChangeHandler);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener(customEvent, handleStorageChange);
+      window.removeEventListener('storage', storageChangeHandler);
+      window.removeEventListener('onLocalStorageChange', storageChangeHandler);
     };
   }, []);
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
