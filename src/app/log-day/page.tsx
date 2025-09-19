@@ -346,15 +346,15 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className={cn("flex items-center", pnlColorClass)}>
-                                                                <span className="text-5xl font-bold font-headline">
+                                                            <div className="flex items-baseline">
+                                                                <span className={cn("text-3xl font-bold font-headline self-start pt-1 pr-1", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
-                                                                    placeholder=""
+                                                                    placeholder="0"
                                                                     className={cn(
-                                                                        `text-5xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
+                                                                        `text-5xl font-bold font-headline h-auto border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 p-0`,
                                                                         `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                         pnlColorClass
                                                                     )}
@@ -748,9 +748,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
-
-    
-
-    
