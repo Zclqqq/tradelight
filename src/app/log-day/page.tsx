@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/auth-context";
 import { getDayLog, saveDayLog } from "@/lib/firestore";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 
 const sessionTradeSchema = z.object({
@@ -343,7 +344,7 @@ export default function LogDayPage() {
     if (loading || !user) {
         return (
             <div className="flex items-center justify-center h-screen">
-                <p>Loading...</p>
+                <LoadingSpinner />
             </div>
         );
     }
@@ -783,4 +784,5 @@ export default function LogDayPage() {
     );
 }
 
+    
     

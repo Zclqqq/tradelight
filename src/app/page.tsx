@@ -17,6 +17,7 @@ import type { DayLog } from "./log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
 import { getTradeLogs } from "@/lib/firestore";
 import { SettingsDialog } from "@/components/settings-dialog";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 
 export default function Home() {
@@ -87,7 +88,7 @@ export default function Home() {
   if (loading || !user) {
     return (
         <div className="flex items-center justify-center h-screen">
-            <p>Loading...</p>
+            <LoadingSpinner />
         </div>
     );
   }
@@ -150,3 +151,5 @@ export default function Home() {
     </>
   );
 }
+
+    

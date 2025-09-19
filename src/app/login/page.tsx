@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 export default function LoginPage() {
     const { user, loading } = useAuth();
@@ -64,7 +65,7 @@ export default function LoginPage() {
     };
     
     if (loading || user) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+        return <div className="flex items-center justify-center h-screen"><LoadingSpinner /></div>;
     }
 
     return (
@@ -153,3 +154,5 @@ export default function LoginPage() {
         </div>
     );
 }
+
+    
