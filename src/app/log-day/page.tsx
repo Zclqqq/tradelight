@@ -346,8 +346,8 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="flex items-baseline">
-                                                                <span className={cn("text-5xl font-bold font-headline self-start pt-1 pr-1", pnlColorClass)}>
+                                                            <div className="flex items-center">
+                                                                <span className={cn("text-5xl font-bold font-headline pr-1", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
@@ -749,4 +749,5 @@ export default function LogDayPage() {
     );
 }
 
+    
     
