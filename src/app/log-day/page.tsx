@@ -349,17 +349,16 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="relative flex items-center justify-end">
-                                                                <span className={cn("text-5xl font-bold font-headline", pnlColorClass)}>
+                                                            <div className="relative">
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-foreground">
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
-                                                                    placeholder="0"
+                                                                    placeholder="0.00"
                                                                     className={cn(
-                                                                        `text-5xl font-bold font-headline h-auto border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-left w-auto`,
-                                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                                        pnlColorClass
+                                                                        `pl-7`,
+                                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`
                                                                     )}
                                                                     {...field}
                                                                     value={field.value === 0 ? '' : (field.value ?? '')}
