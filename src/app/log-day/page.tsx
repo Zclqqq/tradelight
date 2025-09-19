@@ -131,8 +131,6 @@ export default function LogDayPage() {
         },
     });
 
-    const watchedForm = form.watch();
-
     const performSave = React.useCallback(async (data: DayLog) => {
         if (user) {
           try {
@@ -739,7 +737,7 @@ export default function LogDayPage() {
                                                                                 render={({ field }) => (
                                                                                     <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                                         <FormControl>
-                                                                                            <SelectTrigger><SelectValue placeholder="Sweep" /></SelectValue>
+                                                                                            <SelectTrigger><SelectValue placeholder="Sweep" /></SelectTrigger>
                                                                                         </FormControl>
                                                                                         <SelectContent>
                                                                                             <SelectItem value="none">-</SelectItem>
