@@ -44,7 +44,7 @@
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: 0 0% 94%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -61,7 +61,7 @@
   .theme-zinc {
     --background: 240 10% 3.9%;
     --foreground: 240 5% 95%;
-    --card: 240 10% 3.9%;
+    --card: 240 10% 6.9%;
     --card-foreground: 240 5% 95%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 240 5% 95%;
@@ -71,7 +71,7 @@
     --secondary-foreground: 240 5.9% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --accent: 240 3.7% 12.9%;
     --accent-foreground: 240 5.9% 98%;
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 98%;
@@ -86,11 +86,11 @@
   }
 
   .theme-rose {
-    --background: 350 100% 6%;
+    --background: 350 100% 4%;
     --foreground: 350 40% 96%;
-    --card: 350 100% 8%;
+    --card: 350 100% 6%;
     --card-foreground: 350 40% 96%;
-    --popover: 350 100% 4%;
+    --popover: 350 100% 2%;
     --popover-foreground: 350 40% 96%;
     --primary: 350 80% 70%;
     --primary-foreground: 350 90% 10%;
@@ -98,7 +98,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 350 60% 15%;
     --muted-foreground: 350 20% 65%;
-    --accent: 350 70% 12%;
+    --accent: 350 70% 10%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
@@ -115,17 +115,17 @@
   .theme-blue {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 8%;
+    --card: 222.2 84% 6.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 220 20% 10%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217.2 32.6% 14.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
@@ -133,7 +133,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 217.2 91.2% 59.8%;
     --chart-1: 140 70% 50%;
-    --chart-2: 180 83.2% 53.3%;
+    --chart-2: 200 83.2% 53.3%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;

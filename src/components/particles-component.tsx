@@ -6,7 +6,12 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim"; 
 
-const ParticlesComponent = () => {
+interface ParticlesComponentProps {
+  density: number;
+  color: string;
+}
+
+const ParticlesComponent: React.FC<ParticlesComponentProps> = ({ density, color }) => {
   const [init, setInit] = React.useState(false);
 
   React.useEffect(() => {
@@ -45,10 +50,10 @@ const ParticlesComponent = () => {
       },
       particles: {
         color: {
-          value: "#ffffff",
+          value: color,
         },
         links: {
-          color: "#ffffff",
+          color: color,
           distance: 150,
           enable: true,
           opacity: 0.1,
@@ -69,7 +74,7 @@ const ParticlesComponent = () => {
             enable: true,
             area: 800,
           },
-          value: 40,
+          value: density,
         },
         opacity: {
           value: 0.1,
@@ -83,7 +88,7 @@ const ParticlesComponent = () => {
       },
       detectRetina: true,
     }),
-    [],
+    [density, color],
   );
 
   if (init) {

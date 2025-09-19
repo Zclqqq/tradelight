@@ -19,12 +19,13 @@ import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 
 const themes = [
-    { name: "Light", value: "light", colors: ["#FFFFFF", "#000000"] },
+    { name: "Light", value: "light", colors: ["#FFFFFF", "#09090b"] },
     { name: "Default", value: "theme-default", colors: ["#080808", "#FAFAFA"] },
     { name: "Zinc", value: "theme-zinc", colors: ["#18181B", "#FAFAFA"] },
-    { name: "Rose", value: "theme-rose", colors: ["#26000b", "#FFE4E6"] },
+    { name: "Rose", value: "theme-rose", colors: ["#1f000b", "#fff0f3"] },
     { name: "Blue", value: "theme-blue", colors: ["#0A192F", "#A8D8FF"] },
 ];
 
@@ -46,6 +47,7 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
   const [selectedTheme, setSelectedTheme] = useState("");
   const [selectedFont, setSelectedFont] = useState("");
   const [particlesEnabled, setParticlesEnabled] = useState(false);
+  const [particleDensity, setParticleDensity] = useState(40);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -56,29 +58,25 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
     const storedTheme = localStorage.getItem("app-theme") || "theme-default";
     const storedFont = localStorage.getItem("app-font") || "font-body";
     const storedParticles = localStorage.getItem("app-particles") === "true";
+    const storedDensity = localStorage.getItem("app-particles-density");
 
     setSelectedTheme(storedTheme);
     setSelectedFont(storedFont);
     setParticlesEnabled(storedParticles);
+    setParticleDensity(storedDensity ? parseInt(storedDensity, 10) : 40);
     
-    document.documentElement.className = `${storedTheme}`;
-    document.body.className = `font-body antialiased text-foreground bg-background font-light ${storedFont}`;
-
   }, [user]);
 
   const handleThemeChange = (theme: string) => {
-    const currentFont = localStorage.getItem("app-font") || "font-body";
-    document.documentElement.className = `${theme}`;
-    document.body.className = `font-body antialiased text-foreground bg-background font-light ${currentFont}`;
     localStorage.setItem("app-theme", theme);
     setSelectedTheme(theme);
+    window.dispatchEvent(new CustomEvent('onLocalStorageChange'));
   };
   
   const handleFontChange = (font: string) => {
-    document.body.classList.remove("font-body", "font-mono");
-    document.body.classList.add(font);
     localStorage.setItem("app-font", font);
     setSelectedFont(font);
+    window.dispatchEvent(new CustomEvent('onLocalStorageChange'));
   };
 
   const handleParticlesChange = (enabled: boolean) => {
@@ -86,6 +84,15 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
     setParticlesEnabled(enabled);
     window.dispatchEvent(new CustomEvent('onLocalStorageChange'));
   };
+  
+  const handleDensityChange = (value: number[]) => {
+      setParticleDensity(value[0]);
+  }
+  
+  const handleDensityCommit = (value: number[]) => {
+      localStorage.setItem("app-particles-density", String(value[0]));
+      window.dispatchEvent(new CustomEvent('onLocalStorageChange'));
+  }
 
   const handleNameSave = async () => {
     if (user) {
@@ -165,14 +172,16 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
             >
                 {fonts.map((font) => (
                     <div key={font.value} className="flex items-center space-x-1 space-y-0">
-                        <RadioGroupItem value={font.value} id={font.value} />
-                        <Label htmlFor={font.value} className="font-normal">{font.name}</Label>
+                        <RadioGroupItem value={font.value} id={font.value} className="peer sr-only" />
+                        <Label htmlFor={font.value} className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-semibold ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground">
+                            {font.name}
+                        </Label>
                     </div>
                 ))}
             </RadioGroup>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
              <Label>Effects</Label>
               <div className="flex items-center justify-between">
                 <Label htmlFor="particles-switch" className="font-normal">Particle Background</Label>
@@ -182,6 +191,21 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
                   onCheckedChange={handleParticlesChange}
                 />
               </div>
+              {particlesEnabled && (
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                        <Label className="font-normal">Particle Density</Label>
+                        <span className="text-xs text-muted-foreground">{particleDensity}</span>
+                    </div>
+                    <Slider
+                        value={[particleDensity]}
+                        onValueChange={handleDensityChange}
+                        onValueCommit={handleDensityCommit}
+                        max={150}
+                        step={10}
+                    />
+                </div>
+              )}
           </div>
           
         </div>
