@@ -347,7 +347,7 @@ export default function LogDayPage() {
                                                     <FormItem>
                                                         <FormControl>
                                                             <div className="flex items-baseline">
-                                                                <span className={cn("text-3xl font-bold font-headline self-start pt-1 pr-1", pnlColorClass)}>
+                                                                <span className={cn("text-5xl font-bold font-headline self-start pt-1 pr-1", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
@@ -748,3 +748,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
