@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/context/auth-context';
+import { TitleManager } from '@/components/title-manager';
 
 export const metadata: Metadata = {
   title: 'TradeLight',
@@ -23,6 +24,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased text-foreground bg-background font-light">
         <AuthProvider>
+          <TitleManager />
           <div className="content-wrapper min-h-screen">
             {children}
           </div>
