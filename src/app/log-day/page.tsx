@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
-import { useDebounce } from "use-debounce";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,6 +106,7 @@ export default function LogDayPage() {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
+    const lastSaveTimeRef = React.useRef(0);
 
     
     const form = useForm<z.infer<typeof dayLogSchema>>({
@@ -133,12 +133,9 @@ export default function LogDayPage() {
     });
 
     const watchedForm = form.watch();
-    const [debouncedForm] = useDebounce(watchedForm, 1500);
 
-    React.useEffect(() => {
-      let isMounted = true;
-      const performSave = async () => {
-        if (user && form.formState.isDirty && isMounted) {
+    const performSave = React.useCallback(async () => {
+        if (user && form.formState.isDirty) {
           try {
             const values = form.getValues();
             await saveDayLog(user.uid, values);
@@ -147,6 +144,7 @@ export default function LogDayPage() {
             localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(values));
 
             console.log("Autosaved to Firestore and localStorage");
+            lastSaveTimeRef.current = Date.now();
           } catch (error) {
             console.error("Autosave failed", error);
             toast({
@@ -156,12 +154,17 @@ export default function LogDayPage() {
             });
           }
         }
-      };
-      performSave();
-      return () => {
-          isMounted = false;
-      };
-    }, [debouncedForm, user, form, toast]);
+      }, [user, form, toast]);
+
+
+    React.useEffect(() => {
+        const subscription = form.watch((value, { name, type }) => {
+            if (Date.now() - lastSaveTimeRef.current > 1000) {
+                 performSave();
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [form, performSave]);
 
 
     const updatePnl = React.useCallback(() => {
@@ -180,6 +183,7 @@ export default function LogDayPage() {
     }, [form, isPnlManuallySet]);
     
     const handleBackClick = () => {
+        performSave();
         router.push('/');
     };
     
@@ -295,6 +299,7 @@ export default function LogDayPage() {
                     trades: [{...emptyTrade, sessions: defaultSessions }],
                 });
             }
+            setTimeout(() => form.reset(form.getValues()), 100);
         };
 
         loadData();
@@ -555,6 +560,7 @@ export default function LogDayPage() {
                                                                         selected={field.value}
                                                                         onSelect={(date) => {
                                                                             if (date) {
+                                                                                performSave();
                                                                                 router.push(`/log-day?date=${format(date, 'yyyy-MM-dd')}`);
                                                                                 field.onChange(date);
                                                                             }
@@ -784,5 +790,4 @@ export default function LogDayPage() {
     );
 }
 
-    
     
