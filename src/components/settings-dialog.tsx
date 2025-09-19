@@ -19,9 +19,10 @@ import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { FormItem, FormControl } from "./ui/form";
 
 const themes = [
-    { name: "Default", value: "theme-default", colors: ["#000000", "#E5E5E5"] },
+    { name: "Default", value: "theme-default", colors: ["#080808", "#FAFAFA"] },
     { name: "Zinc", value: "theme-zinc", colors: ["#18181B", "#FAFAFA"] },
     { name: "Rose", value: "theme-rose", colors: ["#26000b", "#FFE4E6"] },
     { name: "Blue", value: "theme-blue", colors: ["#0A192F", "#A8D8FF"] },
@@ -42,11 +43,13 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
   const { user, loading, refreshUser } = useAuth();
   const { toast } = useToast();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
-  const [selectedTheme, setSelectedTheme] = useState("theme-default");
-  const [selectedFont, setSelectedFont] = useState("font-body");
+  const [selectedTheme, setSelectedTheme] = useState("");
+  const [selectedFont, setSelectedFont] = useState("");
   const [particlesEnabled, setParticlesEnabled] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     if (user) {
       setDisplayName(user.displayName || "");
     }
@@ -101,7 +104,7 @@ export function SettingsDialog({ isOpen, onOpenChange, onLogout }: SettingsDialo
     }
   };
   
-  if (loading) return null;
+  if (loading || !isClient) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
