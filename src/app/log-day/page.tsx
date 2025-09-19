@@ -161,10 +161,6 @@ export default function LogDayPage() {
         },
     });
 
-    const watchedInstrument = form.watch("trades.0.instrument");
-    const watchedPoints = form.watch("trades.0.totalPoints");
-    const watchedContracts = form.watch("trades.0.contracts");
-    
     const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
 
@@ -179,11 +175,6 @@ export default function LogDayPage() {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
     }, [form, isPnlManuallySet]);
-
-
-    React.useEffect(() => {
-        updatePnl();
-    }, [watchedInstrument, watchedPoints, watchedContracts, updatePnl]);
     
 
     React.useEffect(() => {
@@ -460,6 +451,7 @@ export default function LogDayPage() {
                                                                         onValueChange={(value) => {
                                                                             field.onChange(value);
                                                                             setIsPnlManuallySet(false);
+                                                                            updatePnl();
                                                                         }}
                                                                         value={field.value}
                                                                         className="flex items-center space-x-2"
@@ -614,6 +606,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
+                                                                updatePnl();
                                                             }} />}
                                                         />
                                                     </TradeDataField>
@@ -625,6 +618,7 @@ export default function LogDayPage() {
                                                             onChange={(e) => {
                                                                 field.onChange(e.target.value === '' ? null : e.target.valueAsNumber);
                                                                 setIsPnlManuallySet(false);
+                                                                updatePnl();
                                                             }}/>}
                                                         />
                                                     </TradeDataField>
@@ -742,5 +736,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
