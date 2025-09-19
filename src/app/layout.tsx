@@ -7,7 +7,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/context/auth-context';
 import { TitleManager } from '@/components/title-manager';
 import React, { useState, useEffect } from 'react';
-import ParticlesComponent from '@/components/particles-component';
+import dynamic from 'next/dynamic';
+
+const ParticlesComponent = dynamic(() => import('@/components/particles-component'), {
+  ssr: false,
+});
 
 export default function RootLayout({
   children,
@@ -15,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [particlesEnabled, setParticlesEnabled] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const handleStorageChange = () => {
       const storedParticles = localStorage.getItem("app-particles") === "true";
       setParticlesEnabled(storedParticles);
@@ -44,7 +50,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased text-foreground bg-background font-light">
-        {particlesEnabled && <ParticlesComponent />}
+        {isClient && particlesEnabled && <ParticlesComponent />}
         <AuthProvider>
           <TitleManager />
           <div className="content-wrapper min-h-screen relative z-10">
