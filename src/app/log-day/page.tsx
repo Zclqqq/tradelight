@@ -346,35 +346,33 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="relative">
-                                                                <div className={cn("flex items-center", pnlColorClass)}>
-                                                                    <span className="text-6xl font-bold font-headline">
-                                                                        $
-                                                                    </span>
-                                                                    <Input
-                                                                        type="number"
-                                                                        placeholder=""
-                                                                        className={cn(
-                                                                            `text-6xl font-bold font-headline h-20 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
-                                                                            `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                                            pnlColorClass
-                                                                        )}
-                                                                        {...field}
-                                                                        value={field.value === 0 ? '' : (field.value ?? '')}
-                                                                        onChange={(e) => {
-                                                                            const value = e.target.value;
-                                                                            field.onChange(value === '' ? 0 : Number(value));
-                                                                            setIsPnlManuallySet(true);
-                                                                        }}
-                                                                         onBlur={() => {
-                                                                            const pnl = form.getValues("trades.0.pnl");
-                                                                            if (pnl === null || pnl === 0) {
-                                                                                setIsPnlManuallySet(false);
-                                                                                updatePnl();
-                                                                            }
-                                                                        }}
-                                                                    />
-                                                                </div>
+                                                            <div className={cn("flex items-center", pnlColorClass)}>
+                                                                <span className="text-5xl font-bold font-headline">
+                                                                    $
+                                                                </span>
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder=""
+                                                                    className={cn(
+                                                                        `text-5xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
+                                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
+                                                                        pnlColorClass
+                                                                    )}
+                                                                    {...field}
+                                                                    value={field.value === 0 ? '' : (field.value ?? '')}
+                                                                    onChange={(e) => {
+                                                                        const value = e.target.value;
+                                                                        field.onChange(value === '' ? 0 : Number(value));
+                                                                        setIsPnlManuallySet(true);
+                                                                    }}
+                                                                     onBlur={() => {
+                                                                        const pnl = form.getValues("trades.0.pnl");
+                                                                        if (pnl === null || pnl === 0) {
+                                                                            setIsPnlManuallySet(false);
+                                                                            updatePnl();
+                                                                        }
+                                                                    }}
+                                                                />
                                                             </div>
                                                         </FormControl>
                                                     </FormItem>
@@ -750,6 +748,8 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
 
     
 
