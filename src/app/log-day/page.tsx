@@ -346,15 +346,15 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="flex items-center">
-                                                                <span className={cn("text-5xl font-bold font-headline", pnlColorClass)}>
+                                                            <div className="flex items-start">
+                                                                <span className={cn("text-6xl font-bold font-headline leading-none", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
                                                                     placeholder="0"
                                                                     className={cn(
-                                                                        `text-5xl font-bold font-headline h-auto border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 p-0`,
+                                                                        `text-2xl font-bold font-headline h-auto border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 -ml-1`,
                                                                         `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                         pnlColorClass
                                                                     )}
@@ -748,3 +748,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
