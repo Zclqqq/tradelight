@@ -349,15 +349,15 @@ export default function LogDayPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <div className="relative">
-                                                                <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3 text-3xl font-bold font-headline", pnlColorClass)}>
+                                                            <div className="relative flex items-center justify-end">
+                                                                <span className={cn("text-5xl font-bold font-headline", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
                                                                     placeholder="0"
                                                                     className={cn(
-                                                                        `text-3xl font-bold font-headline h-auto border-border/20 bg-transparent focus-visible:ring-ring focus-visible:ring-offset-background p-3 pl-10 text-right`,
+                                                                        `text-5xl font-bold font-headline h-auto border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-left w-auto`,
                                                                         `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                                         pnlColorClass
                                                                     )}
