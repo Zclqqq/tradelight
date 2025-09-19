@@ -114,7 +114,7 @@ export default function LogDayPage() {
             date: new Date(),
             notes: "",
             trades: [{ 
-                instrument: "NQ", 
+                instrument: "MNQ", 
                 pnl: 0, 
                 sessions: defaultSessions,
                 analysisImage: "",
