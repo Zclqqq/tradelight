@@ -87,7 +87,7 @@ export default function Home() {
             <Logo className="w-8 h-8" />
             <h1 className="text-xl font-bold font-headline">TradeLight</h1>
           </div>
-          {user && <Badge variant="secondary">{user.email}</Badge>}
+          {user && <Badge variant="secondary">{user.displayName || user.email}</Badge>}
         </div>
         <Button variant="outline" asChild>
           <Link href="/log-day">Log Day</Link>

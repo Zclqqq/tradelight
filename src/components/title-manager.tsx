@@ -11,7 +11,7 @@ export function TitleManager() {
         if (loading) {
             document.title = "TradeLight - Loading...";
         } else if (user) {
-            document.title = `TradeLight - ${user.email}`;
+            document.title = `TradeLight - ${user.displayName || user.email}`;
         } else {
             document.title = "TradeLight - Logged Out";
         }
