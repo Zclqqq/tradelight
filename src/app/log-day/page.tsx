@@ -285,6 +285,7 @@ export default function LogDayPage() {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
+                        form.trigger();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -298,6 +299,7 @@ export default function LogDayPage() {
             const reader = new FileReader();
             reader.onload = (e) => {
                 form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
+                form.trigger();
             };
             reader.readAsDataURL(file);
         }
@@ -343,43 +345,45 @@ export default function LogDayPage() {
                                             <CardTitle className="font-headline text-base font-normal">PNL</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <FormField
-                                                control={form.control}
-                                                name="trades.0.pnl"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <div className="relative">
-                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-foreground">
-                                                                    $
-                                                                </span>
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="0.00"
-                                                                    className={cn(
-                                                                        `pl-7`,
-                                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`
-                                                                    )}
-                                                                    {...field}
-                                                                    value={field.value === 0 ? '' : (field.value ?? '')}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value;
-                                                                        field.onChange(value === '' ? 0 : Number(value));
-                                                                        setIsPnlManuallySet(true);
-                                                                    }}
-                                                                     onBlur={() => {
-                                                                        const pnl = form.getValues("trades.0.pnl");
-                                                                        if (pnl === null || pnl === 0) {
-                                                                            setIsPnlManuallySet(false);
-                                                                            updatePnl();
-                                                                        }
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                           <div className="relative">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.pnl"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <div className="flex items-center">
+                                                                    <span className="text-2xl font-bold font-headline text-muted-foreground mr-1">$</span>
+                                                                    <Input
+                                                                        type="number"
+                                                                        placeholder="0"
+                                                                        className={cn(
+                                                                            "p-0 h-auto border-0 text-2xl font-bold font-headline bg-transparent focus-visible:ring-0",
+                                                                            "w-full",
+                                                                            pnlColorClass,
+                                                                            "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                        )}
+                                                                        {...field}
+                                                                        value={field.value === 0 ? '' : (field.value ?? '')}
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            field.onChange(value === '' ? 0 : Number(value));
+                                                                            setIsPnlManuallySet(true);
+                                                                        }}
+                                                                        onBlur={() => {
+                                                                            const pnl = form.getValues("trades.0.pnl");
+                                                                            if (pnl === null || pnl === 0) {
+                                                                                setIsPnlManuallySet(false);
+                                                                                updatePnl();
+                                                                            }
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
                                         </CardContent>
                                     </Card>
                                     <Card onPaste={handleImagePaste} className="overflow-hidden">
@@ -750,3 +754,5 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
