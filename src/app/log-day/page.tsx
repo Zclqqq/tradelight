@@ -26,6 +26,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/auth-context";
 import { getDayLog, saveDayLog } from "@/lib/firestore";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useDebouncedCallback } from "use-debounce";
 
 
 const sessionTradeSchema = z.object({
@@ -106,8 +107,6 @@ export default function LogDayPage() {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
-    const lastSaveTimeRef = React.useRef(0);
-
     
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -134,17 +133,14 @@ export default function LogDayPage() {
 
     const watchedForm = form.watch();
 
-    const performSave = React.useCallback(async () => {
-        if (user && form.formState.isDirty) {
+    const performSave = React.useCallback(async (data: DayLog) => {
+        if (user) {
           try {
-            const values = form.getValues();
-            await saveDayLog(user.uid, values);
+            await saveDayLog(user.uid, data);
 
-            const dayKey = format(new Date(values.date), 'yyyy-MM-dd');
-            localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(values));
-
+            const dayKey = format(new Date(data.date), 'yyyy-MM-dd');
+            localStorage.setItem(`dayLog-${dayKey}`, JSON.stringify(data));
             console.log("Autosaved to Firestore and localStorage");
-            lastSaveTimeRef.current = Date.now();
           } catch (error) {
             console.error("Autosave failed", error);
             toast({
@@ -154,17 +150,18 @@ export default function LogDayPage() {
             });
           }
         }
-      }, [user, form, toast]);
+      }, [user, toast]);
 
+    const debouncedSave = useDebouncedCallback((data: DayLog) => {
+        performSave(data);
+    }, 1000);
 
     React.useEffect(() => {
-        const subscription = form.watch((value, { name, type }) => {
-            if (Date.now() - lastSaveTimeRef.current > 1000) {
-                 performSave();
-            }
+        const subscription = form.watch((value) => {
+            debouncedSave(value as DayLog);
         });
         return () => subscription.unsubscribe();
-    }, [form, performSave]);
+    }, [form, debouncedSave]);
 
 
     const updatePnl = React.useCallback(() => {
@@ -182,8 +179,8 @@ export default function LogDayPage() {
         }
     }, [form, isPnlManuallySet]);
     
-    const handleBackClick = () => {
-        performSave();
+    const handleBackClick = async () => {
+        await performSave(form.getValues());
         router.push('/');
     };
     
@@ -560,7 +557,7 @@ export default function LogDayPage() {
                                                                         selected={field.value}
                                                                         onSelect={(date) => {
                                                                             if (date) {
-                                                                                performSave();
+                                                                                performSave(form.getValues());
                                                                                 router.push(`/log-day?date=${format(date, 'yyyy-MM-dd')}`);
                                                                                 field.onChange(date);
                                                                             }
@@ -742,7 +739,7 @@ export default function LogDayPage() {
                                                                                 render={({ field }) => (
                                                                                     <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                                         <FormControl>
-                                                                                            <SelectTrigger><SelectValue placeholder="Sweep" /></SelectTrigger>
+                                                                                            <SelectTrigger><SelectValue placeholder="Sweep" /></SelectValue>
                                                                                         </FormControl>
                                                                                         <SelectContent>
                                                                                             <SelectItem value="none">-</SelectItem>
@@ -789,5 +786,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
