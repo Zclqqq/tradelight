@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, CalendarIcon, Upload, X, ChevronsUpDown } from "lucide-react";
+import { Plus, CalendarIcon, Upload, X, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -107,37 +107,6 @@ export default function LogDayPage() {
     const [isPnlManuallySet, setIsPnlManuallySet] = React.useState(false);
 
     
-    React.useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
-        }
-    }, [user, loading, router]);
-    
-    React.useEffect(() => {
-        const savedModels = localStorage.getItem('trade-models');
-        if (savedModels) {
-            setModels(JSON.parse(savedModels));
-        }
-    }, []);
-
-    const addModel = (model: string) => {
-        const updatedModels = [...models, model];
-        setModels(updatedModels);
-        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
-        form.setValue('trades.0.model', model);
-        setNewModel('');
-        setPopoverOpen(false);
-    };
-
-    const deleteModel = (modelToDelete: string) => {
-        const updatedModels = models.filter(m => m !== modelToDelete);
-        setModels(updatedModels);
-        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
-        if (form.getValues('trades.0.model') === modelToDelete) {
-            form.setValue('trades.0.model', '');
-        }
-    };
-
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
         defaultValues: {
@@ -176,7 +145,53 @@ export default function LogDayPage() {
         }
     }, [form, isPnlManuallySet]);
     
+    const handleBackClick = async () => {
+        try {
+            await saveDayLog(user!.uid, form.getValues());
+            toast({ title: "Changes Saved!" });
+            router.push('/');
+        } catch (error) {
+            console.error("Failed to save data", error);
+            toast({
+                title: "Save Failed",
+                description: "Could not save your changes. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+    
+    React.useEffect(() => {
+        if (!loading && !user) {
+            router.push('/login');
+        }
+    }, [user, loading, router]);
+    
+    React.useEffect(() => {
+        const savedModels = localStorage.getItem('trade-models');
+        if (savedModels) {
+            setModels(JSON.parse(savedModels));
+        }
+    }, []);
 
+    const addModel = (model: string) => {
+        const updatedModels = [...models, model];
+        setModels(updatedModels);
+        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
+        form.setValue('trades.0.model', model);
+        setNewModel('');
+        setPopoverOpen(false);
+    };
+
+    const deleteModel = (modelToDelete: string) => {
+        const updatedModels = models.filter(m => m !== modelToDelete);
+        setModels(updatedModels);
+        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
+        if (form.getValues('trades.0.model') === modelToDelete) {
+            form.setValue('trades.0.model', '');
+        }
+    };
+
+    
     React.useEffect(() => {
         let isMounted = true;
         const dateParam = searchParams.get('date');
@@ -314,32 +329,34 @@ export default function LogDayPage() {
                                                     <FormItem>
                                                         <FormControl>
                                                             <div className="relative">
-                                                                <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold font-headline", pnlColorClass)}>
-                                                                    $
-                                                                </span>
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder=""
-                                                                    className={cn(
-                                                                        `text-3xl font-bold font-headline h-14 border-input bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-12`,
-                                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                                        pnlColorClass
-                                                                    )}
-                                                                    {...field}
-                                                                    value={field.value ?? ""}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value;
-                                                                        field.onChange(value === '' ? null : Number(value));
-                                                                        setIsPnlManuallySet(true);
-                                                                    }}
-                                                                     onBlur={() => {
-                                                                        const pnl = form.getValues("trades.0.pnl");
-                                                                        if (pnl === null || pnl === 0) {
-                                                                            setIsPnlManuallySet(false);
-                                                                            updatePnl();
-                                                                        }
-                                                                    }}
-                                                                />
+                                                                <div className={cn("flex items-center", pnlColorClass)}>
+                                                                    <span className="text-3xl font-bold font-headline">
+                                                                        $
+                                                                    </span>
+                                                                    <Input
+                                                                        type="number"
+                                                                        placeholder="0"
+                                                                        className={cn(
+                                                                            `text-3xl font-bold font-headline h-14 border-0 bg-transparent w-full focus-visible:ring-0 focus-visible:ring-offset-0 pl-2`,
+                                                                            `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
+                                                                            pnlColorClass
+                                                                        )}
+                                                                        {...field}
+                                                                        value={field.value ?? ""}
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            field.onChange(value === '' ? null : Number(value));
+                                                                            setIsPnlManuallySet(true);
+                                                                        }}
+                                                                         onBlur={() => {
+                                                                            const pnl = form.getValues("trades.0.pnl");
+                                                                            if (pnl === null || pnl === 0) {
+                                                                                setIsPnlManuallySet(false);
+                                                                                updatePnl();
+                                                                            }
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </FormControl>
                                                     </FormItem>
@@ -715,5 +732,7 @@ export default function LogDayPage() {
         </div>
     );
 }
+
+    
 
     
