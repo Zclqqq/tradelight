@@ -130,7 +130,7 @@ export default function LogDayPage() {
             }],
         },
     });
-
+    
     const performSave = React.useCallback(async (data: DayLog) => {
         if (user) {
           try {
@@ -161,6 +161,10 @@ export default function LogDayPage() {
         return () => subscription.unsubscribe();
     }, [form, debouncedSave]);
 
+    const handleBackClick = async () => {
+        await performSave(form.getValues());
+        router.push('/');
+    };
 
     const updatePnl = React.useCallback(() => {
         if (isPnlManuallySet) return;
@@ -176,11 +180,6 @@ export default function LogDayPage() {
             form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
         }
     }, [form, isPnlManuallySet]);
-    
-    const handleBackClick = async () => {
-        await performSave(form.getValues());
-        router.push('/');
-    };
     
     React.useEffect(() => {
         if (!loading && !user) {
