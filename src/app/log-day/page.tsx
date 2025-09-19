@@ -352,14 +352,14 @@ export default function LogDayPage() {
                                                     <FormItem>
                                                         <FormControl>
                                                             <div className="flex items-baseline">
-                                                                <span className={cn("text-5xl font-bold", pnlColorClass)}>
+                                                                <span className={cn("text-3xl font-bold", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
                                                                     type="number"
                                                                     placeholder="0"
                                                                     className={cn(
-                                                                        "p-0 h-auto border-0 text-5xl font-bold bg-transparent focus-visible:ring-0",
+                                                                        "p-0 h-auto border-0 text-3xl font-bold bg-transparent focus-visible:ring-0",
                                                                         "w-full",
                                                                         pnlColorClass,
                                                                         "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
