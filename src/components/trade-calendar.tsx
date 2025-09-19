@@ -156,7 +156,7 @@ export function TradeCalendar({ logs }: TradeCalendarProps) {
                       isToday(day) && "flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px]"
                     )}
                   >
-                    {format(day, "d")}
+                    {isCurrentMonth ? format(day, "d") : null}
                   </time>
 
                   {pnlData?.isLogged ? (
@@ -182,5 +182,3 @@ export function TradeCalendar({ logs }: TradeCalendarProps) {
     </div>
   );
 }
-
-    
