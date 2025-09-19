@@ -347,7 +347,7 @@ export default function LogDayPage() {
                                                     <FormItem>
                                                         <FormControl>
                                                             <div className="flex items-center">
-                                                                <span className={cn("text-5xl font-bold font-headline pr-1", pnlColorClass)}>
+                                                                <span className={cn("text-5xl font-bold font-headline", pnlColorClass)}>
                                                                     $
                                                                 </span>
                                                                 <Input
@@ -748,8 +748,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
-    
-
-    
