@@ -103,7 +103,10 @@ export default function Home() {
       <div className="flex flex-col h-screen text-foreground">
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-4">
-              
+              <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)}>
+                <Settings />
+                <span>Settings</span>
+              </Button>
           </div>
           <Button variant="outline" asChild>
             <Link href="/log-day">Log Day</Link>
