@@ -127,8 +127,8 @@ export function TradeCalendar() {
 
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col border border-border">
+      <div className="flex items-center justify-between mb-2 p-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
         </h2>
@@ -157,12 +157,13 @@ export function TradeCalendar() {
           let dayStyles: React.CSSProperties = {};
            if (pnlData?.isLogged) {
                 if (pnlData.pnl > 0) {
-                    dayStyles.borderTop = '2px solid hsl(var(--chart-1))';
+                    dayStyles.borderColor = 'hsl(var(--chart-1))';
                 } else if (pnlData.pnl < 0) {
-                    dayStyles.borderTop = '2px solid hsl(var(--destructive))';
+                     dayStyles.borderColor = 'hsl(var(--destructive))';
                 } else {
-                    dayStyles.borderTop = '2px solid hsl(var(--border))';
+                     dayStyles.borderColor = 'hsl(var(--chart-4))';
                 }
+                dayStyles.borderWidth = '1px';
             }
 
 
@@ -174,7 +175,8 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30"
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                pnlData?.isLogged && "bg-accent/20"
               )}
               style={dayStyles}
             >
@@ -201,7 +203,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground font-normal text-[10px] text-center">No Trade</span>
+                        <span className="text-primary font-normal text-[10px] text-center">No Trade</span>
                       )}
                     </div>
                   ) : null}
