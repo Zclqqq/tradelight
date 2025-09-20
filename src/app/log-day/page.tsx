@@ -368,8 +368,11 @@ export default function LogDayPage() {
                 <form className="h-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                         <div className="flex flex-col space-y-6">
-                            <Card className="flex-shrink-0">
-                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
+                           <Card>
+                                <CardHeader>
+                                    <CardTitle className="font-headline text-base">Trade Data</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4 pt-0 grid grid-cols-2 gap-x-6 gap-y-4">
                                     <div className="col-span-2 flex items-center gap-4">
                                         <div onDoubleClick={handlePnlDoubleClick} className="flex-1">
                                             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
