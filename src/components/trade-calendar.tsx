@@ -151,45 +151,47 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -mr-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="py-2 border-r border-b border-t border-l border-border">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-t border-border gap-px bg-border -mt-px">
+      <div className="grid grid-cols-7 border-border -mt-px -mr-px">
         {calendarDays.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let dayClasses = "border-r border-b border-background bg-background";
-          let textClasses = "";
+          let dayClasses = ["border-r", "border-b", "border-border", "bg-background"];
+          let textClasses: string[] = [];
 
           if (isCurrentMonth && pnlData?.isLogged) {
+            dayClasses.push("border-2");
             if (pnlData.pnl > 0) {
-              dayClasses = "border-2 border-[hsl(var(--chart-1))]";
-              textClasses = "text-[hsl(var(--chart-1))]";
+              dayClasses.push("border-[hsl(var(--chart-1))]");
+              textClasses.push("text-[hsl(var(--chart-1))]");
             } else if (pnlData.pnl < 0) {
-              dayClasses = "border-2 border-destructive";
-              textClasses = "text-destructive";
+              dayClasses.push("border-destructive");
+              textClasses.push("text-destructive");
             } else {
-              dayClasses = "border-2 border-[hsl(var(--chart-3))]";
-              textClasses = "text-[hsl(var(--chart-3))]";
+              dayClasses.push("border-[hsl(var(--chart-3))]");
+              textClasses.push("text-[hsl(var(--chart-3))]");
             }
           }
+
 
           return (
             <div
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 bg-background",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                dayClasses
+                ...dayClasses,
               )}
             >
               <time
@@ -204,7 +206,7 @@ export function TradeCalendar() {
                 </time>
 
               {isCurrentMonth && pnlData?.isLogged ? (
-                <div className={cn("font-bold text-base p-1 text-center", textClasses)}>
+                <div className={cn("font-bold text-base p-1 text-center", ...textClasses)}>
                   {pnlData.pnl !== 0 ? (
                     <span>
                         {pnlData.pnl.toLocaleString("en-US", {
