@@ -221,7 +221,7 @@ export default function LogDayPage() {
         const dayKey = format(date, 'yyyy-MM-dd');
         
         const loadData = async () => {
-            const localDataStr = localStorage.getItem(`dayKey-${dayKey}`);
+            const localDataStr = localStorage.getItem(`dayLog-${dayKey}`);
             let dataToLoad: DayLog | null = null;
             
             if (localDataStr) {
@@ -743,5 +743,3 @@ export default function LogDayPage() {
         </div>
     );
 }
-
-    
