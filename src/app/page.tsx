@@ -48,46 +48,38 @@ export default function Home() {
   }, [isClient]);
 
   return (
-    <div className="flex flex-col h-screen text-foreground">
-      <header className="sticky top-0 z-10 flex items-center justify-center h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="flex items-center gap-2">
-            <span className="text-xl font-bold font-headline">TRADE</span>
-            <Logo className="h-8 w-8" />
-            <span className="text-xl font-bold font-headline">LIGHT</span>
-        </div>
-      </header>
-
-      <main className="flex-1 p-4 overflow-auto">
+    <div className="flex flex-col min-h-screen text-foreground">
+      <main className="flex-1 p-4 md:p-8">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-3">
-                {isClient && <TradeCalendar />}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-3 space-y-8">
+              {isClient && <TradeCalendar />}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                 <div className="col-span-1">
+                    <StatCard 
+                        title="Net P&L" 
+                        value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <StatCard 
+                        title="Avg Trade Win" 
+                        value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                      />
+                  </div>
+                  <div className="col-span-1">
+                    <StatCard 
+                        title="Win Rate" 
+                        value={`${stats.winRate.toFixed(0)}%`}
+                      />
+                  </div>
+                   <div className="col-span-1">
+                     <ProgressTracker />
+                   </div>
               </div>
-              <div className="md:col-span-1">
-                <RecentTrades />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Net P&L" 
-                    value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
-                />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Avg Trade Win" 
-                    value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
-                  />
-              </div>
-              <div className="col-span-1">
-                <StatCard 
-                    title="Win Rate" 
-                    value={`${stats.winRate.toFixed(0)}%`}
-                  />
-              </div>
-               <div className="col-span-1">
-                 <ProgressTracker />
-               </div>
+            </div>
+            <div className="lg:col-span-1">
+              <RecentTrades />
             </div>
           </div>
         </div>
