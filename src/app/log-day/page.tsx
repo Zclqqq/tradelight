@@ -145,10 +145,10 @@ export default function LogDayPage() {
                 model: "",
                 entryTime: "",
                 exitTime: "",
-                contracts: undefined,
-                tradeTp: undefined,
-                tradeSl: undefined,
-                totalPoints: undefined,
+                contracts: '' as any,
+                tradeTp: '' as any,
+                tradeSl: '' as any,
+                totalPoints: '' as any,
             }],
         },
     });
@@ -228,10 +228,10 @@ export default function LogDayPage() {
             model: "",
             entryTime: "",
             exitTime: "",
-            contracts: undefined,
-            tradeTp: undefined,
-            tradeSl: undefined,
-            totalPoints: undefined,
+            contracts: '' as any,
+            tradeTp: '' as any,
+            tradeSl: '' as any,
+            totalPoints: '' as any,
         };
         
         if (savedData) {
@@ -253,6 +253,10 @@ export default function LogDayPage() {
                 ...emptyTrade,
                 ...savedTrade,
                 sessions: fullSessions,
+                contracts: savedTrade.contracts || '' as any,
+                tradeTp: savedTrade.tradeTp || '' as any,
+                tradeSl: savedTrade.tradeSl || '' as any,
+                totalPoints: savedTrade.totalPoints || '' as any,
             };
 
             const dataWithDefaults = {
