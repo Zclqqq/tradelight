@@ -617,12 +617,15 @@ export default function LogDayPage() {
                                                 name={`trades.0.sessions.${index}.tookHighLow`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                        <Select onValueChange={field.onChange} value={field.value}>
                                                             <FormControl>
                                                                 <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                <SelectItem value="none">-</SelectItem>
+                                                                <SelectItem value="took-high">Took High</SelectItem>
+                                                                <SelectItem value="took-low">Took Low</SelectItem>
+                                                                <SelectItem value="took-both">Took Both</SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                     </FormItem>
@@ -656,9 +659,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
 
     
