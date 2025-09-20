@@ -177,8 +177,7 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border h-24",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                pnlData?.isLogged && "bg-accent/20"
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30"
               )}
               style={dayStyles}
             >
