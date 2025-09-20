@@ -62,7 +62,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "none", label: "-"}, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
+const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
@@ -550,11 +550,11 @@ export default function LogDayPage() {
                                 <CardHeader>
                                     <CardTitle className="font-headline text-base">Chart</CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-0 flex-1">
+                                <CardContent className="p-0 flex-1 flex flex-col">
                                     <div className="flex flex-col text-left h-full">
                                     {analysisImage ? (
-                                        <div className="w-full flex-1 flex flex-col">
-                                            <div className="relative w-full flex-1">
+                                        <div className="w-full h-full flex flex-col">
+                                            <div className="relative w-full h-0 flex-1">
                                                 <Image src={analysisImage} alt="Trade analysis" fill style={{ objectFit: 'contain' }} />
                                             </div>
                                             <div className="p-2 flex-shrink-0">
@@ -643,6 +643,7 @@ export default function LogDayPage() {
                                                                 <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
+                                                                <SelectItem value="none">-</SelectItem>
                                                                 {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
@@ -678,6 +679,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
