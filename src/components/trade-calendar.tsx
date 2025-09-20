@@ -151,9 +151,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -mr-px -mb-px">
+       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-t border-border -mr-px -mb-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-b border-border">
+          <div key={day} className="py-2 border-r border-border">
             {day}
           </div>
         ))}
@@ -201,7 +201,7 @@ export function TradeCalendar() {
               {isCurrentMonth && pnlData?.isLogged ? (
                 <div className="p-1 text-center">
                   {isNoTradeDay ? (
-                     <span className="font-normal text-xs text-muted-foreground opacity-70">NO TRADE</span>
+                     <span className="font-medium text-xs text-muted-foreground">NO TRADE</span>
                   ) : (
                     <span className={cn("font-bold text-base", pnlTextColorClass)}>
                         {pnlData.pnl.toLocaleString("en-US", {
