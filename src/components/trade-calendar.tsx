@@ -141,14 +141,14 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 border-t border-l border-border/20 text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 border-t border-l border-border text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-b border-border/20">
+          <div key={day} className="py-2 border-r border-b border-border">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border/20">
+      <div className="grid grid-cols-7 border-l border-border">
         {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -171,7 +171,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border/20 p-1 h-20",
+                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border p-1 h-20",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30"
