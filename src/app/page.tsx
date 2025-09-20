@@ -49,16 +49,12 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen text-foreground">
-      <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="w-24"></div>
-        <div className="flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+      <header className="sticky top-0 z-10 flex items-center justify-center h-16 px-4 md:px-8 border-b border-border/20 bg-background/80 backdrop-blur-sm shrink-0">
+        <div className="flex items-center gap-2">
             <span className="text-xl font-bold font-headline">TRADE</span>
             <Logo className="h-8 w-8" />
             <span className="text-xl font-bold font-headline">LIGHT</span>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/log-day">Log Day</Link>
-        </Button>
       </header>
 
       <main className="flex-1 p-4 overflow-auto">
@@ -90,7 +86,11 @@ export default function Home() {
                   />
               </div>
               <div className="col-span-1">
-                <ProgressTracker />
+                <StatCard>
+                  <Link href="/log-day" className="w-full h-full flex items-center justify-center">
+                    <Button variant="outline" className="w-full h-full text-lg font-bold">Log Day</Button>
+                  </Link>
+                </StatCard>
               </div>
             </div>
           </div>
