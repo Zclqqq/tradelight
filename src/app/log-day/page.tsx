@@ -555,7 +555,7 @@ export default function LogDayPage() {
                                     {analysisImage ? (
                                         <div className="w-full flex-1 flex flex-col">
                                             <div className="relative w-full flex-1">
-                                                <Image src={analysisImage} alt="Trade analysis" fill style={{ objectFit: 'contain' }} />
+                                                <Image src={analysisImage} alt="Trade analysis" fill style={{ objectFit: 'cover' }} />
                                             </div>
                                             <div className="p-2 flex-shrink-0">
                                                 <FormField
