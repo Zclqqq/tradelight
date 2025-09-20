@@ -77,7 +77,7 @@ const instrumentPointValues: { [key: string]: number } = {
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     return (
-        <div className="space-y-2">
+        <div className="space-y-1">
             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
             {children}
         </div>
@@ -349,421 +349,323 @@ export default function LogDayPage() {
 
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground">
-        <header className="sticky top-0 z-10 flex items-center justify-center h-16 px-4 md:px-8 bg-background">
+    <div className="flex flex-col h-screen max-h-screen text-foreground bg-background">
+        <header className="flex-shrink-0 flex items-center justify-between h-16 px-4 md:px-8 border-b">
+            <Button variant="ghost" size="icon" asChild>
+                <a href="/" onClick={handleBackClick}>
+                    <ArrowLeft />
+                    <span className="sr-only">Back</span>
+                </a>
+            </Button>
             <h1 className="text-xl font-bold font-headline text-center">
                 Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
+            <div className="w-10"></div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 overflow-hidden p-4 md:p-6">
             <Form {...form}>
-                <form>
-                    <div className="mx-auto w-full max-w-6xl">
-                         <div className="mb-4">
-                            <Button variant="ghost" size="icon" asChild>
-                                <a href="/" onClick={handleBackClick}>
-                                    <ArrowLeft />
-                                    <span className="sr-only">Back</span>
-                                </a>
-                            </Button>
-                        </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div className="lg:col-span-2 space-y-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="font-headline text-base">PNL</CardTitle>
-                                    </CardHeader>
-                                    <CardContent onDoubleClick={handlePnlDoubleClick}>
-                                        {isEditingPnl ? (
-                                            <Input
-                                                ref={pnlInputRef}
-                                                type="number"
-                                                defaultValue={pnlValue}
-                                                onBlur={handlePnlBlur}
-                                                onKeyDown={handlePnlKeyDown}
-                                                className={cn(
-                                                    `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
-                                                    `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                    pnlColorClass
+                <form className="h-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+                        <div className="flex flex-col space-y-6">
+                            <Card className="flex-shrink-0">
+                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
+                                    <div className="col-span-2 flex items-center gap-4">
+                                        <div onDoubleClick={handlePnlDoubleClick} className="flex-1">
+                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
+                                            {isEditingPnl ? (
+                                                <Input
+                                                    ref={pnlInputRef}
+                                                    type="number"
+                                                    defaultValue={pnlValue}
+                                                    onBlur={handlePnlBlur}
+                                                    onKeyDown={handlePnlKeyDown}
+                                                    className={cn(
+                                                        `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
+                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
+                                                        pnlColorClass
+                                                    )}
+                                                />
+                                            ) : (
+                                                <p className={cn(`text-4xl font-bold font-headline`, pnlColorClass)}>
+                                                    {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                                </p>
+                                            )}
+                                        </div>
+                                         <div className="w-px bg-border h-12"></div>
+                                        <div className="flex-1">
+                                            <FormField
+                                                control={form.control}
+                                                name="date"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-col space-y-1">
+                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                            <FormControl>
+                                                                <Button
+                                                                variant={"ghost"}
+                                                                className={cn(
+                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
+                                                                    !field.value && "text-muted-foreground"
+                                                                )}
+                                                                >
+                                                                {field.value ? (
+                                                                    format(field.value, "PPP")
+                                                                ) : (
+                                                                    <span>Pick a date</span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                </Button>
+                                                            </FormControl>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-auto p-0" align="start">
+                                                            <Calendar
+                                                                mode="single"
+                                                                selected={field.value}
+                                                                onSelect={field.onChange}
+                                                                disabled={(date) =>
+                                                                date > new Date() || date < new Date("1900-01-01")
+                                                                }
+                                                                initialFocus
+                                                            />
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                        <FormMessage />
+                                                    </FormItem>
                                                 )}
                                             />
-                                        ) : (
-                                            <p className={cn(`text-4xl font-bold font-headline`, pnlColorClass)}>
-                                                {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                            </p>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                                <Card onPaste={handleImagePaste} className="overflow-hidden">
-                                     <CardHeader>
-                                        <CardTitle className="font-headline text-base">Chart</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-0">
-                                        <div className="flex flex-col text-left">
-                                        {analysisImage ? (
-                                             <div className="w-full">
-                                                <div className="relative w-full">
-                                                    <Image src={analysisImage} alt="Trade analysis" width={0} height={0} sizes="100vw" style={{ width: '100%', height: 'auto' }} />
-                                                </div>
-                                                <div className="p-2">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.analysisText"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <FormControl>
-                                                                    <Input className="bg-transparent border-0 p-0 h-auto text-sm placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-[350px]">
-                                                <Upload className="h-8 w-8" />
-                                                <p className="text-sm font-medium">Paste or upload an image of your trade.</p>
-                                                 <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                                                    Upload File
-                                                </Button>
-                                                <input
-                                                    type="file"
-                                                    ref={fileInputRef}
-                                                    onChange={handleImageUpload}
-                                                    className="hidden"
-                                                    accept="image/*"
-                                                />
-                                            </div>
-                                        )}
                                         </div>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="font-headline text-base">Notes</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-4">
+                                    </div>
+                                    
+                                     <div className="col-span-2">
                                         <FormField
                                             control={form.control}
-                                            name="notes"
+                                            name="trades.0.instrument"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                <FormControl>
-                                                    <Textarea className="bg-transparent border-0 p-0 focus-visible:ring-0 text-base min-h-[100px]" placeholder="General notes for the day..." {...field} />
-                                                </FormControl>
-                                                <FormMessage />
+                                                    <FormControl>
+                                                        <RadioGroup
+                                                            onValueChange={field.onChange}
+                                                            value={field.value}
+                                                            className="flex items-center space-x-2"
+                                                        >
+                                                            {instrumentOptions.map((opt) => (
+                                                                <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
+                                                                    <FormControl>
+                                                                        <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
+                                                                    </FormControl>
+                                                                    <FormLabel
+                                                                        htmlFor={opt}
+                                                                        className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
+                                                                    >
+                                                                        {opt}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            ))}
+                                                        </RadioGroup>
+                                                    </FormControl>
+                                                    <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
-                                    </CardContent>
-                                </Card>
-                            </div>
+                                    </div>
 
-                            <div className="lg:col-span-1">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="font-headline text-base">Trade Data</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-4 pt-2 space-y-4">
-                                        <div className="grid grid-cols-2 gap-4 items-start">
-                                            <div className="col-span-2">
+                                    <div className="grid grid-cols-2 gap-4 col-span-2">
+                                        <TradeDataField label="Entry">
+                                            <FormField
+                                                control={form.control}
+                                                name="trades.0.entryTime"
+                                                render={({ field }) => <Input type="time" {...field} />}
+                                            />
+                                        </TradeDataField>
+                                        <TradeDataField label="Exit">
+                                            <FormField
+                                                control={form.control}
+                                                name="trades.0.exitTime"
+                                                render={({ field }) => <Input type="time" {...field} />}
+                                            />
+                                        </TradeDataField>
+                                        
+                                        <TradeDataField label="Contracts">
+                                            <FormField
+                                            control={form.control}
+                                            name="trades.0.contracts"
+                                            render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                            />
+                                        </TradeDataField>
+
+                                        <TradeDataField label="Points">
+                                            <FormField
+                                                control={form.control}
+                                                name="trades.0.totalPoints"
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                            />
+                                        </TradeDataField>
+                                        
+                                        <TradeDataField label="TP">
+                                            <FormField
+                                            control={form.control}
+                                            name="trades.0.tradeTp"
+                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                            />
+                                        </TradeDataField>
+                                        
+                                        <TradeDataField label="SL">
+                                            <FormField
+                                            control={form.control}
+                                            name="trades.0.tradeSl"
+                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                            />
+                                        </TradeDataField>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="flex-1 flex flex-col">
+                                <CardHeader>
+                                    <CardTitle className="font-headline text-base">Notes</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4 pt-0 flex-1">
+                                    <FormField
+                                        control={form.control}
+                                        name="notes"
+                                        render={({ field }) => (
+                                            <FormItem className="h-full">
+                                            <FormControl>
+                                                <Textarea className="bg-transparent border-0 p-0 focus-visible:ring-0 text-base h-full resize-none" placeholder="General notes for the day..." {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
+                        <div className="flex flex-col space-y-6">
+                            <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col">
+                                <CardHeader>
+                                    <CardTitle className="font-headline text-base">Chart</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-0 flex-1">
+                                    <div className="flex flex-col text-left h-full">
+                                    {analysisImage ? (
+                                        <div className="w-full flex-1 flex flex-col">
+                                            <div className="relative w-full flex-1">
+                                                <Image src={analysisImage} alt="Trade analysis" fill style={{ objectFit: 'contain' }} />
+                                            </div>
+                                            <div className="p-2 flex-shrink-0">
                                                 <FormField
                                                     control={form.control}
-                                                    name="trades.0.instrument"
+                                                    name="trades.0.analysisText"
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <RadioGroup
-                                                                    onValueChange={field.onChange}
-                                                                    value={field.value}
-                                                                    className="flex items-center space-x-2"
-                                                                >
-                                                                    {instrumentOptions.map((opt) => (
-                                                                        <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
-                                                                            <FormControl>
-                                                                                <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                                                                            </FormControl>
-                                                                            <FormLabel
-                                                                                htmlFor={opt}
-                                                                                className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
-                                                                            >
-                                                                                {opt}
-                                                                            </FormLabel>
-                                                                        </FormItem>
-                                                                    ))}
-                                                                </RadioGroup>
+                                                                <Input className="bg-transparent border-0 p-0 h-auto text-sm placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}
                                                 />
                                             </div>
-                                            <div className="col-span-2">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="date"
-                                                    render={({ field }) => (
-                                                        <FormItem className="flex flex-col space-y-2">
-                                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
-                                                            <Popover>
-                                                                <PopoverTrigger asChild>
-                                                                <FormControl>
-                                                                    <Button
-                                                                    variant={"ghost"}
-                                                                    className={cn(
-                                                                        "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
-                                                                        !field.value && "text-muted-foreground"
-                                                                    )}
-                                                                    >
-                                                                    {field.value ? (
-                                                                        format(field.value, "PPP")
-                                                                    ) : (
-                                                                        <span>Pick a date</span>
-                                                                    )}
-                                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                    </Button>
-                                                                </FormControl>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
-                                                                <Calendar
-                                                                    mode="single"
-                                                                    selected={field.value}
-                                                                    onSelect={field.onChange}
-                                                                    disabled={(date) =>
-                                                                    date > new Date() || date < new Date("1900-01-01")
-                                                                    }
-                                                                    initialFocus
-                                                                />
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                    />
-                                            </div>
-
-                                            <div className="col-span-2">
-                                                <TradeDataField label="Model">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.model"
-                                                        render={({ field }) => (
-                                                            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-                                                                <PopoverTrigger asChild>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        role="combobox"
-                                                                        className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                                                                    >
-                                                                        {field.value || "Select a model"}
-                                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                                    </Button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-[300px] p-0">
-                                                                    <div className="p-2">
-                                                                        <Input 
-                                                                            placeholder="Search or create new..."
-                                                                            value={newModel}
-                                                                            onChange={(e) => setNewModel(e.target.value)}
-                                                                        />
-                                                                    </div>
-                                                                    <ScrollArea className="h-[200px]">
-                                                                        {filteredModels.map(model => (
-                                                                            <div key={model} className="flex items-center justify-between p-2 hover:bg-accent">
-                                                                                <button
-                                                                                    type="button"
-                                                                                    className="flex-1 text-left text-sm"
-                                                                                    onClick={() => {
-                                                                                        form.setValue('trades.0.model', model, { shouldDirty: true });
-                                                                                        setPopoverOpen(false);
-                                                                                    }}
-                                                                                >
-                                                                                    {model}
-                                                                                </button>
-                                                                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteModel(model)}>
-                                                                                    <X className="h-4 w-4" />
-                                                                                </Button>
-                                                                            </div>
-                                                                        ))}
-                                                                        {filteredModels.length === 0 && newModel && (
-                                                                            <div className="p-2 text-center text-sm text-muted-foreground">No models found.</div>
-                                                                        )}
-                                                                    </ScrollArea>
-                                                                    {newModel && !models.map(m => m.toLowerCase()).includes(newModel.toLowerCase()) && (
-                                                                        <div className="p-2 border-t border-border/20">
-                                                                            <Button type="button" className="w-full" onClick={() => addModel(newModel)}>
-                                                                                Create "{newModel}"
-                                                                            </Button>
-                                                                        </div>
-                                                                    )}
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        )}
-                                                    />
-                                                </TradeDataField>
-                                            </div>
-
-                                            <TradeDataField label="Entry">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.entryTime"
-                                                    render={({ field }) => <Input type="time" {...field} />}
-                                                />
-                                            </TradeDataField>
-                                            <TradeDataField label="Exit">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.exitTime"
-                                                    render={({ field }) => <Input type="time" {...field} />}
-                                                />
-                                            </TradeDataField>
-                                            
-                                            <TradeDataField label="Contracts">
-                                                <FormField
-                                                control={form.control}
-                                                name="trades.0.contracts"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} />}
-                                                />
-                                            </TradeDataField>
-
-                                            <TradeDataField label="Points">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.totalPoints"
-                                                    render={({ field }) => <Input type="number" placeholder="0" {...field} />}
-                                                />
-                                            </TradeDataField>
-                                            
-                                            <TradeDataField label="TP">
-                                                <FormField
-                                                control={form.control}
-                                                name="trades.0.tradeTp"
-                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
-                                                />
-                                            </TradeDataField>
-                                            
-                                            <TradeDataField label="SL">
-                                                <FormField
-                                                control={form.control}
-                                                name="trades.0.tradeSl"
-                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
-                                                />
-                                            </TradeDataField>
-
-                                            <div className="col-span-2">
-                                                <TradeDataField label="Chart Performance">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.chartPerformance"
-                                                        render={({ field }) => (
-                                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                                <FormControl>
-                                                                    <SelectTrigger>
-                                                                        <SelectValue placeholder="Select performance..." />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    {chartPerformanceOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        )}
-                                                    />
-                                                </TradeDataField>
-                                            </div>
                                         </div>
-                                            
-                                        <Separator />
-
-                                        <div>
-                                            <h3 className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">Sessions</h3>
-                                            <div className="space-y-4">
-                                                {(form.watch('trades.0.sessions') || []).map((session, index) => (
-                                                    <Card key={index} className="bg-card/50">
-                                                        <CardHeader className="p-3">
-                                                            <CardTitle className="font-headline text-sm">{session.sessionName}</CardTitle>
-                                                        </CardHeader>
-                                                        <CardContent className="p-3 pt-0 grid grid-cols-2 gap-3">
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`trades.0.sessions.${index}.movementType`}
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel className="text-xs">Movement</FormLabel>
-                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger><SelectValue placeholder="Type..." /></SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="none">-</SelectItem>
-                                                                                {movementTypeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`trades.0.sessions.${index}.direction`}
-                                                                render={({ field }) => (
-                                                                        <FormItem>
-                                                                        <FormLabel className="text-xs">Direction</FormLabel>
-                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger><SelectValue placeholder="Direction..." /></SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="none">-</SelectItem>
-                                                                                {directionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`trades.0.sessions.${index}.tookHighLow`}
-                                                                render={({ field }) => (
-                                                                        <FormItem>
-                                                                        <FormLabel className="text-xs">Liquidity</FormLabel>
-                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`trades.0.sessions.${index}.targetSession`}
-                                                                render={({ field }) => (
-                                                                        <FormItem>
-                                                                        <FormLabel className="text-xs">Target</FormLabel>
-                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger><SelectValue placeholder="Session..." /></SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="none">-</SelectItem>
-                                                                                {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        </CardContent>
-                                                    </Card>
-                                                ))}
-                                            </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-full">
+                                            <Upload className="h-8 w-8" />
+                                            <p className="text-sm font-medium">Paste or upload an image of your trade.</p>
+                                             <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                                Upload File
+                                            </Button>
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                onChange={handleImageUpload}
+                                                className="hidden"
+                                                accept="image/*"
+                                            />
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                                    )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="font-headline text-base">Sessions</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4 pt-0 grid grid-cols-3 gap-4">
+                                    {(form.watch('trades.0.sessions') || []).map((session, index) => (
+                                        <div key={index} className="space-y-3">
+                                            <h3 className="font-headline text-sm text-center">{session.sessionName}</h3>
+                                            <FormField
+                                                control={form.control}
+                                                name={`trades.0.sessions.${index}.movementType`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                            <FormControl>
+                                                                <SelectTrigger><SelectValue placeholder="Type..." /></SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="none">-</SelectItem>
+                                                                {movementTypeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name={`trades.0.sessions.${index}.direction`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                            <FormControl>
+                                                                <SelectTrigger><SelectValue placeholder="Direction..." /></SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="none">-</SelectItem>
+                                                                {directionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name={`trades.0.sessions.${index}.tookHighLow`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                            <FormControl>
+                                                                <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name={`trades.0.sessions.${index}.targetSession`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                            <FormControl>
+                                                                <SelectTrigger><SelectValue placeholder="Session..." /></SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="none">-</SelectItem>
+                                                                {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </form>
@@ -772,7 +674,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
 
     
