@@ -179,7 +179,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-24 p-1",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                  pnlData?.isLogged ? "z-10" : "z-0",

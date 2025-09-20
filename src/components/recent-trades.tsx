@@ -49,7 +49,7 @@ export function RecentTrades() {
       <CardContent className="pt-2 flex-1 min-h-0">
         <ScrollArea className="h-full">
             {recentTrades.length > 0 ? (
-                <ul className="space-y-4 pr-4">
+                <ul className="space-y-3 pr-4">
                     {recentTrades.map(trade => (
                         <li key={trade.id} className="flex justify-between items-center gap-4">
                             <div className="flex items-center gap-3 shrink-0">
