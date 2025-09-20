@@ -151,9 +151,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-border -mr-px">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -mr-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-border">
+          <div key={day} className="py-2 border-r border-border border-b border-border">
             {day}
           </div>
         ))}
@@ -169,20 +169,21 @@ export function TradeCalendar() {
             ? 'text-[hsl(var(--chart-1))] border-[hsl(var(--chart-1))]'
             : pnlData.pnl < 0
             ? 'text-destructive border-destructive'
-            : 'text-muted-foreground border-muted-foreground'
+            : 'border-[hsl(var(--chart-3))]'
           : '';
 
+          const isNoTradeDay = pnlData?.isLogged && pnlData.pnl === 0;
 
           return (
             <div
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border -mt-px -ml-px",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                 isCurrentMonth && pnlData?.isLogged && `border-2 ${pnlColorClass}`
+                 isCurrentMonth && pnlData?.isLogged && `border-[2px] ${pnlColorClass}`
               )}
             >
               <time
@@ -191,6 +192,7 @@ export function TradeCalendar() {
                     "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center",
                      isToday(day) && isCurrentMonth && "rounded-full bg-primary text-primary-foreground",
                      !isCurrentMonth && "text-muted-foreground/30",
+                     pnlColorClass
                   )}
                 >
                   {format(day, "d")}
@@ -198,16 +200,16 @@ export function TradeCalendar() {
 
               {isCurrentMonth && pnlData?.isLogged ? (
                 <div className="p-1 text-center">
-                  {pnlData.pnl !== 0 ? (
-                    <span className={cn("font-bold text-base", pnlColorClass)}>
+                  {isNoTradeDay ? (
+                     <span className="font-normal text-xs text-muted-foreground">NO TRADE</span>
+                  ) : (
+                    <span className={cn("font-bold text-base", pnlColorClass.split(' ')[0])}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
                           maximumFractionDigits: 0,
                         })}
                     </span>
-                  ) : (
-                    <span className="font-normal text-xs text-muted-foreground">NO TRADE</span>
                   )}
                 </div>
               ) : null}
