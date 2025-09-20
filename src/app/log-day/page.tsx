@@ -31,7 +31,7 @@ const detailedSessionTradeSchema = z.object({
   sessionName: z.string(),
   movementType: z.enum(["none", "expansion", "retracement", "continuation", "reversal"]),
   direction: z.enum(["none", "up", "down", "both"]),
-  tookHighLow: z.enum(["none", "took-high", "took-low"]),
+  tookHighLow: z.enum(["none", "took-high", "took-low", "took-both"]),
   targetSession: z.enum(["none", "asia", "london", "new-york", "previous-day"]),
 });
 
@@ -62,7 +62,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "none", label: "Didn't Take"}];
+const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}, {value: "none", label: "Didn't Take"}];
 const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
