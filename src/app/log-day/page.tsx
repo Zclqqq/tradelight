@@ -62,8 +62,8 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
-const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
+const tookHighLowOptions = [{value: "none", label: "-"}, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
+const targetSessionOptions = [{value: "none", label: "-"},{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
@@ -547,36 +547,16 @@ export default function LogDayPage() {
                         </div>
                         <div className="flex flex-col space-y-6">
                             <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col">
-                                <CardHeader>
-                                    <CardTitle className="font-headline text-base">Chart</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-0 flex-1 flex flex-col">
-                                    <div className="flex flex-col text-left h-full">
-                                    {analysisImage ? (
-                                        <div className="w-full h-full flex flex-col">
-                                            <div className="relative w-full h-0 flex-1">
-                                                <Image src={analysisImage} alt="Trade analysis" fill style={{ objectFit: 'contain' }} />
-                                            </div>
-                                            <div className="p-2 flex-shrink-0">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.analysisText"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input className="bg-transparent border-0 p-0 h-auto text-sm placeholder:text-gray-400" placeholder="Add a short description..." {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                    ) : (
+                                {analysisImage ? (
+                                    <div className="w-full h-full relative">
+                                        <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                    </div>
+                                ) : (
+                                    <CardContent className="p-0 flex-1 flex flex-col">
                                         <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-full">
                                             <Upload className="h-8 w-8" />
                                             <p className="text-sm font-medium">Paste or upload an image of your trade.</p>
-                                             <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                            <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                                                 Upload File
                                             </Button>
                                             <input
@@ -587,9 +567,8 @@ export default function LogDayPage() {
                                                 accept="image/*"
                                             />
                                         </div>
-                                    )}
-                                    </div>
-                                </CardContent>
+                                    </CardContent>
+                                )}
                             </Card>
                             <Card>
                                 <CardHeader>
@@ -638,12 +617,11 @@ export default function LogDayPage() {
                                                 name={`trades.0.sessions.${index}.tookHighLow`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <Select onValueChange={field.onChange} value={field.value}>
+                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                             <FormControl>
                                                                 <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="none">-</SelectItem>
                                                                 {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
@@ -660,7 +638,6 @@ export default function LogDayPage() {
                                                                 <SelectTrigger><SelectValue placeholder="Session..." /></SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="none">-</SelectItem>
                                                                 {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
