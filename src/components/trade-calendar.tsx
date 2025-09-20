@@ -174,7 +174,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors border-r border-b border-border h-24",
+                "relative flex flex-col justify-center items-center text-xs transition-colors border-r border-b border-border h-24 p-1",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
@@ -186,7 +186,7 @@ export function TradeCalendar() {
                   <time
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
-                      "absolute top-1 right-1 font-semibold text-xs h-5 w-5 flex items-center justify-center",
+                      "absolute top-1 left-1 font-semibold text-xs h-5 w-5 flex items-center justify-center z-10",
                       isToday(day) && "rounded-full bg-primary text-primary-foreground"
                     )}
                   >
