@@ -99,14 +99,14 @@ export function TradeCalendar() {
     calendarWeeks.push(days.slice(i, i + 7));
   }
 
-  if (calendarWeeks.length > 5) {
-      const lastWeek = calendarWeeks[calendarWeeks.length - 1];
-      if (lastWeek.every(day => !isSameMonth(day, currentDate))) {
-        calendarWeeks.pop();
-      }
-  }
-  const calendarDays = calendarWeeks.flat();
+  const lastWeek = calendarWeeks[calendarWeeks.length - 1];
+  const allDaysInLastWeekOutsideMonth = lastWeek.every(day => !isSameMonth(day, currentDate));
 
+  if (calendarWeeks.length > 5 && allDaysInLastWeekOutsideMonth) {
+    calendarWeeks.pop();
+  }
+
+  const calendarDays = calendarWeeks.flat();
 
   function nextMonth() {
     setCurrentDate(add(currentDate, { months: 1 }));
@@ -127,7 +127,7 @@ export function TradeCalendar() {
   };
 
   return (
-    <div className="border-border">
+    <div className="">
       <div className="flex items-center justify-between p-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -151,7 +151,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-5 border-l border-border -mt-px">
+      <div className="grid grid-cols-7 border-l border-border -mt-px">
         {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -166,7 +166,7 @@ export function TradeCalendar() {
             else if (pnlData.pnl < 0) borderColor = 'hsl(var(--destructive))';
             else borderColor = 'hsl(var(--chart-3))';
 
-            borderClasses = "";
+            borderClasses = "z-10";
             dayStyles = {
               boxShadow: `0 0 0 2px ${borderColor} inset`,
             };
@@ -181,7 +181,6 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
-                 pnlData?.isLogged ? "z-10" : "z-0",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
                 borderClasses
               )}

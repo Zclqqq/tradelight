@@ -50,8 +50,8 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="flex-1 p-4 md:px-8 md:py-6">
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-3 space-y-6">
               <div className="space-y-6">
                 {isClient && <TradeCalendar />}
@@ -80,7 +80,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <RecentTrades />
             </div>
           </div>
