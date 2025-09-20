@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -152,7 +151,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-5 border-t-0 border-l border-border -mt-px">
+      <div className="grid grid-cols-7 grid-rows-5 border-l border-border -mt-px">
         {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
