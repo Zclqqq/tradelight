@@ -47,7 +47,6 @@ const tradeSchema = z.object({
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional().default(""),
   sessions: z.array(detailedSessionTradeSchema).optional(),
-  chartPerformance: z.string().optional().default(""),
 });
 
 const dayLogSchema = z.object({
@@ -64,7 +63,6 @@ const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Do
 const tookHighLowOptions = [{value: "none", label: "-"}, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "none", label: "-"},{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
-const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
 const instrumentPointValues: { [key: string]: number } = {
     "MNQ": 2,
@@ -141,7 +139,6 @@ export default function LogDayPage() {
                 pnl: 0, 
                 sessions: defaultSessions,
                 analysisImage: "",
-                chartPerformance: "",
                 model: "",
                 entryTime: "",
                 exitTime: "",
@@ -196,12 +193,12 @@ export default function LogDayPage() {
         return () => subscription.unsubscribe();
     }, [form, debouncedSaveChanges, isClient]);
 
-    const watchedInstrument = form.watch("trades.0.instrument");
-    const watchedPoints = form.watch("trades.0.totalPoints");
-    const watchedContracts = form.watch("trades.0.contracts");
+    const calculatePnl = () => {
+        const values = form.getValues();
+        const watchedInstrument = values.trades[0].instrument;
+        const watchedPoints = values.trades[0].totalPoints;
+        const watchedContracts = values.trades[0].contracts;
 
-    React.useEffect(() => {
-        if (!isClient) return;
         const pointValue = instrumentPointValues[watchedInstrument] || 0;
         const points = watchedPoints || 0;
         const contracts = watchedContracts || 0;
@@ -212,8 +209,7 @@ export default function LogDayPage() {
                 form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
             }
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, form, isClient]);
-
+    };
 
     React.useEffect(() => {
         if (!isClient) return;
@@ -226,7 +222,6 @@ export default function LogDayPage() {
             instrument: "NQ",
             pnl: 0,
             analysisImage: "",
-            chartPerformance: "",
             model: "",
             entryTime: "",
             exitTime: "",
@@ -452,7 +447,10 @@ export default function LogDayPage() {
                                                 <FormItem>
                                                     <FormControl>
                                                         <RadioGroup
-                                                            onValueChange={field.onChange}
+                                                            onValueChange={(value) => {
+                                                                field.onChange(value);
+                                                                calculatePnl();
+                                                            }}
                                                             value={field.value}
                                                             className="flex items-center space-x-2"
                                                         >
@@ -497,7 +495,7 @@ export default function LogDayPage() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.contracts"
-                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} />}
+                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e); calculatePnl();}} />}
                                             />
                                         </TradeDataField>
 
@@ -505,7 +503,7 @@ export default function LogDayPage() {
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.totalPoints"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} />}
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e); calculatePnl();}} />}
                                             />
                                         </TradeDataField>
                                         
@@ -658,5 +656,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
