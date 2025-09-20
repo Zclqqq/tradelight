@@ -31,7 +31,7 @@ const detailedSessionTradeSchema = z.object({
   sessionName: z.string(),
   movementType: z.enum(["none", "expansion", "retracement", "continuation", "reversal"]),
   direction: z.enum(["none", "up", "down", "both"]),
-  tookHighLow: z.enum(["took-high", "took-low", "took-both"]).optional(),
+  tookHighLow: z.enum(["none", "took-high", "took-low", "took-both"]).optional().default("none"),
   targetSession: z.enum(["none", "asia", "london", "new-york", "previous-day"]),
 });
 
@@ -60,7 +60,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
+const tookHighLowOptions = [{ value: "none", label: "-" }, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "none", label: "-"},{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
@@ -125,7 +125,7 @@ export default function LogDayPage() {
         sessionName: name,
         movementType: "none" as const,
         direction: "none" as const,
-        tookHighLow: undefined,
+        tookHighLow: "none" as const,
         targetSession: "none" as const,
     })), []);
 
@@ -150,7 +150,7 @@ export default function LogDayPage() {
         },
     });
     
-    const { watch, control, getValues, setValue } = form;
+    const { control, getValues, setValue, watch } = form;
 
     const { fields, update } = useFieldArray({
         control: form.control,
@@ -186,12 +186,15 @@ export default function LogDayPage() {
     }, []);
 
     const debouncedSaveChanges = useDebouncedCallback(saveChanges, 2000);
-
+    
     const watchedValues = watch();
     React.useEffect(() => {
         if (!isClient) return;
-        debouncedSaveChanges(watchedValues as DayLog);
-    }, [isClient, watchedValues, debouncedSaveChanges]);
+        const subscription = watch((value) => {
+            debouncedSaveChanges(value as DayLog);
+        });
+        return () => subscription.unsubscribe();
+    }, [isClient, watch, debouncedSaveChanges]);
 
     const calculatePnl = () => {
         const values = getValues();
@@ -243,7 +246,7 @@ export default function LogDayPage() {
                 sessionName: name,
                 movementType: sessionMap.get(name)?.movementType || "none",
                 direction: sessionMap.get(name)?.direction || "none",
-                tookHighLow: sessionMap.get(name)?.tookHighLow || undefined,
+                tookHighLow: sessionMap.get(name)?.tookHighLow || "none",
                 targetSession: sessionMap.get(name)?.targetSession || "none",
             }));
             
@@ -629,7 +632,7 @@ export default function LogDayPage() {
                                                     name={`trades.0.sessions.${index}.tookHighLow`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onValueChange={field.onChange} value={field.value || ''}>
+                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                                 </FormControl>
@@ -671,5 +674,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
