@@ -245,7 +245,7 @@ export default function LogDayPage() {
                 sessionName: name,
                 movementType: sessionMap.get(name)?.movementType || "none",
                 direction: sessionMap.get(name)?.direction || "none",
-                tookHighLow: sessionMap.get(name)?.tookHighLow || undefined,
+                tookHighLow: sessionMap.get(name)?.tookHighLow,
                 targetSession: sessionMap.get(name)?.targetSession || "none",
             }));
             
@@ -257,6 +257,7 @@ export default function LogDayPage() {
                 tradeTp: savedTrade.tradeTp || '' as any,
                 tradeSl: savedTrade.tradeSl || '' as any,
                 totalPoints: savedTrade.totalPoints || '' as any,
+                tookHighLow: savedTrade.tookHighLow,
             };
 
             const dataWithDefaults = {
@@ -354,17 +355,16 @@ export default function LogDayPage() {
 
   return (
     <div className="flex flex-col h-screen max-h-screen text-foreground bg-background">
-        <header className="flex-shrink-0 flex items-center justify-between h-16 px-4 md:px-8 border-b">
-            <Button variant="ghost" size="icon" asChild>
+        <header className="relative flex-shrink-0 flex items-center justify-center h-16 px-4 md:px-8 border-b">
+            <Button variant="ghost" size="icon" asChild className="absolute left-4 top-1/2 -translate-y-1/2">
                 <a href="/" onClick={handleBackClick}>
                     <ArrowLeft />
                     <span className="sr-only">Back</span>
                 </a>
             </Button>
-            <h1 className="text-xl font-bold font-headline text-center">
+            <h1 className="text-xl font-bold font-headline">
                 Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
-            <div className="w-10"></div>
         </header>
 
         <main className="flex-1 overflow-hidden p-4 md:p-6">
