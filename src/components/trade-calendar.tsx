@@ -150,7 +150,7 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border">
+      <div className="grid grid-cols-7 border-l border-border -mt-px -ml-px">
         {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
@@ -178,6 +178,7 @@ export function TradeCalendar() {
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
                 !isCurrentMonth && "bg-transparent text-muted-foreground/30",
+                pnlData?.isLogged && "z-10 -m-px"
               )}
               style={dayStyles}
             >
@@ -186,7 +187,7 @@ export function TradeCalendar() {
                   <time
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
-                      "absolute top-1 left-1 font-semibold text-xs h-5 w-5 flex items-center justify-center z-10",
+                      "absolute top-1 left-1 font-semibold text-xs h-5 w-5 flex items-center justify-center",
                       isToday(day) && "rounded-full bg-primary text-primary-foreground"
                     )}
                   >
@@ -217,3 +218,4 @@ export function TradeCalendar() {
     </div>
   );
 }
+
