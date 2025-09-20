@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDebounce } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 
 
 const sessionTradeSchema = z.object({
@@ -153,9 +153,6 @@ export default function LogDayPage() {
         name: "trades",
     });
     
-    const watchedForm = form.watch();
-    const [debouncedForm] = useDebounce(watchedForm, 500);
-
     const saveChanges = React.useCallback((values: DayLog) => {
         const key = `trade-log-${format(values.date, 'yyyy-MM-dd')}`;
         
@@ -184,12 +181,14 @@ export default function LogDayPage() {
         localStorage.setItem('all-trades', JSON.stringify(allLogs));
     }, []);
 
-    React.useEffect(() => {
-        if (form.formState.isDirty) {
-           saveChanges(debouncedForm);
-        }
-    }, [debouncedForm, form.formState.isDirty, saveChanges]);
+    const debouncedSaveChanges = useDebouncedCallback(saveChanges, 2000);
 
+    React.useEffect(() => {
+        const subscription = form.watch((value) => {
+            debouncedSaveChanges(value as DayLog);
+        });
+        return () => subscription.unsubscribe();
+    }, [form, debouncedSaveChanges]);
 
     const watchedInstrument = form.watch("trades.0.instrument");
     const watchedPoints = form.watch("trades.0.totalPoints");
@@ -291,15 +290,13 @@ export default function LogDayPage() {
         }
     };
     
-    const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const handleBackClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        if (form.formState.isDirty) {
-            saveChanges(form.getValues());
-            toast({
-                title: "Changes Saved!",
-                description: "Your recap has been updated.",
-            });
-        }
+        await saveChanges(form.getValues());
+        toast({
+            title: "Changes Saved!",
+            description: "Your recap has been updated.",
+        });
         router.push('/');
     };
     
@@ -345,22 +342,24 @@ export default function LogDayPage() {
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
-        <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-8 border-b border-border/20 bg-background/95 backdrop-blur-sm">
-            <Button variant="ghost" size="icon" asChild>
-                <a href="/" onClick={handleBackClick}>
-                    <ArrowLeft />
-                </a>
-            </Button>
+        <header className="sticky top-0 z-10 flex items-center justify-center h-16 px-4 md:px-8 bg-background">
             <h1 className="text-xl font-bold font-headline text-center">
                 Today's Recap {format(form.watch("date"), "M/d/yy")}
             </h1>
-            <div className="w-10"></div>
         </header>
 
         <main className="flex-1 p-4 md:p-6">
             <Form {...form}>
                 <form>
                     <div className="mx-auto w-full max-w-6xl">
+                         <div className="mb-4">
+                            <Button variant="ghost" size="icon" asChild>
+                                <a href="/" onClick={handleBackClick}>
+                                    <ArrowLeft />
+                                    <span className="sr-only">Back</span>
+                                </a>
+                            </Button>
+                        </div>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="lg:col-span-2 space-y-6">
                                 <Card>
