@@ -125,27 +125,13 @@ export function TradeCalendar() {
     router.push(`/log-day?date=${dayKey}`);
   };
 
-  const monthlyPnl = Object.entries(dailyPnl)
-    .filter(([dayKey, _]) => isSameMonth(new Date(dayKey), currentDate))
-    .reduce((sum, [_, pnlData]) => sum + pnlData.pnl, 0);
-
   return (
-    <div className="flex flex-col border border-border">
+    <div className="border border-border">
       <div className="flex items-center justify-between p-2">
-        <h2 className="text-lg font-bold font-headline w-1/3">
+        <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
         </h2>
-        <div className="text-center w-1/3">
-            <span className="text-sm text-muted-foreground">Monthly PNL: </span>
-            <span className={cn(
-                "font-bold text-lg",
-                monthlyPnl > 0 && "text-[hsl(var(--chart-1))]",
-                monthlyPnl < 0 && "text-destructive"
-            )}>
-                {monthlyPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
-            </span>
-        </div>
-        <div className="flex items-center justify-end gap-2 w-1/3">
+        <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
