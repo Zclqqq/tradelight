@@ -21,10 +21,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDebouncedCallback } from "use-debounce";
+import { Separator } from "@/components/ui/separator";
 
 
 const detailedSessionTradeSchema = z.object({
@@ -76,20 +76,11 @@ const instrumentPointValues: { [key: string]: number } = {
 
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
-    const [isOpen, setIsOpen] = React.useState(false);
-
     return (
-        <Collapsible className="py-3 border-b border-border/20" open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full group cursor-pointer">
-                <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</span>
-                <Plus className={cn("h-4 w-4 ml-2 transition-transform", isOpen && "rotate-45")} />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                <div className="mt-2 space-y-2">
-                    {children}
-                </div>
-            </CollapsibleContent>
-        </Collapsible>
+        <div className="space-y-2">
+            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
+            {children}
+        </div>
     );
 };
 
@@ -475,8 +466,9 @@ export default function LogDayPage() {
                                     <CardHeader>
                                         <CardTitle className="font-headline text-base">Trade Data</CardTitle>
                                     </CardHeader>
-                                    <CardContent className="p-4 pt-0">
-                                            <div className="py-3">
+                                    <CardContent className="p-4 pt-2 space-y-4">
+                                        <div className="grid grid-cols-2 gap-4 items-start">
+                                            <div className="col-span-2">
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.instrument"
@@ -508,7 +500,7 @@ export default function LogDayPage() {
                                                     )}
                                                 />
                                             </div>
-                                            <div className="py-3 border-t border-border/20">
+                                            <div className="col-span-2">
                                                 <FormField
                                                     control={form.control}
                                                     name="date"
@@ -551,9 +543,9 @@ export default function LogDayPage() {
                                                     )}
                                                     />
                                             </div>
-                                            
-                                            <div className="space-y-0">
-                                                 <TradeDataField label="Model">
+
+                                            <div className="col-span-2">
+                                                <TradeDataField label="Model">
                                                     <FormField
                                                         control={form.control}
                                                         name="trades.0.model"
@@ -611,133 +603,57 @@ export default function LogDayPage() {
                                                         )}
                                                     />
                                                 </TradeDataField>
-                                                <TradeDataField label="Entry / Exit Time">
-                                                    <div className="flex justify-start gap-2">
-                                                        <FormField
-                                                            control={form.control}
-                                                            name="trades.0.entryTime"
-                                                            render={({ field }) => <Input type="time" {...field} />}
-                                                        />
-                                                        <FormField
-                                                            control={form.control}
-                                                            name="trades.0.exitTime"
-                                                            render={({ field }) => <Input type="time" {...field} />}
-                                                        />
-                                                    </div>
-                                                </TradeDataField>
-                                                <TradeDataField label="Contracts">
-                                                     <FormField
-                                                        control={form.control}
-                                                        name="trades.0.contracts"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
-                                                    />
-                                                </TradeDataField>
-                                                <TradeDataField label="Points">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="trades.0.totalPoints"
-                                                        render={({ field }) => <Input type="number" placeholder="0" {...field} />}
-                                                    />
-                                                </TradeDataField>
-                                                <TradeDataField label="TP / SL">
-                                                    <div className="flex gap-2">
-                                                         <FormField
-                                                            control={form.control}
-                                                            name="trades.0.tradeTp"
-                                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
-                                                        />
-                                                         <FormField
-                                                            control={form.control}
-                                                            name="trades.0.tradeSl"
-                                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
-                                                        />
-                                                    </div>
-                                                </TradeDataField>
-                                                <TradeDataField label="Sessions">
-                                                <div className="space-y-4">
-                                                    {(form.watch('trades.0.sessions') || []).map((session, index) => (
-                                                        <Card key={index} className="bg-card/50">
-                                                            <CardHeader className="p-3">
-                                                                <CardTitle className="font-headline text-sm">{session.sessionName}</CardTitle>
-                                                            </CardHeader>
-                                                            <CardContent className="p-3 pt-0 grid grid-cols-2 gap-3">
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.movementType`}
-                                                                    render={({ field }) => (
-                                                                        <FormItem>
-                                                                            <FormLabel className="text-xs">Movement</FormLabel>
-                                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger><SelectValue placeholder="Type..." /></SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="none">-</SelectItem>
-                                                                                    {movementTypeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.direction`}
-                                                                    render={({ field }) => (
-                                                                         <FormItem>
-                                                                            <FormLabel className="text-xs">Direction</FormLabel>
-                                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger><SelectValue placeholder="Direction..." /></SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="none">-</SelectItem>
-                                                                                    {directionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.tookHighLow`}
-                                                                    render={({ field }) => (
-                                                                         <FormItem>
-                                                                            <FormLabel className="text-xs">Liquidity</FormLabel>
-                                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                                <FormField
-                                                                    control={form.control}
-                                                                    name={`trades.0.sessions.${index}.targetSession`}
-                                                                    render={({ field }) => (
-                                                                         <FormItem>
-                                                                            <FormLabel className="text-xs">Target</FormLabel>
-                                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger><SelectValue placeholder="Session..." /></SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="none">-</SelectItem>
-                                                                                    {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                            </CardContent>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                                </TradeDataField>
-                                                 <TradeDataField label="Chart Performance">
+                                            </div>
+
+                                            <TradeDataField label="Entry">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.entryTime"
+                                                    render={({ field }) => <Input type="time" {...field} />}
+                                                />
+                                            </TradeDataField>
+                                            <TradeDataField label="Exit">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.exitTime"
+                                                    render={({ field }) => <Input type="time" {...field} />}
+                                                />
+                                            </TradeDataField>
+                                            
+                                            <TradeDataField label="Contracts">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.contracts"
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                />
+                                            </TradeDataField>
+
+                                            <TradeDataField label="Points">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.totalPoints"
+                                                    render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                />
+                                            </TradeDataField>
+                                            
+                                            <TradeDataField label="TP">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.tradeTp"
+                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                                />
+                                            </TradeDataField>
+                                            
+                                            <TradeDataField label="SL">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.tradeSl"
+                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                                />
+                                            </TradeDataField>
+
+                                            <div className="col-span-2">
+                                                <TradeDataField label="Chart Performance">
                                                     <FormField
                                                         control={form.control}
                                                         name="trades.0.chartPerformance"
@@ -756,6 +672,95 @@ export default function LogDayPage() {
                                                     />
                                                 </TradeDataField>
                                             </div>
+                                        </div>
+                                            
+                                        <Separator />
+
+                                        <div>
+                                            <h3 className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">Sessions</h3>
+                                            <div className="space-y-4">
+                                                {(form.watch('trades.0.sessions') || []).map((session, index) => (
+                                                    <Card key={index} className="bg-card/50">
+                                                        <CardHeader className="p-3">
+                                                            <CardTitle className="font-headline text-sm">{session.sessionName}</CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="p-3 pt-0 grid grid-cols-2 gap-3">
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`trades.0.sessions.${index}.movementType`}
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <FormLabel className="text-xs">Movement</FormLabel>
+                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger><SelectValue placeholder="Type..." /></SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="none">-</SelectItem>
+                                                                                {movementTypeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`trades.0.sessions.${index}.direction`}
+                                                                render={({ field }) => (
+                                                                        <FormItem>
+                                                                        <FormLabel className="text-xs">Direction</FormLabel>
+                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger><SelectValue placeholder="Direction..." /></SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="none">-</SelectItem>
+                                                                                {directionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`trades.0.sessions.${index}.tookHighLow`}
+                                                                render={({ field }) => (
+                                                                        <FormItem>
+                                                                        <FormLabel className="text-xs">Liquidity</FormLabel>
+                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`trades.0.sessions.${index}.targetSession`}
+                                                                render={({ field }) => (
+                                                                        <FormItem>
+                                                                        <FormLabel className="text-xs">Target</FormLabel>
+                                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger><SelectValue placeholder="Session..." /></SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="none">-</SelectItem>
+                                                                                {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -767,5 +772,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
