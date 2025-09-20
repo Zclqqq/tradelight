@@ -624,7 +624,6 @@ export default function LogDayPage() {
                                                                 <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="none">-</SelectItem>
                                                                 {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
