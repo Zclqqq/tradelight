@@ -121,13 +121,13 @@ export default function LogDayPage() {
         }
     };
 
-    const defaultSessions = sessionOptions.map(name => ({
+    const defaultSessions = React.useMemo(() => sessionOptions.map(name => ({
         sessionName: name,
         movementType: "none" as const,
         direction: "none" as const,
         tookHighLow: undefined,
         targetSession: "none" as const,
-    }));
+    })), []);
 
     const form = useForm<z.infer<typeof dayLogSchema>>({
         resolver: zodResolver(dayLogSchema),
@@ -149,6 +149,8 @@ export default function LogDayPage() {
             }],
         },
     });
+    
+    const { watch } = form;
 
     const { fields, append, remove, update } = useFieldArray({
         control: form.control,
@@ -187,11 +189,11 @@ export default function LogDayPage() {
 
     React.useEffect(() => {
         if (!isClient) return;
-        const subscription = form.watch((value) => {
+        const subscription = watch((value) => {
             debouncedSaveChanges(value as DayLog);
         });
         return () => subscription.unsubscribe();
-    }, [form, debouncedSaveChanges, isClient]);
+    }, [watch, debouncedSaveChanges, isClient]);
 
     const calculatePnl = () => {
         const values = form.getValues();
@@ -208,8 +210,12 @@ export default function LogDayPage() {
             if (form.getValues("trades.0.pnl") !== calculatedPnl) {
                 form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
             }
+        } else if (form.getValues("trades.0.pnl") !== 0 && !isEditingPnl) {
+            // If points or contracts are cleared, reset PNL if not manually editing
+            // form.setValue("trades.0.pnl", 0, { shouldDirty: true });
         }
     };
+
 
     React.useEffect(() => {
         if (!isClient) return;
@@ -254,7 +260,6 @@ export default function LogDayPage() {
                 tradeTp: savedTrade.tradeTp || '' as any,
                 tradeSl: savedTrade.tradeSl || '' as any,
                 totalPoints: savedTrade.totalPoints || '' as any,
-                tookHighLow: savedTrade.tookHighLow || undefined,
             };
 
             const dataWithDefaults = {
@@ -656,7 +661,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
 
     
