@@ -273,7 +273,7 @@ export default function LogDayPage() {
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
-    }, [searchParams, form]);
+    }, [searchParams, form, defaultSessions]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -546,10 +546,10 @@ export default function LogDayPage() {
                             </Card>
                         </div>
                         <div className="flex flex-col space-y-6">
-                            <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col">
+                             <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col">
                                 {analysisImage ? (
                                     <div className="w-full h-full relative">
-                                        <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                        <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
                                     </div>
                                 ) : (
                                     <CardContent className="p-0 flex-1 flex flex-col">
@@ -657,5 +657,7 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
