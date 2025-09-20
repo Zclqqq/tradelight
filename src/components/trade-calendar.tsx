@@ -163,7 +163,7 @@ export function TradeCalendar() {
                 } else if (pnlData.pnl < 0) {
                      dayStyles.borderColor = 'hsl(var(--destructive))';
                 } else {
-                     dayStyles.borderColor = 'hsl(var(--chart-4))';
+                     dayStyles.borderColor = 'hsl(var(--chart-3))';
                 }
                 dayStyles.borderWidth = '2px';
             }
@@ -188,7 +188,7 @@ export function TradeCalendar() {
                     dateTime={format(day, "yyyy-MM-dd")}
                     className={cn(
                       "absolute top-1 left-1 font-semibold text-xs h-5 w-5 flex items-center justify-center",
-                      isToday(day) && "rounded-full bg-primary text-primary-foreground"
+                       isToday(day) && "rounded-full bg-primary text-primary-foreground"
                     )}
                   >
                     {format(day, "d")}
@@ -205,7 +205,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-primary font-medium text-sm text-[hsl(var(--chart-4))]">No Trade</span>
+                        <span className="text-primary font-medium text-sm text-[hsl(var(--chart-3))]">NO TRADE</span>
                       )}
                     </div>
                   ) : null}
@@ -218,4 +218,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
