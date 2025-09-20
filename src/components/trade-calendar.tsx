@@ -174,31 +174,29 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-start text-xs transition-colors border-r border-b border-border h-24",
+                "relative flex flex-col justify-center items-center text-xs transition-colors border-r border-b border-border h-24",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30"
+                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
               )}
               style={dayStyles}
             >
               {isCurrentMonth ? (
                 <>
-                  <div className="flex justify-end p-1">
-                    <time
-                      dateTime={format(day, "yyyy-MM-dd")}
-                      className={cn(
-                        "font-semibold text-xs h-5 w-5 flex items-center justify-center",
-                        isToday(day) && "rounded-full bg-primary text-primary-foreground"
-                      )}
-                    >
-                      {format(day, "d")}
-                    </time>
-                  </div>
+                  <time
+                    dateTime={format(day, "yyyy-MM-dd")}
+                    className={cn(
+                      "absolute top-1 right-1 font-semibold text-xs h-5 w-5 flex items-center justify-center",
+                      isToday(day) && "rounded-full bg-primary text-primary-foreground"
+                    )}
+                  >
+                    {format(day, "d")}
+                  </time>
 
                   {pnlData?.isLogged ? (
-                    <div className="flex-1 flex items-center justify-center font-bold text-base p-1">
+                    <div className="font-bold text-base p-1 text-center">
                       {pnlData.pnl !== 0 ? (
-                        <span className={cn('text-center', pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                        <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
                             {pnlData.pnl.toLocaleString("en-US", {
                               style: "currency",
                               currency: "USD",
@@ -206,7 +204,7 @@ export function TradeCalendar() {
                             })}
                         </span>
                       ) : (
-                        <span className="text-primary font-medium text-sm text-center text-[hsl(var(--chart-4))]">No Trade</span>
+                        <span className="text-primary font-medium text-sm text-[hsl(var(--chart-4))]">No Trade</span>
                       )}
                     </div>
                   ) : null}
