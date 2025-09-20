@@ -134,7 +134,7 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="">
+    <div className="border border-border">
       <div className="flex items-center justify-between p-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
@@ -164,7 +164,7 @@ export function TradeCalendar() {
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let dayClasses: string[] = ["border-r", "border-b", "border-border", "bg-background", "opacity-70"];
+          let dayClasses: string[] = ["border-r", "border-b", "border-border", "bg-background"];
           let textClasses: string[] = [];
           let pnlTextClasses: string[] = [];
 
@@ -208,9 +208,9 @@ export function TradeCalendar() {
                 </time>
 
               {isCurrentMonth && pnlData?.isLogged ? (
-                <div className={cn("font-bold text-base p-1 text-center", ...pnlTextClasses)}>
+                <div className="p-1 text-center">
                   {pnlData.pnl !== 0 ? (
-                    <span>
+                    <span className={cn("font-bold text-base", ...pnlTextClasses)}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
@@ -218,7 +218,7 @@ export function TradeCalendar() {
                         })}
                     </span>
                   ) : (
-                    <span className="font-medium text-sm">NO TRADE</span>
+                    <span className="font-normal text-sm text-muted-foreground">NO TRADE</span>
                   )}
                 </div>
               ) : null}
