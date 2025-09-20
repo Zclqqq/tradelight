@@ -100,9 +100,11 @@ export function TradeCalendar() {
     calendarWeeks.push(days.slice(i, i + 7));
   }
 
-  const lastWeek = calendarWeeks[calendarWeeks.length - 1];
-  if (lastWeek && calendarWeeks.length > 5 && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
-    calendarWeeks.pop();
+  if (calendarWeeks.length > 5) {
+      const lastWeek = calendarWeeks[calendarWeeks.length - 1];
+      if (lastWeek.every(day => !isSameMonth(day, currentDate))) {
+        calendarWeeks.pop();
+      }
   }
   const calendarDays = calendarWeeks.flat();
 
@@ -150,23 +152,35 @@ export function TradeCalendar() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border -mt-px -ml-px">
+      <div className="grid grid-cols-7 border-l border-border -mt-px">
         {calendarDays.map((day, index) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
           let dayStyles: React.CSSProperties = {};
-           if (pnlData?.isLogged) {
-                if (pnlData.pnl > 0) {
-                    dayStyles.borderColor = 'hsl(var(--chart-1))';
-                } else if (pnlData.pnl < 0) {
-                     dayStyles.borderColor = 'hsl(var(--destructive))';
-                } else {
-                     dayStyles.borderColor = 'hsl(var(--chart-3))';
-                }
-                dayStyles.borderWidth = '2px';
-            }
+          let borderClasses = "border-r border-b border-border";
+
+          if (pnlData?.isLogged) {
+            let borderColor = 'hsl(var(--border))';
+            if (pnlData.pnl > 0) borderColor = 'hsl(var(--chart-1))';
+            else if (pnlData.pnl < 0) borderColor = 'hsl(var(--destructive))';
+            else borderColor = 'hsl(var(--chart-3))';
+
+            const hasNeighborTop = index > 6 && dailyPnl[format(calendarDays[index-7], "yyyy-MM-dd")]?.isLogged;
+            const hasNeighborBottom = index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], "yyyy-MM-dd")]?.isLogged;
+            const hasNeighborLeft = index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], "yyyy-MM-dd")]?.isLogged;
+            const hasNeighborRight = (index + 1) % 7 !== 0 && dailyPnl[format(calendarDays[index+1], "yyyy-MM-dd")]?.isLogged;
+
+            borderClasses = "";
+            dayStyles = {
+              borderTop: `2px solid ${hasNeighborTop ? 'transparent' : borderColor}`,
+              borderBottom: `2px solid ${hasNeighborBottom ? 'transparent' : borderColor}`,
+              borderLeft: `2px solid ${hasNeighborLeft ? 'transparent' : borderColor}`,
+              borderRight: `2px solid ${hasNeighborRight ? 'transparent' : borderColor}`,
+              margin: '-1px'
+            };
+          }
 
 
           return (
@@ -174,43 +188,43 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors border-r border-b border-border h-24 p-1",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-24 p-1",
                 isCurrentMonth && "cursor-pointer",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                !isCurrentMonth && "bg-transparent text-muted-foreground/30",
-                pnlData?.isLogged && "z-10 -m-px"
+                !isCurrentMonth && "text-muted-foreground/30",
+                pnlData?.isLogged ? "z-10" : "z-0",
+                borderClasses
               )}
               style={dayStyles}
             >
-              {isCurrentMonth ? (
-                <>
-                  <time
-                    dateTime={format(day, "yyyy-MM-dd")}
-                    className={cn(
-                      "absolute top-1 left-1 font-semibold text-xs h-5 w-5 flex items-center justify-center",
-                       isToday(day) && "rounded-full bg-primary text-primary-foreground"
-                    )}
-                  >
-                    {format(day, "d")}
-                  </time>
+              {!pnlData?.isLogged && !isCurrentMonth && <div className="h-full"></div>}
+               <time
+                  dateTime={format(day, "yyyy-MM-dd")}
+                  className={cn(
+                    "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center",
+                     isToday(day) && isCurrentMonth && "rounded-full bg-primary text-primary-foreground",
+                     !isCurrentMonth && "text-muted-foreground/30"
+                  )}
+                >
+                  {format(day, "d")}
+                </time>
 
-                  {pnlData?.isLogged ? (
-                    <div className="font-bold text-base p-1 text-center">
-                      {pnlData.pnl !== 0 ? (
-                        <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
-                            {pnlData.pnl.toLocaleString("en-US", {
-                              style: "currency",
-                              currency: "USD",
-                              maximumFractionDigits: 0,
-                            })}
-                        </span>
-                      ) : (
-                        <span className="text-primary font-medium text-sm text-[hsl(var(--chart-3))]">NO TRADE</span>
-                      )}
-                    </div>
-                  ) : null}
-                </>
-              ) : <div className="h-full"></div>}
+              {isCurrentMonth && pnlData?.isLogged ? (
+                <div className="font-bold text-base p-1 text-center">
+                  {pnlData.pnl !== 0 ? (
+                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                        {pnlData.pnl.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                          maximumFractionDigits: 0,
+                        })}
+                    </span>
+                  ) : (
+                    <span className="font-medium text-sm text-[hsl(var(--chart-3))]">NO TRADE</span>
+                  )}
+                </div>
+              ) : null}
+              {isCurrentMonth && !pnlData?.isLogged ? <div className="h-full w-full"></div> : null}
             </div>
           );
         })}
@@ -218,3 +232,5 @@ export function TradeCalendar() {
     </div>
   );
 }
+
+    
