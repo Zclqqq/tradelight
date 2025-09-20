@@ -164,13 +164,13 @@ export function TradeCalendar() {
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          const pnlColorClass = pnlData
-          ? pnlData.pnl > 0
-            ? 'text-[hsl(var(--chart-1))] border-[hsl(var(--chart-1))]'
-            : pnlData.pnl < 0
-            ? 'text-destructive border-destructive'
-            : 'border-[hsl(var(--chart-3))]'
-          : '';
+          let pnlColor = '';
+          if (pnlData) {
+            if (pnlData.pnl > 0) pnlColor = 'hsl(var(--chart-1))';
+            else if (pnlData.pnl < 0) pnlColor = 'hsl(var(--destructive))';
+            else if (pnlData.isLogged) pnlColor = 'hsl(var(--muted-foreground))';
+          }
+          const pnlTextColorClass = pnlData ? (pnlData.pnl > 0 ? 'text-[hsl(var(--chart-1))]' : pnlData.pnl < 0 ? 'text-destructive' : '') : '';
 
           const isNoTradeDay = pnlData?.isLogged && pnlData.pnl === 0;
 
@@ -182,9 +182,9 @@ export function TradeCalendar() {
                 "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
-                isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                 isCurrentMonth && pnlData?.isLogged && `border-[2px] ${pnlColorClass}`
+                isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50"
               )}
+               style={pnlData?.isLogged ? { boxShadow: `inset 0 0 0 2px ${pnlColor}` } : {}}
             >
               <time
                   dateTime={format(day, "yyyy-MM-dd")}
@@ -192,7 +192,7 @@ export function TradeCalendar() {
                     "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center",
                      isToday(day) && isCurrentMonth && "rounded-full bg-primary text-primary-foreground",
                      !isCurrentMonth && "text-muted-foreground/30",
-                     pnlColorClass
+                     pnlTextColorClass
                   )}
                 >
                   {format(day, "d")}
@@ -203,7 +203,7 @@ export function TradeCalendar() {
                   {isNoTradeDay ? (
                      <span className="font-normal text-xs text-muted-foreground">NO TRADE</span>
                   ) : (
-                    <span className={cn("font-bold text-base", pnlColorClass.split(' ')[0])}>
+                    <span className={cn("font-bold text-base", pnlTextColorClass)}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
