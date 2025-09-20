@@ -46,7 +46,6 @@ const tradeSchema = z.object({
   tradeSl: z.coerce.number().optional(),
   totalPoints: z.coerce.number().optional(),
   analysisImage: z.string().optional().default(""),
-  analysisText: z.string().optional().default(""),
   sessions: z.array(detailedSessionTradeSchema).optional(),
   chartPerformance: z.string().optional().default(""),
 });
@@ -62,7 +61,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
+const tookHighLowOptions = [{value: "none", label: "-"}, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "none", label: "-"},{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
@@ -92,12 +91,14 @@ export default function LogDayPage() {
     const [isEditingPnl, setIsEditingPnl] = React.useState(false);
     const pnlInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const [isClient, setIsClient] = React.useState(false);
     
     const [models, setModels] = React.useState<string[]>([]);
     const [popoverOpen, setPopoverOpen] = React.useState(false);
     const [newModel, setNewModel] = React.useState('');
 
     React.useEffect(() => {
+        setIsClient(true);
         const savedModels = localStorage.getItem('trade-models');
         if (savedModels) {
             setModels(JSON.parse(savedModels));
@@ -140,7 +141,6 @@ export default function LogDayPage() {
                 pnl: 0, 
                 sessions: defaultSessions,
                 analysisImage: "",
-                analysisText: "",
                 chartPerformance: "",
                 model: "",
                 entryTime: "",
@@ -189,17 +189,19 @@ export default function LogDayPage() {
     const debouncedSaveChanges = useDebouncedCallback(saveChanges, 2000);
 
     React.useEffect(() => {
+        if (!isClient) return;
         const subscription = form.watch((value) => {
             debouncedSaveChanges(value as DayLog);
         });
         return () => subscription.unsubscribe();
-    }, [form, debouncedSaveChanges]);
+    }, [form, debouncedSaveChanges, isClient]);
 
     const watchedInstrument = form.watch("trades.0.instrument");
     const watchedPoints = form.watch("trades.0.totalPoints");
     const watchedContracts = form.watch("trades.0.contracts");
 
     React.useEffect(() => {
+        if (!isClient) return;
         const pointValue = instrumentPointValues[watchedInstrument] || 0;
         const points = watchedPoints || 0;
         const contracts = watchedContracts || 0;
@@ -210,10 +212,11 @@ export default function LogDayPage() {
                 form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
             }
         }
-    }, [watchedInstrument, watchedPoints, watchedContracts, form]);
+    }, [watchedInstrument, watchedPoints, watchedContracts, form, isClient]);
 
 
     React.useEffect(() => {
+        if (!isClient) return;
         const dateParam = searchParams.get('date');
         const date = dateParam ? new Date(dateParam) : new Date();
         const key = `trade-log-${format(date, 'yyyy-MM-dd')}`;
@@ -223,7 +226,6 @@ export default function LogDayPage() {
             instrument: "NQ",
             pnl: 0,
             analysisImage: "",
-            analysisText: "",
             chartPerformance: "",
             model: "",
             entryTime: "",
@@ -245,7 +247,7 @@ export default function LogDayPage() {
                 sessionName: name,
                 movementType: sessionMap.get(name)?.movementType || "none",
                 direction: sessionMap.get(name)?.direction || "none",
-                tookHighLow: sessionMap.get(name)?.tookHighLow,
+                tookHighLow: sessionMap.get(name)?.tookHighLow || undefined,
                 targetSession: sessionMap.get(name)?.targetSession || "none",
             }));
             
@@ -257,7 +259,7 @@ export default function LogDayPage() {
                 tradeTp: savedTrade.tradeTp || '' as any,
                 tradeSl: savedTrade.tradeSl || '' as any,
                 totalPoints: savedTrade.totalPoints || '' as any,
-                tookHighLow: savedTrade.tookHighLow,
+                tookHighLow: savedTrade.tookHighLow || undefined,
             };
 
             const dataWithDefaults = {
@@ -274,7 +276,7 @@ export default function LogDayPage() {
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
-    }, [searchParams, form, defaultSessions]);
+    }, [searchParams, form, defaultSessions, isClient]);
     
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
@@ -363,7 +365,7 @@ export default function LogDayPage() {
                 </a>
             </Button>
             <h1 className="text-xl font-bold font-headline">
-                Today's Recap {format(form.watch("date"), "M/d/yy")}
+                {isClient ? `Today's Recap ${format(form.watch("date"), "M/d/yy")}` : ' '}
             </h1>
         </header>
 
@@ -414,7 +416,7 @@ export default function LogDayPage() {
                                                                     !field.value && "text-muted-foreground"
                                                                 )}
                                                                 >
-                                                                {field.value ? (
+                                                                {field.value && isClient ? (
                                                                     format(field.value, "PPP")
                                                                 ) : (
                                                                     <span>Pick a date</span>
@@ -495,7 +497,7 @@ export default function LogDayPage() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.contracts"
-                                            render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} />}
                                             />
                                         </TradeDataField>
 
@@ -503,7 +505,7 @@ export default function LogDayPage() {
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.totalPoints"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} />}
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} />}
                                             />
                                         </TradeDataField>
                                         
@@ -511,7 +513,7 @@ export default function LogDayPage() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.tradeTp"
-                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} />}
+                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} />}
                                             />
                                         </TradeDataField>
                                         
@@ -519,7 +521,7 @@ export default function LogDayPage() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.tradeSl"
-                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} />}
+                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} />}
                                             />
                                         </TradeDataField>
                                     </div>
@@ -657,7 +659,5 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
 
     
