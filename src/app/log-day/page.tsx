@@ -23,7 +23,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback }from "use-debounce";
 import { Separator } from "@/components/ui/separator";
 
 
@@ -142,15 +142,15 @@ export default function LogDayPage() {
                 model: "",
                 entryTime: "",
                 exitTime: "",
-                contracts: '' as any,
-                tradeTp: '' as any,
-                tradeSl: '' as any,
-                totalPoints: '' as any,
+                contracts: undefined,
+                tradeTp: undefined,
+                tradeSl: undefined,
+                totalPoints: undefined,
             }],
         },
     });
     
-    const { watch, control } = form;
+    const { watch, control, getValues, setValue } = form;
 
     const { fields, update } = useFieldArray({
         control: form.control,
@@ -187,18 +187,14 @@ export default function LogDayPage() {
 
     const debouncedSaveChanges = useDebouncedCallback(saveChanges, 2000);
 
+    const watchedValues = watch();
     React.useEffect(() => {
         if (!isClient) return;
-
-        const subscription = watch((value) => {
-            debouncedSaveChanges(value as DayLog);
-        });
-
-        return () => subscription.unsubscribe();
-    }, [isClient, watch, debouncedSaveChanges]);
+        debouncedSaveChanges(watchedValues as DayLog);
+    }, [isClient, watchedValues, debouncedSaveChanges]);
 
     const calculatePnl = () => {
-        const values = form.getValues();
+        const values = getValues();
         const watchedInstrument = values.trades[0].instrument;
         const watchedPoints = values.trades[0].totalPoints;
         const watchedContracts = values.trades[0].contracts;
@@ -209,8 +205,8 @@ export default function LogDayPage() {
         
         if (points !== 0 && contracts !== 0) {
             const calculatedPnl = points * pointValue * contracts;
-            if (form.getValues("trades.0.pnl") !== calculatedPnl) {
-                form.setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
+            if (getValues("trades.0.pnl") !== calculatedPnl) {
+                setValue("trades.0.pnl", calculatedPnl, { shouldDirty: true });
             }
         }
     };
@@ -230,10 +226,10 @@ export default function LogDayPage() {
             model: "",
             entryTime: "",
             exitTime: "",
-            contracts: '' as any,
-            tradeTp: '' as any,
-            tradeSl: '' as any,
-            totalPoints: '' as any,
+            contracts: undefined,
+            tradeTp: undefined,
+            tradeSl: undefined,
+            totalPoints: undefined,
         };
         
         if (savedData) {
@@ -255,10 +251,10 @@ export default function LogDayPage() {
                 ...emptyTrade,
                 ...savedTrade,
                 sessions: fullSessions,
-                contracts: savedTrade.contracts ?? '' as any,
-                tradeTp: savedTrade.tradeTp ?? '' as any,
-                tradeSl: savedTrade.tradeSl ?? '' as any,
-                totalPoints: savedTrade.totalPoints ?? '' as any,
+                contracts: savedTrade.contracts ?? undefined,
+                tradeTp: savedTrade.tradeTp ?? undefined,
+                tradeSl: savedTrade.tradeSl ?? undefined,
+                totalPoints: savedTrade.totalPoints ?? undefined,
             };
 
             const dataWithDefaults = {
@@ -499,7 +495,7 @@ export default function LogDayPage() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.contracts"
-                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e); calculatePnl();}} />}
+                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} />}
                                             />
                                         </TradeDataField>
 
@@ -507,7 +503,7 @@ export default function LogDayPage() {
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.totalPoints"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e); calculatePnl();}} />}
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} />}
                                             />
                                         </TradeDataField>
                                         
@@ -633,7 +629,7 @@ export default function LogDayPage() {
                                                     name={`trades.0.sessions.${index}.tookHighLow`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                            <Select onValueChange={field.onChange} value={field.value || ''}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                                 </FormControl>
