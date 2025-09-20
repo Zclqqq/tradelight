@@ -151,9 +151,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -mr-px -mb-px">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-border">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-b border-border">
+          <div key={day} className="py-2 border-r border-border first:border-l">
             {day}
           </div>
         ))}
@@ -188,7 +188,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 -ml-px -mt-px",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
@@ -218,7 +218,7 @@ export function TradeCalendar() {
                         })}
                     </span>
                   ) : (
-                    <span className="font-normal text-sm text-muted-foreground">NO TRADE</span>
+                    <span className="font-normal text-xs text-muted-foreground">NO TRADE</span>
                   )}
                 </div>
               ) : null}
