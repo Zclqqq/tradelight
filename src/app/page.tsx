@@ -85,13 +85,9 @@ export default function Home() {
                     value={`${stats.winRate.toFixed(0)}%`}
                   />
               </div>
-              <div className="col-span-1">
-                <StatCard>
-                  <Link href="/log-day" className="w-full h-full flex items-center justify-center">
-                    <Button variant="outline" className="w-full h-full text-lg font-bold">Log Day</Button>
-                  </Link>
-                </StatCard>
-              </div>
+               <div className="col-span-1">
+                 <ProgressTracker />
+               </div>
             </div>
           </div>
         </div>

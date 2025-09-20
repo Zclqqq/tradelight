@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "@/app/log-day/page";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface DailyPnl {
   pnl: number;
@@ -99,7 +100,6 @@ export function TradeCalendar() {
     calendarWeeks.push(days.slice(i, i + 7));
   }
 
-  // Check if the last week is entirely outside the current month and has no PNL data
   const lastWeek = calendarWeeks[calendarWeeks.length - 1];
   if (lastWeek && calendarWeeks.length > 5 && lastWeek.every(day => !isSameMonth(day, currentDate) && !dailyPnl[format(day, 'yyyy-MM-dd')])) {
     calendarWeeks.pop();
@@ -132,6 +132,9 @@ export function TradeCalendar() {
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
+           <Button variant="outline" asChild>
+                <Link href="/log-day">Log Day</Link>
+           </Button>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
