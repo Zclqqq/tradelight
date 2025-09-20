@@ -100,11 +100,13 @@ export function TradeCalendar() {
   }
 
   const lastWeek = calendarWeeks[calendarWeeks.length - 1];
-  const allDaysInLastWeekOutsideMonth = lastWeek.every(day => !isSameMonth(day, currentDate));
-
-  if (calendarWeeks.length > 5 && allDaysInLastWeekOutsideMonth) {
-    calendarWeeks.pop();
+  if (lastWeek && calendarWeeks.length > 5) {
+      const allDaysInLastWeekOutsideMonth = lastWeek.every(day => !isSameMonth(day, currentDate));
+      if (allDaysInLastWeekOutsideMonth) {
+        calendarWeeks.pop();
+      }
   }
+
 
   const calendarDays = calendarWeeks.flat();
 
@@ -144,23 +146,23 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 border-t border-l border-border text-xs text-center font-semibold text-muted-foreground">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="py-2 border-r border-b border-border">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border -mt-px">
-        {calendarDays.map((day, index) => {
+      <div className="grid grid-cols-7 -mt-px -ml-px">
+        {calendarDays.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
           let dayStyles: React.CSSProperties = {};
-          let borderClasses = "border-r border-b border-border";
+          let borderClasses = "border-r border-b border-t border-l border-border";
 
-          if (pnlData?.isLogged) {
+          if (isCurrentMonth && pnlData?.isLogged) {
             let borderColor = 'hsl(var(--border))';
             if (pnlData.pnl > 0) borderColor = 'hsl(var(--chart-1))';
             else if (pnlData.pnl < 0) borderColor = 'hsl(var(--destructive))';
@@ -168,7 +170,7 @@ export function TradeCalendar() {
 
             borderClasses = "z-10";
             dayStyles = {
-              boxShadow: `0 0 0 2px ${borderColor} inset`,
+              boxShadow: `0 0 0 2px ${borderColor}`,
             };
           }
 
