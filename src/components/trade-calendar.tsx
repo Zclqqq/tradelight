@@ -11,7 +11,8 @@ import {
   startOfWeek,
   add,
   sub,
-  isToday as isTodayDateFns
+  isToday as isTodayDateFns,
+  isSameDay
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -107,7 +108,6 @@ export function TradeCalendar() {
       }
   }
 
-
   const calendarDays = calendarWeeks.flat();
 
   function nextMonth() {
@@ -128,6 +128,11 @@ export function TradeCalendar() {
     router.push(`/log-day?date=${dayKey}`);
   };
 
+  const getPnlDataForDay = (day: Date) => {
+      const dayKey = format(day, "yyyy-MM-dd");
+      return dailyPnl[dayKey];
+  }
+
   return (
     <div className="">
       <div className="flex items-center justify-between p-2">
@@ -146,47 +151,46 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -ml-px">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="py-2 border-r border-b border-t border-l border-border">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 -mt-px -ml-px">
+      <div className="grid grid-cols-7 border-l border-t border-border gap-px bg-border -mt-px">
         {calendarDays.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let dayStyles: React.CSSProperties = {};
-          let borderClasses = "border-r border-b border-t border-l border-border";
+          let dayClasses = "border-r border-b border-background bg-background";
+          let textClasses = "";
 
           if (isCurrentMonth && pnlData?.isLogged) {
-            let borderColor = 'hsl(var(--border))';
-            if (pnlData.pnl > 0) borderColor = 'hsl(var(--chart-1))';
-            else if (pnlData.pnl < 0) borderColor = 'hsl(var(--destructive))';
-            else borderColor = 'hsl(var(--chart-3))';
-
-            borderClasses = "z-10";
-            dayStyles = {
-              boxShadow: `0 0 0 2px ${borderColor}`,
-            };
+            if (pnlData.pnl > 0) {
+              dayClasses = "border-2 border-[hsl(var(--chart-1))]";
+              textClasses = "text-[hsl(var(--chart-1))]";
+            } else if (pnlData.pnl < 0) {
+              dayClasses = "border-2 border-destructive";
+              textClasses = "text-destructive";
+            } else {
+              dayClasses = "border-2 border-[hsl(var(--chart-3))]";
+              textClasses = "text-[hsl(var(--chart-3))]";
+            }
           }
-
 
           return (
             <div
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 bg-background",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                borderClasses
+                dayClasses
               )}
-              style={dayStyles}
             >
               <time
                   dateTime={format(day, "yyyy-MM-dd")}
@@ -200,9 +204,9 @@ export function TradeCalendar() {
                 </time>
 
               {isCurrentMonth && pnlData?.isLogged ? (
-                <div className="font-bold text-base p-1 text-center">
+                <div className={cn("font-bold text-base p-1 text-center", textClasses)}>
                   {pnlData.pnl !== 0 ? (
-                    <span className={cn(pnlData.pnl > 0 && "text-[hsl(var(--chart-1))]", pnlData.pnl < 0 && "text-destructive")}>
+                    <span>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
@@ -210,7 +214,7 @@ export function TradeCalendar() {
                         })}
                     </span>
                   ) : (
-                    <span className="font-medium text-sm text-[hsl(var(--chart-3))]">NO TRADE</span>
+                    <span className="font-medium text-sm">NO TRADE</span>
                   )}
                 </div>
               ) : null}
