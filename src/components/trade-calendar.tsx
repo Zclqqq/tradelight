@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -201,7 +202,7 @@ export function TradeCalendar() {
               {isCurrentMonth && pnlData?.isLogged ? (
                 <div className="p-1 text-center">
                   {isNoTradeDay ? (
-                     <span className="font-medium text-xs text-muted-foreground">NO TRADE</span>
+                     <span className="font-bold text-sm text-muted-foreground">NO TRADE</span>
                   ) : (
                     <span className={cn("font-bold text-base", pnlTextColorClass)}>
                         {pnlData.pnl.toLocaleString("en-US", {
