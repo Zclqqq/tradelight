@@ -29,10 +29,10 @@ import { Separator } from "@/components/ui/separator";
 
 const detailedSessionTradeSchema = z.object({
   sessionName: z.string(),
-  movementType: z.enum(["none", "expansion", "retracement", "continuation", "reversal"]),
-  direction: z.enum(["none", "up", "down", "both"]),
+  movementType: z.enum(["none", "expansion", "retracement", "continuation", "reversal"]).default("none"),
+  direction: z.enum(["none", "up", "down", "both"]).default("none"),
   tookHighLow: z.enum(["none", "took-high", "took-low", "took-both"]).optional().default("none"),
-  targetSession: z.enum(["none", "asia", "london", "new-york", "previous-day"]),
+  targetSession: z.enum(["none", "asia", "london", "new-york", "previous-day"]).default("none"),
 });
 
 const tradeSchema = z.object({
@@ -60,8 +60,8 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{ value: "none", label: "-" }, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
-const targetSessionOptions = [{value: "none", label: "-"},{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
+const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
+const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
 const instrumentPointValues: { [key: string]: number } = {
@@ -187,7 +187,6 @@ export default function LogDayPage() {
 
     const debouncedSaveChanges = useDebouncedCallback(saveChanges, 2000);
     
-    const watchedValues = watch();
     React.useEffect(() => {
         if (!isClient) return;
         const subscription = watch((value) => {
@@ -580,9 +579,9 @@ export default function LogDayPage() {
                                 <CardContent className="p-4 pt-0 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium">
                                         <div className="col-span-1">Session</div>
-                                        <div className="col-span-1">Type</div>
+                                        <div className="col-span-1">Move</div>
                                         <div className="col-span-1">Direction</div>
-                                        <div className="col-span-1">High/Low</div>
+                                        <div className="col-span-1">Sweep</div>
                                         <div className="col-span-1">Target</div>
                                     </div>
                                     {(form.watch('trades.0.sessions') || []).map((session, index) => (
@@ -596,7 +595,7 @@ export default function LogDayPage() {
                                                         <FormItem>
                                                             <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Type..." /></SelectTrigger>
+                                                                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Move..." /></SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
                                                                     <SelectItem value="none">-</SelectItem>
@@ -634,9 +633,10 @@ export default function LogDayPage() {
                                                         <FormItem>
                                                             <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="High/Low..." /></SelectTrigger>
+                                                                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Sweep..." /></SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
+                                                                    <SelectItem value="none">-</SelectItem>
                                                                     {tookHighLowOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                                 </SelectContent>
                                                             </Select>
@@ -655,6 +655,7 @@ export default function LogDayPage() {
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Target..." /></SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
+                                                                    <SelectItem value="none">-</SelectItem>
                                                                     {targetSessionOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                                                                 </SelectContent>
                                                             </Select>
@@ -674,6 +675,8 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+    
 
     
 
