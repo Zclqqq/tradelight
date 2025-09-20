@@ -18,7 +18,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "@/app/log-day/page";
-import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 
 interface DailyPnl {
   pnl: number;
@@ -28,10 +28,10 @@ interface DailyPnl {
 
 interface TradeCalendarProps {
     logs: DayLog[];
-    router: AppRouterInstance;
 }
 
-export function TradeCalendar({ logs, router }: TradeCalendarProps) {
+export function TradeCalendar({ logs }: TradeCalendarProps) {
+  const router = useRouter();
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [today, setToday] = React.useState<Date | null>(null);
   const [dailyPnl, setDailyPnl] = React.useState<Record<string, DailyPnl>>({});

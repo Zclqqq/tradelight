@@ -118,7 +118,7 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-3">
-                  {isClient && <TradeCalendar logs={allLogs} router={router} />}
+                  {isClient && <TradeCalendar logs={allLogs} />}
                 </div>
                 <div className="md:col-span-1">
                   <RecentTrades logs={allLogs} />
