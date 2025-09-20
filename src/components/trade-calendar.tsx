@@ -167,17 +167,9 @@ export function TradeCalendar() {
             else if (pnlData.pnl < 0) borderColor = 'hsl(var(--destructive))';
             else borderColor = 'hsl(var(--chart-3))';
 
-            const hasNeighborTop = index > 6 && dailyPnl[format(calendarDays[index-7], "yyyy-MM-dd")]?.isLogged;
-            const hasNeighborBottom = index < calendarDays.length - 7 && dailyPnl[format(calendarDays[index+7], "yyyy-MM-dd")]?.isLogged;
-            const hasNeighborLeft = index % 7 !== 0 && dailyPnl[format(calendarDays[index-1], "yyyy-MM-dd")]?.isLogged;
-            const hasNeighborRight = (index + 1) % 7 !== 0 && dailyPnl[format(calendarDays[index+1], "yyyy-MM-dd")]?.isLogged;
-
             borderClasses = "";
             dayStyles = {
-              borderTop: `2px solid ${hasNeighborTop ? 'transparent' : borderColor}`,
-              borderBottom: `2px solid ${hasNeighborBottom ? 'transparent' : borderColor}`,
-              borderLeft: `2px solid ${hasNeighborLeft ? 'transparent' : borderColor}`,
-              borderRight: `2px solid ${hasNeighborRight ? 'transparent' : borderColor}`,
+              border: `2px solid ${borderColor}`,
               margin: '-1px'
             };
           }
@@ -232,5 +224,3 @@ export function TradeCalendar() {
     </div>
   );
 }
-
-    
