@@ -31,7 +31,7 @@ const detailedSessionTradeSchema = z.object({
   sessionName: z.string(),
   movementType: z.enum(["none", "expansion", "retracement", "continuation", "reversal"]),
   direction: z.enum(["none", "up", "down", "both"]),
-  tookHighLow: z.enum(["none", "took-high", "took-low", "took-both"]),
+  tookHighLow: z.enum(["took-high", "took-low", "took-both"]).optional(),
   targetSession: z.enum(["none", "asia", "london", "new-york", "previous-day"]),
 });
 
@@ -62,7 +62,7 @@ export type DayLog = z.infer<typeof dayLogSchema>;
 const sessionOptions = ["Asia", "London", "New York", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
-const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}, {value: "none", label: "Didn't Take"}];
+const tookHighLowOptions = [{value: "none", label: "-"}, {value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
 
 const chartPerformanceOptions = ["Consolidation", "Small Move", "Hit TP", "Hit SL", "Hit SL and then TP", "Expansion Up", "Expansion Down"];
@@ -126,7 +126,7 @@ export default function LogDayPage() {
         sessionName: name,
         movementType: "none" as const,
         direction: "none" as const,
-        tookHighLow: "none" as const,
+        tookHighLow: undefined,
         targetSession: "none" as const,
     }));
 
@@ -245,7 +245,7 @@ export default function LogDayPage() {
                 sessionName: name,
                 movementType: sessionMap.get(name)?.movementType || "none",
                 direction: sessionMap.get(name)?.direction || "none",
-                tookHighLow: sessionMap.get(name)?.tookHighLow || "none",
+                tookHighLow: sessionMap.get(name)?.tookHighLow || undefined,
                 targetSession: sessionMap.get(name)?.targetSession || "none",
             }));
             
@@ -638,7 +638,7 @@ export default function LogDayPage() {
                                                 name={`trades.0.sessions.${index}.tookHighLow`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                        <Select onValueChange={field.onChange} value={field.value}>
                                                             <FormControl>
                                                                 <SelectTrigger><SelectValue placeholder="High/Low..." /></SelectTrigger>
                                                             </FormControl>
