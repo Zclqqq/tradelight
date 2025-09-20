@@ -153,18 +153,18 @@ export function TradeCalendar() {
       </div>
       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground -mr-px -mb-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-t border-l border-border">
+          <div key={day} className="py-2 border-r border-b border-border">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-t border-l border-border">
+      <div className="grid grid-cols-7 -mr-px -mb-px">
         {calendarDays.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let dayClasses: string[] = ["border-r", "border-b", "border-border", "bg-background"];
+          let dayClasses: string[] = ["border-r", "border-b", "border-border", "bg-background", "opacity-70"];
           let textClasses: string[] = [];
           let pnlTextClasses: string[] = [];
 
@@ -177,8 +177,8 @@ export function TradeCalendar() {
               dayClasses.push("border-destructive");
               pnlTextClasses.push("text-destructive");
             } else {
-              dayClasses.push("border-[hsl(var(--chart-3))]");
-              pnlTextClasses.push("text-foreground");
+              dayClasses.push("border-muted-foreground");
+              pnlTextClasses.push("text-muted-foreground");
             }
           }
 
