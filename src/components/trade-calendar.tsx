@@ -127,7 +127,7 @@ export function TradeCalendar() {
   };
 
   return (
-    <div className="border border-border">
+    <div className="border-border">
       <div className="flex items-center justify-between p-2">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
