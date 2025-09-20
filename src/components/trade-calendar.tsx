@@ -135,7 +135,7 @@ export function TradeCalendar() {
 
   return (
     <div className="border border-border">
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between p-2 border-b border-border">
         <h2 className="text-lg font-bold font-headline">
           {format(currentDate, "MMMM yyyy")}
         </h2>
@@ -151,9 +151,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-border">
+      <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-border -mr-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-border first:border-l">
+          <div key={day} className="py-2 border-r border-border">
             {day}
           </div>
         ))}
@@ -164,23 +164,13 @@ export function TradeCalendar() {
           const pnlData = dailyPnl[dayKey];
           const isCurrentMonth = isSameMonth(day, currentDate);
           
-          let dayClasses: string[] = ["border-r", "border-b", "border-border", "bg-background"];
-          let textClasses: string[] = [];
-          let pnlTextClasses: string[] = [];
-
-          if (isCurrentMonth && pnlData?.isLogged) {
-            dayClasses.push("border-2");
-            if (pnlData.pnl > 0) {
-              dayClasses.push("border-[hsl(var(--chart-1))]");
-              pnlTextClasses.push("text-[hsl(var(--chart-1))]");
-            } else if (pnlData.pnl < 0) {
-              dayClasses.push("border-destructive");
-              pnlTextClasses.push("text-destructive");
-            } else {
-              dayClasses.push("border-muted-foreground");
-              pnlTextClasses.push("text-muted-foreground");
-            }
-          }
+          const pnlColorClass = pnlData
+          ? pnlData.pnl > 0
+            ? 'text-[hsl(var(--chart-1))] border-[hsl(var(--chart-1))]'
+            : pnlData.pnl < 0
+            ? 'text-destructive border-destructive'
+            : 'text-muted-foreground border-muted-foreground'
+          : '';
 
 
           return (
@@ -188,11 +178,11 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 -ml-px -mt-px",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border -mt-px -ml-px",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "text-muted-foreground/30",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50",
-                ...dayClasses,
+                 isCurrentMonth && pnlData?.isLogged && `border-2 ${pnlColorClass}`
               )}
             >
               <time
@@ -201,7 +191,6 @@ export function TradeCalendar() {
                     "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center",
                      isToday(day) && isCurrentMonth && "rounded-full bg-primary text-primary-foreground",
                      !isCurrentMonth && "text-muted-foreground/30",
-                     ...textClasses
                   )}
                 >
                   {format(day, "d")}
@@ -210,7 +199,7 @@ export function TradeCalendar() {
               {isCurrentMonth && pnlData?.isLogged ? (
                 <div className="p-1 text-center">
                   {pnlData.pnl !== 0 ? (
-                    <span className={cn("font-bold text-base", ...pnlTextClasses)}>
+                    <span className={cn("font-bold text-base", pnlColorClass)}>
                         {pnlData.pnl.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
