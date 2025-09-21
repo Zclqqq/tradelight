@@ -301,6 +301,10 @@ export default function LogDayPage() {
             reader.readAsDataURL(file);
         }
     };
+
+    const handleRemoveImage = () => {
+        form.setValue("trades.0.analysisImage", "", { shouldDirty: true });
+    };
     
     const handleBackClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
@@ -548,11 +552,21 @@ export default function LogDayPage() {
                             </Card>
                         </div>
                         <div className="flex flex-col space-y-6">
-                             <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col">
+                            <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col group">
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
                                         <div className="w-full h-full relative">
                                             <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="icon"
+                                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                onClick={handleRemoveImage}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                                <span className="sr-only">Remove image</span>
+                                            </Button>
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-full">
@@ -675,9 +689,3 @@ export default function LogDayPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
