@@ -24,6 +24,8 @@ export function RecentTrades() {
         if (allLogsRaw) {
             const allLogs: DayLog[] = JSON.parse(allLogsRaw);
             const flatTrades: FlatTrade[] = allLogs.flatMap((log, logIndex) => {
+                if (!log.trades) return [];
+                
                 const hasImage = log.trades?.some(t => !!t.analysisImage);
                 
                 return log.trades.map((trade, tradeIndex) => ({
@@ -79,3 +81,4 @@ export function RecentTrades() {
     </Card>
   );
 }
+
