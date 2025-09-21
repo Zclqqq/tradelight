@@ -57,7 +57,7 @@ const dayLogSchema = z.object({
 
 export type DayLog = z.infer<typeof dayLogSchema>;
 
-const sessionOptions = ["Asia", "London", "New York", "PM Session"];
+const sessionOptions = ["Asia", "London", "New York", "Lunch", "PM Session"];
 const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: "retracement", label: "Retracement"}, {value: "continuation", label: "Continuation"}, {value: "reversal", label: "Reversal"}];
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
 const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
@@ -692,6 +692,8 @@ export default function LogDayPage() {
   );
 }
 
+
+    
 
     
 
