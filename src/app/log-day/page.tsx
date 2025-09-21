@@ -590,7 +590,7 @@ export default function LogDayPage() {
                             </Card>
                            <Card>
                                 <CardHeader>
-                                    <CardTitle className="font-headline text-base">Sessions</CardTitle>
+                                    <CardTitle className="font-headline text-base">SEASONS</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 pt-0 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium">
@@ -692,5 +692,7 @@ export default function LogDayPage() {
   );
 }
 
+
+    
 
     
