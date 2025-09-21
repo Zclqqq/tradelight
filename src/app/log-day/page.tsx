@@ -555,13 +555,15 @@ export default function LogDayPage() {
                             <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col group">
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
-                                        <div className="w-full h-full relative">
-                                            <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                        <div className="w-full h-full relative overflow-hidden">
+                                            <div className="absolute inset-0 transform scale-[1.06]">
+                                                <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
+                                            </div>
                                             <Button
                                                 type="button"
                                                 variant="destructive"
                                                 size="icon"
-                                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                                 onClick={handleRemoveImage}
                                             >
                                                 <Trash2 className="h-4 w-4" />
