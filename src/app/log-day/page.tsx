@@ -74,7 +74,7 @@ const instrumentPointValues: { [key: string]: number } = {
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     return (
-        <div className="space-y-1">
+        <div>
             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
             {children}
         </div>
@@ -376,7 +376,7 @@ export default function LogDayPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                         <div className="flex flex-col space-y-6">
                            <Card>
-                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
+                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-2">
                                     <div className="col-span-2 flex items-center gap-4">
                                         <div onDoubleClick={handlePnlDoubleClick} className="flex-1">
                                             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
@@ -405,7 +405,7 @@ export default function LogDayPage() {
                                                 control={form.control}
                                                 name="date"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-1">
+                                                    <FormItem className="flex flex-col">
                                                         <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
@@ -481,7 +481,7 @@ export default function LogDayPage() {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4 col-span-2">
+                                    <div className="grid grid-cols-1 gap-2 col-span-2">
                                         <TradeDataField label="Entry">
                                             <FormField
                                                 control={form.control}
@@ -691,3 +691,6 @@ export default function LogDayPage() {
     </div>
   );
 }
+
+
+    
