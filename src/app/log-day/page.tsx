@@ -552,7 +552,7 @@ export default function LogDayPage() {
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
                                         <div className="w-full h-full relative">
-                                            <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="contain" />
+                                            <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground h-full">
