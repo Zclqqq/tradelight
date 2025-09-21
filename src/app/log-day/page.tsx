@@ -481,7 +481,7 @@ export default function LogDayPage() {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-2 col-span-2">
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 col-span-2">
                                         <TradeDataField label="Entry">
                                             <FormField
                                                 control={form.control}
