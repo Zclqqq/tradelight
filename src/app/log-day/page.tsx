@@ -556,7 +556,7 @@ export default function LogDayPage() {
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
                                         <div className="w-full h-full relative overflow-hidden">
-                                            <div className="absolute left-0 right-0" style={{top: '-40px', bottom: '-25px'}}>
+                                            <div className="absolute" style={{top: '-40px', bottom: '-30px', left: '-40px', right: '-40px'}}>
                                                 <Image src={analysisImage} alt="Trade analysis" layout="fill" objectFit="cover" />
                                             </div>
                                             <Button
@@ -692,6 +692,8 @@ export default function LogDayPage() {
   );
 }
 
+
+    
 
     
 
