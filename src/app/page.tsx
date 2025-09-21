@@ -30,7 +30,7 @@ export default function Home() {
         if (allLogsRaw) {
             try {
                 const allLogs: DayLog[] = JSON.parse(allLogsRaw);
-                const allTrades = allLogs.flatMap(log => log.trades.map(t => ({...t, date: new Date(log.date)})));
+                const allTrades = allLogs.flatMap(log => (log.trades || []).map(t => ({...t, date: new Date(log.date)})));
 
                 const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
                 const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
@@ -89,3 +89,4 @@ export default function Home() {
     </div>
   );
 }
+
