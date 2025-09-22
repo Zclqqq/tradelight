@@ -511,7 +511,7 @@ export default function LogDayForm() {
                                             name="trades.0.tradeSl"
                                             render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} />}
                                             />
-                                        </TTradeDataField>
+                                        </TradeDataField>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -675,3 +675,5 @@ export default function LogDayForm() {
     </div>
   );
 }
+
+    
