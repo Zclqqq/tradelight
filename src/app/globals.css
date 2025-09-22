@@ -73,10 +73,11 @@
   }
 
   body {
-    @apply text-foreground;
+    color: hsl(var(--foreground));
+    background: hsl(var(--background));
   }
   
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 }
