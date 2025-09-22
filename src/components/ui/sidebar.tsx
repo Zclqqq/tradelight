@@ -1,3 +1,4 @@
+
 'use client';
 import { usePathname } from 'next/navigation';
 import {
@@ -13,8 +14,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './tooltip';
-import { useMobile } from '@/hooks/use-mobile';
+} from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Sheet,
   SheetContent,
@@ -56,7 +57,7 @@ const secondaryNavItems = [
 ];
 
 function Sidebar() {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const pathname = usePathname();
 
   if (isMobile) {

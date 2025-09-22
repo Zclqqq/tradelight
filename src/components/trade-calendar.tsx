@@ -182,10 +182,10 @@ export function TradeCalendar() {
               className={cn(
                 "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border",
                 isCurrentMonth && "cursor-pointer",
-                !isCurrentMonth && "bg-background",
+                !isCurrentMonth && "bg-transparent",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50"
               )}
-               style={pnlData?.isLogged ? { boxShadow: `inset 0 0 0 2px ${pnlColor}` } : {}}
+               style={pnlData?.isLogged && isCurrentMonth ? { boxShadow: `inset 0 0 0 2px ${pnlColor}` } : {}}
             >
               {isCurrentMonth ? (
                 <>
@@ -217,7 +217,7 @@ export function TradeCalendar() {
                   ) : null}
                   {!pnlData?.isLogged ? <div className="h-full w-full"></div> : null}
                 </>
-              ) : null}
+              ) : <div className="h-full w-full"></div>}
             </div>
           );
         })}

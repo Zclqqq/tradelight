@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { DayLog } from '@/app/log-day/page';
 
 interface FlatTrade {
@@ -81,4 +81,3 @@ export function RecentTrades() {
     </Card>
   );
 }
-
