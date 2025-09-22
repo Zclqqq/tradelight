@@ -71,13 +71,12 @@
     --sidebar-border: 0 0% 18%;
     --sidebar-ring: 45 90% 55%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply text-foreground;
+  }
+  
+  * {
+    @apply border-border;
   }
 }
