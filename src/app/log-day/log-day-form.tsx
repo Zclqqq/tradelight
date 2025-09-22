@@ -9,6 +9,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
+import imageCompression from 'browser-image-compression';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -246,17 +247,36 @@ export default function LogDayForm() {
         }
     }, [searchParams, form, defaultSessions, isClient]);
     
+    const processAndSetImage = async (file: File) => {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+        }
+        try {
+            const compressedFile = await imageCompression(file, options);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
+            };
+            reader.readAsDataURL(compressedFile);
+        } catch (error) {
+            console.error('Image compression failed:', error);
+            toast({
+                title: "Image Error",
+                description: "Could not process the image. Please try another one.",
+                variant: "destructive",
+            });
+        }
+    };
+    
     const handleImagePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const items = event.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
             if (items[i].type.indexOf("image") !== -1) {
                 const file = items[i].getAsFile();
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
-                    };
-                    reader.readAsDataURL(file);
+                    processAndSetImage(file);
                 }
             }
         }
@@ -265,11 +285,7 @@ export default function LogDayForm() {
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                form.setValue("trades.0.analysisImage", e.target?.result as string, { shouldDirty: true });
-            };
-            reader.readAsDataURL(file);
+            processAndSetImage(file);
         }
     };
 
@@ -495,7 +511,7 @@ export default function LogDayForm() {
                                             name="trades.0.tradeSl"
                                             render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} />}
                                             />
-                                        </TradeDataField>
+                                        </TTradeDataField>
                                     </div>
                                 </CardContent>
                             </Card>
