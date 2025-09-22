@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   basePath: '/tradelight',
   output: 'export',
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },

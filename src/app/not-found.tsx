@@ -1,6 +1,9 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import nextConfig from '../../../next.config'
+
+const basePath = nextConfig.basePath || ""
 
 export default function NotFound() {
   return (
@@ -11,7 +14,7 @@ export default function NotFound() {
         <p className="text-2xl font-medium">This page could not be found.</p>
       </div>
       <Button variant="outline" asChild className="mt-8">
-        <Link href="/">Go back home</Link>
+        <Link href={`${basePath}/`}>Go back home</Link>
       </Button>
     </div>
   )
