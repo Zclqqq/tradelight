@@ -1,0 +1,5 @@
+
+# Installs and configures the Netlify Plugin for Next.js.
+# This plugin is required to deploy Next.js sites to Netlify.
+[[plugins]]
+package = "@netlify/plugin-nextjs"
