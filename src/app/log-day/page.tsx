@@ -37,7 +37,6 @@ const detailedSessionTradeSchema = z.object({
 
 const tradeSchema = z.object({
   instrument: z.string().min(1, "Instrument is required."),
-  model: z.string().optional().default(""),
   pnl: z.coerce.number(),
   entryTime: z.string().optional().default(""),
   exitTime: z.string().optional().default(""),
@@ -91,35 +90,9 @@ export default function LogDayPage() {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [isClient, setIsClient] = React.useState(false);
     
-    const [models, setModels] = React.useState<string[]>([]);
-    const [popoverOpen, setPopoverOpen] = React.useState(false);
-    const [newModel, setNewModel] = React.useState('');
-
     React.useEffect(() => {
         setIsClient(true);
-        const savedModels = localStorage.getItem('trade-models');
-        if (savedModels) {
-            setModels(JSON.parse(savedModels));
-        }
     }, []);
-
-    const addModel = (model: string) => {
-        const updatedModels = [...models, model];
-        setModels(updatedModels);
-        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
-        form.setValue('trades.0.model', model);
-        setNewModel('');
-        setPopoverOpen(false);
-    };
-
-    const deleteModel = (modelToDelete: string) => {
-        const updatedModels = models.filter(m => m !== modelToDelete);
-        setModels(updatedModels);
-        localStorage.setItem('trade-models', JSON.stringify(updatedModels));
-        if (form.getValues('trades.0.model') === modelToDelete) {
-            form.setValue('trades.0.model', '');
-        }
-    };
 
     const defaultSessions = React.useMemo(() => sessionOptions.map(name => ({
         sessionName: name,
@@ -139,7 +112,6 @@ export default function LogDayPage() {
                 pnl: 0, 
                 sessions: defaultSessions,
                 analysisImage: "",
-                model: "",
                 entryTime: "",
                 exitTime: "",
                 contracts: undefined,
@@ -225,7 +197,6 @@ export default function LogDayPage() {
             instrument: "NQ",
             pnl: 0,
             analysisImage: "",
-            model: "",
             entryTime: "",
             exitTime: "",
             contracts: undefined,
@@ -348,9 +319,6 @@ export default function LogDayPage() {
         }
     }, [isEditingPnl]);
     
-    const filteredModels = newModel
-        ? models.filter(m => m.toLowerCase().includes(newModel.toLowerCase()))
-        : models;
         
     const pnlValue = fields[0]?.pnl ?? totalPnl;
     const pnlColorClass = pnlValue > 0 ? 'text-green-500' : pnlValue < 0 ? 'text-red-500' : 'text-foreground';
@@ -590,7 +558,7 @@ export default function LogDayPage() {
                             </Card>
                            <Card>
                                 <CardHeader>
-                                    <CardTitle className="font-headline text-base">SEASONS</CardTitle>
+                                    <CardTitle className="font-headline text-base">SESSIONS</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 pt-0 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium">
