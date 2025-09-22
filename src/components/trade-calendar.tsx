@@ -182,39 +182,42 @@ export function TradeCalendar() {
               className={cn(
                 "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border",
                 isCurrentMonth && "cursor-pointer",
-                !isCurrentMonth && "text-muted-foreground/30",
+                !isCurrentMonth && "bg-background",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50"
               )}
                style={pnlData?.isLogged ? { boxShadow: `inset 0 0 0 2px ${pnlColor}` } : {}}
             >
-              <time
-                  dateTime={format(day, "yyyy-MM-dd")}
-                  className={cn(
-                    "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center z-10",
-                     isToday(day) && isCurrentMonth && "rounded-full bg-white text-black",
-                     !isCurrentMonth && "text-muted-foreground/30",
-                     pnlTextColorClass
-                  )}
-                >
-                  {format(day, "d")}
-                </time>
+              {isCurrentMonth ? (
+                <>
+                  <time
+                      dateTime={format(day, "yyyy-MM-dd")}
+                      className={cn(
+                        "absolute top-1.5 left-1.5 font-semibold text-xs h-5 w-5 flex items-center justify-center z-10",
+                        isToday(day) && "rounded-full bg-white text-black",
+                        pnlTextColorClass
+                      )}
+                    >
+                      {format(day, "d")}
+                    </time>
 
-              {isCurrentMonth && pnlData?.isLogged ? (
-                <div className="p-1 text-center">
-                  {isNoTradeDay ? (
-                     <span className="font-bold text-sm text-muted-foreground">NO TRADE</span>
-                  ) : (
-                    <span className={cn("font-bold text-base", pnlTextColorClass)}>
-                        {pnlData.pnl.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 0,
-                        })}
-                    </span>
-                  )}
-                </div>
+                  {pnlData?.isLogged ? (
+                    <div className="p-1 text-center">
+                      {isNoTradeDay ? (
+                        <span className="font-bold text-sm text-muted-foreground">NO TRADE</span>
+                      ) : (
+                        <span className={cn("font-bold text-base", pnlTextColorClass)}>
+                            {pnlData.pnl.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                              maximumFractionDigits: 0,
+                            })}
+                        </span>
+                      )}
+                    </div>
+                  ) : null}
+                  {!pnlData?.isLogged ? <div className="h-full w-full"></div> : null}
+                </>
               ) : null}
-              {isCurrentMonth && !pnlData?.isLogged ? <div className="h-full w-full"></div> : null}
             </div>
           );
         })}
