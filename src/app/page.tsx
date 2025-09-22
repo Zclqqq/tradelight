@@ -9,7 +9,7 @@ import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
-import type { DayLog } from "./log-day/page";
+import type { DayLog } from "@/app/log-day/page";
 import { ProgressTracker } from "@/components/progress-tracker";
 
 export default function Home() {
@@ -89,4 +89,3 @@ export default function Home() {
     </div>
   );
 }
-

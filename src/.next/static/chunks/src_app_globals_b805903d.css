@@ -280,11 +280,6 @@ img, video {
   --sidebar-ring: 45 90% 55%;
 }
 
-body {
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-}
-
 * {
   border-color: hsl(var(--border));
 }
