@@ -11,6 +11,7 @@ import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "@/app/log-day/log-day-form";
 import { ProgressTracker } from "@/components/progress-tracker";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [stats, setStats] = React.useState({
@@ -47,6 +48,10 @@ export default function Home() {
       }
   }, [isClient]);
 
+  const pnlColorClass = stats.netPnl > 0 ? "text-green-500" : stats.netPnl < 0 ? "text-red-500" : "text-foreground";
+  const avgWinColorClass = stats.avgWin > 0 ? "text-green-500" : "text-foreground";
+
+
   return (
     <div className="flex flex-col min-h-screen text-foreground p-4">
       <main className="flex-1 md:px-8 md:py-6">
@@ -59,13 +64,15 @@ export default function Home() {
                     <div className="col-span-1">
                       <StatCard 
                           title="Net P&L" 
-                          value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})} 
+                          value={stats.netPnl.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                          valueClassName={pnlColorClass}
                       />
                     </div>
                     <div className="col-span-1">
                       <StatCard 
                           title="Avg Trade Win" 
                           value={stats.avgWin.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0})}
+                          valueClassName={avgWinColorClass}
                         />
                     </div>
                     <div className="col-span-1">

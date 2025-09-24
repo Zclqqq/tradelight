@@ -40,7 +40,7 @@ export function ProgressTracker() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <Progress value={progress} className="h-6" />
+                <Progress value={progress} className="h-6" indicatorClassName="bg-green-500" />
             </CardContent>
         </Card>
     );
