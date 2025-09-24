@@ -663,7 +663,7 @@ export default function LogDayForm() {
                                                     name={`trades.0.sessions.${index}.targetSession`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onValuechange={field.onChange} value={field.value || "none"}>
+                                                            <Select onchange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Target..." /></SelectTrigger>
                                                                 </FormControl>
@@ -697,3 +697,6 @@ export default function LogDayForm() {
 
     
 
+
+
+    
