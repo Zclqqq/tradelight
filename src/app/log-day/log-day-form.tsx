@@ -355,162 +355,175 @@ export default function LogDayForm() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                         <div className="flex flex-col space-y-6">
                            <Card className="retro-border">
-                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
-                                    <div className="col-span-1 space-y-1">
-                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
-                                        <div onDoubleClick={handlePnlDoubleClick} className="relative">
-                                            {isEditingPnl ? (
-                                                <Input
-                                                    ref={pnlInputRef}
-                                                    type="number"
-                                                    defaultValue={pnlValue}
-                                                    onBlur={handlePnlBlur}
-                                                    onKeyDown={handlePnlKeyDown}
-                                                    className={cn(
-                                                        `text-2xl font-bold h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
-                                                        `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
-                                                        pnlColorClass
-                                                    )}
-                                                />
-                                            ) : (
-                                                <p className={cn(`text-2xl font-bold`, pnlColorClass)}>
-                                                    {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
-                                                </p>
-                                            )}
-                                            <Separator className="bg-border" />
+                                <CardContent className="p-4">
+                                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                                        
+                                        <div className="col-span-1 space-y-1">
+                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
+                                            <div onDoubleClick={handlePnlDoubleClick} className="relative">
+                                                {isEditingPnl ? (
+                                                    <Input
+                                                        ref={pnlInputRef}
+                                                        type="number"
+                                                        defaultValue={pnlValue}
+                                                        onBlur={handlePnlBlur}
+                                                        onKeyDown={handlePnlKeyDown}
+                                                        className={cn(
+                                                            `text-2xl font-bold h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
+                                                            `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
+                                                            pnlColorClass
+                                                        )}
+                                                    />
+                                                ) : (
+                                                    <p className={cn(`text-2xl font-bold`, pnlColorClass)}>
+                                                        {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
+                                                    </p>
+                                                )}
+                                                <Separator className="bg-border" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="col-span-1">
-                                        <FormField
-                                            control={form.control}
-                                            name="date"
-                                            render={({ field }) => (
-                                                <FormItem className="flex flex-col space-y-1">
-                                                    <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
-                                                    <div className="relative">
-                                                        <Popover>
-                                                            <PopoverTrigger asChild>
-                                                            <FormControl>
-                                                                <Button
-                                                                variant={"ghost"}
-                                                                className={cn(
-                                                                    "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
-                                                                    !field.value && "text-muted-foreground"
-                                                                )}
-                                                                >
-                                                                {field.value && isClient ? (
-                                                                    format(field.value, "PPP")
-                                                                ) : (
-                                                                    <span>Pick a date</span>
-                                                                )}
-                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                </Button>
-                                                            </FormControl>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0 retro-border" align="start">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={field.value}
-                                                                onSelect={field.onChange}
-                                                                disabled={(date) =>
-                                                                date > new Date() || date < new Date("1900-01-01")
-                                                                }
-                                                                initialFocus
-                                                            />
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                        <Separator className="bg-border" />
-                                                    </div>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                    
-                                     <div className="col-span-2">
-                                        <FormField
-                                            control={form.control}
-                                            name="trades.0.instrument"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <RadioGroup
-                                                            onValueChange={(value) => {
-                                                                field.onChange(value);
-                                                                calculatePnl();
-                                                            }}
-                                                            value={field.value}
-                                                            className="flex items-center space-x-2 pt-2"
-                                                        >
-                                                            {instrumentOptions.map((opt) => (
-                                                                <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
-                                                                    <FormControl>
-                                                                        <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                                                                    </FormControl>
-                                                                    <FormLabel
-                                                                        htmlFor={opt}
-                                                                        className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-foreground bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-foreground hover:text-background peer-data-[state=checked]:border-foreground peer-data-[state=checked]:bg-foreground peer-data-[state=checked]:text-background"
+
+                                        <div className="col-span-1">
+                                            <FormField
+                                                control={form.control}
+                                                name="date"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-col space-y-1">
+                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                        <div className="relative">
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                <FormControl>
+                                                                    <Button
+                                                                    variant={"ghost"}
+                                                                    className={cn(
+                                                                        "w-full justify-start text-left font-normal p-0 h-auto text-base hover:bg-transparent hover:text-foreground",
+                                                                        !field.value && "text-muted-foreground"
+                                                                    )}
                                                                     >
-                                                                        {opt}
-                                                                    </FormLabel>
-                                                                </FormItem>
-                                                            ))}
-                                                        </RadioGroup>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
+                                                                    {field.value && isClient ? (
+                                                                        format(field.value, "PPP")
+                                                                    ) : (
+                                                                        <span>Pick a date</span>
+                                                                    )}
+                                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                    </Button>
+                                                                </FormControl>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0 retro-border" align="start">
+                                                                <Calendar
+                                                                    mode="single"
+                                                                    selected={field.value}
+                                                                    onSelect={field.onChange}
+                                                                    disabled={(date) =>
+                                                                    date > new Date() || date < new Date("1900-01-01")
+                                                                    }
+                                                                    initialFocus
+                                                                />
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                            <Separator className="bg-border" />
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
 
-                                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 col-span-2">
-                                        <TradeDataField label="Entry">
+                                        <div className="col-span-2">
                                             <FormField
                                                 control={form.control}
-                                                name="trades.0.entryTime"
-                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                name="trades.0.instrument"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <RadioGroup
+                                                                onValueChange={(value) => {
+                                                                    field.onChange(value);
+                                                                    calculatePnl();
+                                                                }}
+                                                                value={field.value}
+                                                                className="flex items-center space-x-2 pt-2"
+                                                            >
+                                                                {instrumentOptions.map((opt) => (
+                                                                    <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
+                                                                        <FormControl>
+                                                                            <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
+                                                                        </FormControl>
+                                                                        <FormLabel
+                                                                            htmlFor={opt}
+                                                                            className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-foreground bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-foreground hover:text-background peer-data-[state=checked]:border-foreground peer-data-[state=checked]:bg-foreground peer-data-[state=checked]:text-background"
+                                                                        >
+                                                                            {opt}
+                                                                        </FormLabel>
+                                                                    </FormItem>
+                                                                ))}
+                                                            </RadioGroup>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
-                                        </TradeDataField>
-                                        <TradeDataField label="Exit">
-                                            <FormField
-                                                control={form.control}
-                                                name="trades.0.exitTime"
-                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
-                                            />
-                                        </TradeDataField>
+                                        </div>
+
+                                        <div className="col-span-1">
+                                            <TradeDataField label="Entry">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.entryTime"
+                                                    render={({ field }) => <Input type="text" placeholder="--:--" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <TradeDataField label="Exit">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.exitTime"
+                                                    render={({ field }) => <Input type="text" placeholder="--:--" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
                                         
-                                        <TradeDataField label="Contracts">
-                                            <FormField
-                                            control={form.control}
-                                            name="trades.0.contracts"
-                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
-                                            />
-                                        </TradeDataField>
-
-                                        <TradeDataField label="Points">
-                                            <FormField
+                                        <div className="col-span-1">
+                                            <TradeDataField label="Contracts">
+                                                <FormField
                                                 control={form.control}
-                                                name="trades.0.totalPoints"
+                                                name="trades.0.contracts"
                                                 render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
-                                            />
-                                        </TradeDataField>
+                                                />
+                                            </TradeDataField>
+                                        </div>
+
+                                        <div className="col-span-1">
+                                            <TradeDataField label="Points">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="trades.0.totalPoints"
+                                                    render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
                                         
-                                        <TradeDataField label="TP">
-                                            <FormField
-                                            control={form.control}
-                                            name="trades.0.tradeTp"
-                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
-                                            />
-                                        </TradeDataField>
+                                        <div className="col-span-1">
+                                            <TradeDataField label="TP">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.tradeTp"
+                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
                                         
-                                        <TradeDataField label="SL">
-                                            <FormField
-                                            control={form.control}
-                                            name="trades.0.tradeSl"
-                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
-                                            />
-                                        </TradeDataField>
+                                        <div className="col-span-1">
+                                            <TradeDataField label="SL">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.tradeSl"
+                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -674,5 +687,7 @@ export default function LogDayForm() {
     </div>
   );
 }
+
+    
 
     
