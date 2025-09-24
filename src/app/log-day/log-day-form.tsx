@@ -72,8 +72,8 @@ const instrumentPointValues: { [key: string]: number } = {
 
 const PixelArrowLeft = () => (
     <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fillRule="evenodd" clipRule="evenodd" d="M6 2H5V3H4V4H3V5H2V9H3V10H4V11H5V12H6V11H7V10H8V9H9V8H10V6H9V5H8V4H7V3H6V2Z" fill="white"/>
-        <path d="M10 7H16V8H10V7Z" fill="white"/>
+        <path d="M10 6H13V8H10V6Z" fill="white"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M10 6V5H9V4H8V3H7V2H6V3H5V4H4V5H3V9H4V10H5V11H6V12H7V11H8V10H9V9H10V8H11V6H10Z" fill="white"/>
     </svg>
 );
 
