@@ -6,7 +6,8 @@ const isProd = process.env.NODE_ENV === 'production'
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'export',
-  assetPrefix: isProd ? '/tradelight/' : '',
+  basePath: isProd ? '/tradelight' : '',
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },
