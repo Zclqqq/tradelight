@@ -82,7 +82,10 @@ const TradeDataField = ({ label, children }: { label: string, children: React.Re
     return (
         <div className="space-y-1">
             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
-            {children}
+            <div className='relative'>
+                {children}
+                <Separator className="bg-border" />
+            </div>
         </div>
     );
 };
@@ -353,9 +356,9 @@ export default function LogDayForm() {
                         <div className="flex flex-col space-y-6">
                            <Card className="retro-border">
                                 <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
-                                    <div className="col-span-2 flex items-center gap-4">
-                                        <div onDoubleClick={handlePnlDoubleClick} className="flex-1 space-y-1">
-                                            <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
+                                    <div className="col-span-1 space-y-1">
+                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
+                                        <div onDoubleClick={handlePnlDoubleClick} className="relative">
                                             {isEditingPnl ? (
                                                 <Input
                                                     ref={pnlInputRef}
@@ -374,15 +377,18 @@ export default function LogDayForm() {
                                                     {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                                 </p>
                                             )}
+                                            <Separator className="bg-border" />
                                         </div>
-                                         <div className="w-px bg-border h-12"></div>
-                                        <div className="flex-1">
-                                            <FormField
-                                                control={form.control}
-                                                name="date"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-col space-y-1">
-                                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                    </div>
+                                    
+                                    <div className="col-span-1">
+                                        <FormField
+                                            control={form.control}
+                                            name="date"
+                                            render={({ field }) => (
+                                                <FormItem className="flex flex-col space-y-1">
+                                                    <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
+                                                    <div className="relative">
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                             <FormControl>
@@ -414,11 +420,12 @@ export default function LogDayForm() {
                                                             />
                                                             </PopoverContent>
                                                         </Popover>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
+                                                        <Separator className="bg-border" />
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
                                     
                                      <div className="col-span-2">
@@ -434,7 +441,7 @@ export default function LogDayForm() {
                                                                 calculatePnl();
                                                             }}
                                                             value={field.value}
-                                                            className="flex items-center space-x-2"
+                                                            className="flex items-center space-x-2 pt-2"
                                                         >
                                                             {instrumentOptions.map((opt) => (
                                                                 <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
@@ -462,14 +469,14 @@ export default function LogDayForm() {
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.entryTime"
-                                                render={({ field }) => <Input type="time" {...field} />}
+                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
                                         <TradeDataField label="Exit">
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.exitTime"
-                                                render={({ field }) => <Input type="time" {...field} />}
+                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
                                         
@@ -477,7 +484,7 @@ export default function LogDayForm() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.contracts"
-                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} />}
+                                            render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
 
@@ -485,7 +492,7 @@ export default function LogDayForm() {
                                             <FormField
                                                 control={form.control}
                                                 name="trades.0.totalPoints"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} />}
+                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
                                         
@@ -493,7 +500,7 @@ export default function LogDayForm() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.tradeTp"
-                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} />}
+                                            render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
                                         
@@ -501,7 +508,7 @@ export default function LogDayForm() {
                                             <FormField
                                             control={form.control}
                                             name="trades.0.tradeSl"
-                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} />}
+                                            render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
                                             />
                                         </TradeDataField>
                                     </div>
@@ -566,7 +573,7 @@ export default function LogDayForm() {
                             </Card>
                            <Card className="retro-border">
                                 <CardHeader className="border-b">
-                                    <CardTitle className="font-headline text-base uppercase">Sessions</CardTitle>
+                                    <CardTitle className="font-headline text-base uppercase">Seasons</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 pt-4 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium uppercase">
