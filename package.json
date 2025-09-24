@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "deploy": "next build && touch out/.nojekyll && git add out/ && git commit -m \"Deploy\" && git subtree push --prefix out origin gh-pages"
+    "deploy": "next build && touch out/.nojekyll && git add -f out/ && git commit -m \"Deploy\" && git subtree push --prefix out origin gh-pages"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.14.1",
@@ -57,4 +57,3 @@
     "typescript": "^5"
   }
 }
-
