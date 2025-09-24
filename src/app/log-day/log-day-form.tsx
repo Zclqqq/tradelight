@@ -70,9 +70,9 @@ const instrumentPointValues: { [key: string]: number } = {
     "MES": 5,
 };
 
-const PixelArrowLeft = () => (
-    <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fillRule="evenodd" clipRule="evenodd" d="M10 6V5H9V4H8V3H7V2H6V3H5V4H4V5H3V9H4V10H5V11H6V12H7V11H8V10H9V9H10V8H13V6H10Z" fill="hsl(var(--foreground))"></path>
+const SimpleArrowLeft = () => (
+    <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.41 1.41L6 0L0 6L6 12L7.41 10.59L2.83 6L7.41 1.41Z" fill="hsl(var(--foreground))"/>
     </svg>
 );
 
@@ -335,14 +335,14 @@ export default function LogDayForm() {
 
   return (
     <div className="flex flex-col h-screen max-h-screen text-foreground bg-background p-4">
-        <header className="relative flex-shrink-0 flex items-center justify-between h-16 px-4 md:px-0 border-b">
-            <Button variant="ghost" size="icon" asChild className="absolute left-4 top-1/2 -translate-y-1/2">
+        <header className="relative flex-shrink-0 flex items-center justify-between h-12 px-4 md:px-0 border-b">
+            <Button variant="ghost" size="icon" asChild className="absolute left-0 top-1/2 -translate-y-1/2">
                 <a href="/" onClick={handleBackClick}>
-                    <PixelArrowLeft />
+                    <SimpleArrowLeft />
                     <span className="sr-only">Back</span>
                 </a>
             </Button>
-            <h1 className="text-xl font-bold font-headline uppercase mx-auto">
+            <h1 className="text-base font-bold font-headline uppercase mx-auto">
                 {isClient ? `Recap ${format(form.watch("date"), "M/d/yy")}` : ' '}
             </h1>
             <div className="w-10"></div>
@@ -472,7 +472,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.entryTime"
-                                                    render={({ field }) => <Input type="text" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="text" {...field} placeholder="--:--" className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -481,7 +481,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.exitTime"
-                                                    render={({ field }) => <Input type="text" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="text" {...field} placeholder="--:--" className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -663,7 +663,7 @@ export default function LogDayForm() {
                                                     name={`trades.0.sessions.${index}.targetSession`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                            <Select onValuechange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Target..." /></SelectTrigger>
                                                                 </FormControl>
@@ -696,3 +696,4 @@ export default function LogDayForm() {
     
 
     
+
