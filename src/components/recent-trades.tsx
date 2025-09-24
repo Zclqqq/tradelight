@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { DayLog } from '@/app/log-day/page';
+import type { DayLog } from '@/app/log-day/log-day-form';
 
 interface FlatTrade {
     id: string;
@@ -44,9 +44,9 @@ export function RecentTrades() {
     }, []);
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle className="font-headline text-lg">Recent Trades</CardTitle>
+    <Card className="h-full flex flex-col retro-border">
+      <CardHeader className="border-b">
+        <CardTitle className="font-headline text-lg uppercase">Recent Trades</CardTitle>
       </CardHeader>
       <CardContent className="pt-2 flex-1 min-h-0">
         <ScrollArea className="h-full">
@@ -64,7 +64,7 @@ export function RecentTrades() {
                             {trade.isNoTrade ? (
                                 <p className="text-sm text-muted-foreground text-right min-w-[80px]">No Trade</p>
                             ) : (
-                                <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss > 0 ? "text-[hsl(var(--chart-1))]" : "text-destructive")}>
+                                <p className={cn("font-bold text-sm text-right min-w-[80px]", trade.profitOrLoss > 0 ? "text-green-500" : "text-red-500")}>
                                     {trade.profitOrLoss.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                 </p>
                             )}

@@ -9,7 +9,7 @@ import { TradeCalendar } from "@/components/trade-calendar";
 import { RecentTrades } from "@/components/recent-trades";
 import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
-import type { DayLog } from "@/app/log-day/page";
+import type { DayLog } from "@/app/log-day/log-day-form";
 import { ProgressTracker } from "@/components/progress-tracker";
 
 export default function Home() {
@@ -48,8 +48,8 @@ export default function Home() {
   }, [isClient]);
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground">
-      <main className="flex-1 p-4 md:px-8 md:py-6">
+    <div className="flex flex-col min-h-screen text-foreground p-4">
+      <main className="flex-1 md:px-8 md:py-6">
         <div className="mx-auto w-full max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-3 space-y-6">

@@ -18,7 +18,7 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { DayLog } from "@/app/log-day/page";
+import type { DayLog } from "@/app/log-day/log-day-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -135,9 +135,9 @@ export function TradeCalendar() {
   }
 
   return (
-    <div className="border border-border">
+    <div className="border border-foreground">
       <div className="flex items-center justify-between p-2">
-        <h2 className="text-lg font-bold font-headline">
+        <h2 className="text-lg font-bold font-headline uppercase">
           {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="flex items-center gap-2">
@@ -152,9 +152,9 @@ export function TradeCalendar() {
           </Button>
         </div>
       </div>
-       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-t border-border -mr-px -mb-px">
+       <div className="grid grid-cols-7 text-xs text-center font-semibold text-muted-foreground border-b border-t border-foreground -mr-px -mb-px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="py-2 border-r border-border">
+          <div key={day} className="py-2 border-r border-foreground">
             {day}
           </div>
         ))}
@@ -171,7 +171,7 @@ export function TradeCalendar() {
             else if (pnlData.pnl < 0) pnlColor = 'hsl(var(--destructive))';
             else if (pnlData.isLogged) pnlColor = 'hsl(var(--muted))';
           }
-          const pnlTextColorClass = pnlData ? (pnlData.pnl > 0 ? 'text-[hsl(var(--chart-1))]' : pnlData.pnl < 0 ? 'text-destructive' : '') : '';
+          const pnlTextColorClass = pnlData ? (pnlData.pnl > 0 ? 'text-green-500' : pnlData.pnl < 0 ? 'text-red-500' : '') : '';
 
           const isNoTradeDay = pnlData?.isLogged && pnlData.pnl === 0;
 
@@ -180,7 +180,7 @@ export function TradeCalendar() {
               key={day.toString()}
               onClick={() => isCurrentMonth && handleDayClick(day)}
               className={cn(
-                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-border",
+                "relative flex flex-col justify-center items-center text-xs transition-colors h-20 p-1 border-b border-r border-foreground",
                 isCurrentMonth && "cursor-pointer",
                 !isCurrentMonth && "bg-transparent pointer-events-none",
                 isCurrentMonth && !pnlData?.isLogged && "hover:bg-accent/50"

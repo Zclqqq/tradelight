@@ -73,7 +73,7 @@ const instrumentPointValues: { [key: string]: number } = {
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
     return (
-        <div>
+        <div className="space-y-1">
             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
             {children}
         </div>
@@ -325,28 +325,29 @@ export default function LogDayForm() {
 
 
   return (
-    <div className="flex flex-col h-screen max-h-screen text-foreground bg-background">
-        <header className="relative flex-shrink-0 flex items-center justify-center h-16 px-4 md:px-8 border-b">
+    <div className="flex flex-col h-screen max-h-screen text-foreground bg-background p-4">
+        <header className="relative flex-shrink-0 flex items-center justify-between h-16 px-4 md:px-0 border-b">
             <Button variant="ghost" size="icon" asChild className="absolute left-4 top-1/2 -translate-y-1/2">
                 <a href="/" onClick={handleBackClick}>
                     <ArrowLeft />
                     <span className="sr-only">Back</span>
                 </a>
             </Button>
-            <h1 className="text-xl font-bold font-headline">
-                {isClient ? `Today's Recap ${format(form.watch("date"), "M/d/yy")}` : ' '}
+            <h1 className="text-xl font-bold font-headline uppercase mx-auto">
+                {isClient ? `Recap ${format(form.watch("date"), "M/d/yy")}` : ' '}
             </h1>
+            <div className="w-10"></div>
         </header>
 
-        <main className="flex-1 overflow-hidden p-4 md:p-6">
+        <main className="flex-1 overflow-hidden py-6">
             <Form {...form}>
                 <form className="h-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                         <div className="flex flex-col space-y-6">
-                           <Card>
-                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-2">
+                           <Card className="retro-border">
+                                <CardContent className="p-4 grid grid-cols-2 gap-x-6 gap-y-4">
                                     <div className="col-span-2 flex items-center gap-4">
-                                        <div onDoubleClick={handlePnlDoubleClick} className="flex-1">
+                                        <div onDoubleClick={handlePnlDoubleClick} className="flex-1 space-y-1">
                                             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
                                             {isEditingPnl ? (
                                                 <Input
@@ -356,13 +357,13 @@ export default function LogDayForm() {
                                                     onBlur={handlePnlBlur}
                                                     onKeyDown={handlePnlKeyDown}
                                                     className={cn(
-                                                        `text-4xl font-bold font-headline h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
+                                                        `text-2xl font-bold h-auto p-0 border-0 focus-visible:ring-0 bg-transparent`,
                                                         `[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`,
                                                         pnlColorClass
                                                     )}
                                                 />
                                             ) : (
-                                                <p className={cn(`text-4xl font-bold font-headline`, pnlColorClass)}>
+                                                <p className={cn(`text-2xl font-bold`, pnlColorClass)}>
                                                     {pnlValue.toLocaleString("en-US", { style: "currency", currency: "USD"})}
                                                 </p>
                                             )}
@@ -373,7 +374,7 @@ export default function LogDayForm() {
                                                 control={form.control}
                                                 name="date"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-col">
+                                                    <FormItem className="flex flex-col space-y-1">
                                                         <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Date</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
@@ -394,7 +395,7 @@ export default function LogDayForm() {
                                                                 </Button>
                                                             </FormControl>
                                                             </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0" align="start">
+                                                            <PopoverContent className="w-auto p-0 retro-border" align="start">
                                                             <Calendar
                                                                 mode="single"
                                                                 selected={field.value}
@@ -435,7 +436,7 @@ export default function LogDayForm() {
                                                                     </FormControl>
                                                                     <FormLabel
                                                                         htmlFor={opt}
-                                                                        className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-input bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground"
+                                                                        className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-foreground bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-foreground hover:text-background peer-data-[state=checked]:border-foreground peer-data-[state=checked]:bg-foreground peer-data-[state=checked]:text-background"
                                                                     >
                                                                         {opt}
                                                                     </FormLabel>
@@ -499,11 +500,11 @@ export default function LogDayForm() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card className="flex-1 flex flex-col">
-                                <CardHeader>
-                                    <CardTitle className="font-headline text-base">Notes</CardTitle>
+                            <Card className="flex-1 flex flex-col retro-border">
+                                <CardHeader className="border-b">
+                                    <CardTitle className="font-headline text-base uppercase">Notes</CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-4 pt-0 flex-1">
+                                <CardContent className="p-4 pt-4 flex-1">
                                     <FormField
                                         control={form.control}
                                         name="notes"
@@ -520,7 +521,7 @@ export default function LogDayForm() {
                             </Card>
                         </div>
                         <div className="flex flex-col space-y-6">
-                            <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col group">
+                            <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col group retro-border">
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
                                         <div className="w-full h-full relative overflow-hidden">
@@ -556,12 +557,12 @@ export default function LogDayForm() {
                                     )}
                                 </CardContent>
                             </Card>
-                           <Card>
-                                <CardHeader>
-                                    <CardTitle className="font-headline text-base">SESSIONS</CardTitle>
+                           <Card className="retro-border">
+                                <CardHeader className="border-b">
+                                    <CardTitle className="font-headline text-base uppercase">Sessions</CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-4 pt-0 space-y-2">
-                                     <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium">
+                                <CardContent className="p-4 pt-4 space-y-2">
+                                     <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium uppercase">
                                         <div className="col-span-1">Session</div>
                                         <div className="col-span-1">Move</div>
                                         <div className="col-span-1">Direction</div>

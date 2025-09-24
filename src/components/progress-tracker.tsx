@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { DayLog } from '@/app/log-day/page';
+import type { DayLog } from '@/app/log-day/log-day-form';
 
 export function ProgressTracker() {
     const [progress, setProgress] = React.useState(0);
@@ -32,15 +32,15 @@ export function ProgressTracker() {
 
 
     return (
-        <Card className="h-28 flex flex-col justify-center p-4">
+        <Card className="h-28 flex flex-col justify-center p-4 retro-border">
             <CardHeader className="p-0 pb-2">
-                <CardTitle className="font-headline text-sm font-medium text-muted-foreground flex justify-between">
+                <CardTitle className="font-headline text-sm font-medium text-muted-foreground flex justify-between uppercase">
                     <span>LOG 30 DAYS</span>
                     <span>{dayCount}/{goal}</span>
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <Progress value={progress} className="h-6 rounded-md" indicatorClassName="rounded-md" />
+                <Progress value={progress} className="h-6" />
             </CardContent>
         </Card>
     );

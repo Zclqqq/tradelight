@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Inter"', 'sans-serif'],
-        headline: ['"Inter"', 'sans-serif'],
+        body: ['"Space Grotesk"', 'monospace'],
+        headline: ['"Space Grotesk"', 'monospace'],
         code: ['monospace'],
       },
       colors: {
@@ -69,7 +69,7 @@ export default {
       },
       borderRadius: {
         lg: '0px',
-        md: '8px',
+        md: '0px',
         sm: '0px',
       },
       keyframes: {
