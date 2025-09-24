@@ -32,13 +32,17 @@ export default function Home() {
             try {
                 const allLogs: DayLog[] = JSON.parse(allLogsRaw);
                 const allTrades = allLogs.flatMap(log => (log.trades || []).map(t => ({...t, date: new Date(log.date)})));
+                
+                const relevantTrades = allTrades.filter(trade => trade.pnl !== 0);
 
                 const netPnl = allTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0);
-                const winningTrades = allTrades.filter(trade => (trade.pnl || 0) > 0);
+                const winningTrades = relevantTrades.filter(trade => (trade.pnl || 0) > 0);
+                
                 const avgWin = winningTrades.length > 0
                   ? winningTrades.reduce((acc, trade) => acc + (trade.pnl || 0), 0) / winningTrades.length
                   : 0;
-                const winRate = allTrades.length > 0 ? (winningTrades.length / allTrades.length) * 100 : 0;
+                
+                const winRate = relevantTrades.length > 0 ? (winningTrades.length / relevantTrades.length) * 100 : 0;
                 
                 setStats({ netPnl, avgWin, winRate });
             } catch (e) {
