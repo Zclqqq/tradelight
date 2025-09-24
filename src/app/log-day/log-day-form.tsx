@@ -472,7 +472,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.entryTime"
-                                                    render={({ field }) => <Input type="text" {...field} placeholder="--:--" className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -481,7 +481,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.exitTime"
-                                                    render={({ field }) => <Input type="text" {...field} placeholder="--:--" className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
