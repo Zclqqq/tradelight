@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Plus, Trash2, CalendarIcon, Upload, ChevronDown, X, ChevronsUpDown } from "lucide-react";
+import { Plus, Trash2, CalendarIcon, Upload, ChevronDown, X, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,6 +69,13 @@ const instrumentPointValues: { [key: string]: number } = {
     "ES": 50,
     "MES": 5,
 };
+
+const PixelArrowLeft = () => (
+    <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" clipRule="evenodd" d="M6 2H5V3H4V4H3V5H2V9H3V10H4V11H5V12H6V11H7V10H8V9H9V8H10V6H9V5H8V4H7V3H6V2Z" fill="white"/>
+        <path d="M10 7H16V8H10V7Z" fill="white"/>
+    </svg>
+);
 
 
 const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
@@ -329,7 +336,7 @@ export default function LogDayForm() {
         <header className="relative flex-shrink-0 flex items-center justify-between h-16 px-4 md:px-0 border-b">
             <Button variant="ghost" size="icon" asChild className="absolute left-4 top-1/2 -translate-y-1/2">
                 <a href="/" onClick={handleBackClick}>
-                    <ArrowLeft />
+                    <PixelArrowLeft />
                     <span className="sr-only">Back</span>
                 </a>
             </Button>
@@ -660,3 +667,5 @@ export default function LogDayForm() {
     </div>
   );
 }
+
+    
