@@ -471,7 +471,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.entryTime"
-                                                    render={({ field }) => <Input type="text" placeholder="--:--" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="text" {...field} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -480,7 +480,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.exitTime"
-                                                    render={({ field }) => <Input type="text" placeholder="--:--" {...field} className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="text" {...field} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -490,7 +490,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                 control={form.control}
                                                 name="trades.0.contracts"
-                                                render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
+                                                render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -500,7 +500,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                     control={form.control}
                                                     name="trades.0.totalPoints"
-                                                    render={({ field }) => <Input type="number" placeholder="0" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
+                                                    render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -510,7 +510,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                 control={form.control}
                                                 name="trades.0.tradeTp"
-                                                render={({ field }) => <Input type="number" placeholder="TP" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
+                                                render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -520,7 +520,7 @@ export default function LogDayForm() {
                                                 <FormField
                                                 control={form.control}
                                                 name="trades.0.tradeSl"
-                                                render={({ field }) => <Input type="number" placeholder="SL" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
+                                                render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
                                         </div>
@@ -687,6 +687,8 @@ export default function LogDayForm() {
     </div>
   );
 }
+
+    
 
     
 
