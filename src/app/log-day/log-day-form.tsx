@@ -72,8 +72,7 @@ const instrumentPointValues: { [key: string]: number } = {
 
 const PixelArrowLeft = () => (
     <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 6H13V8H10V6Z" fill="white"/>
-        <path fillRule="evenodd" clipRule="evenodd" d="M10 6V5H9V4H8V3H7V2H6V3H5V4H4V5H3V9H4V10H5V11H6V12H7V11H8V10H9V9H10V8H11V6H10Z" fill="white"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M10 6V5H9V4H8V3H7V2H6V3H5V4H4V5H3V9H4V10H5V11H6V12H7V11H8V10H9V9H10V8H13V6H10Z" fill="hsl(var(--foreground))"></path>
     </svg>
 );
 
@@ -401,12 +400,14 @@ export default function LogDayForm() {
                                                                         !field.value && "text-muted-foreground"
                                                                     )}
                                                                     >
-                                                                    {field.value && isClient ? (
-                                                                        format(field.value, "PPP")
-                                                                    ) : (
-                                                                        <span>Pick a date</span>
-                                                                    )}
-                                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                    <div className="flex-1">
+                                                                        {field.value && isClient ? (
+                                                                            format(field.value, "PPP")
+                                                                        ) : (
+                                                                            <span>Pick a date</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <CalendarIcon className="h-4 w-4 opacity-50" />
                                                                     </Button>
                                                                 </FormControl>
                                                                 </PopoverTrigger>
@@ -687,6 +688,8 @@ export default function LogDayForm() {
     </div>
   );
 }
+
+    
 
     
 
