@@ -15,7 +15,7 @@ import {
   isToday as isTodayDateFns,
   isSameDay
 } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { DayLog } from "@/app/log-day/log-day-form";
@@ -133,6 +133,92 @@ export function TradeCalendar() {
       const dayKey = format(day, "yyyy-MM-dd");
       return dailyPnl[dayKey];
   }
+  
+  const handleDownloadCsv = () => {
+    const allLogsRaw = localStorage.getItem('all-trades');
+    if (!allLogsRaw) {
+      alert("No trade data to export.");
+      return;
+    }
+
+    try {
+      const allLogs: DayLog[] = JSON.parse(allLogsRaw);
+
+      const headers = [
+        "Date", "PNL", "Instrument", "Contracts", "Total Points", 
+        "Entry Time", "Exit Time", "Trade TP", "Trade SL", "Notes",
+        "Session Name", "Movement Type", "Direction", "Sweep", "Target"
+      ];
+
+      const rows: string[][] = [];
+
+      allLogs.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .forEach(log => {
+          if (!log.trades || log.trades.length === 0) {
+              const baseRow = [
+                  format(new Date(log.date), "yyyy-MM-dd"),
+                  "0", "", "", "", "", "", "", "", `"${(log.notes || "").replace(/"/g, '""')}"`,
+                  ...Array(5).fill("")
+              ];
+              rows.push(baseRow);
+              return;
+          }
+
+          log.trades.forEach(trade => {
+            const dayPnl = trade.pnl || 0;
+            const hasData = dayPnl !== 0 || trade.instrument;
+
+            if (hasData) {
+              const baseRow = [
+                format(new Date(log.date), "yyyy-MM-dd"),
+                dayPnl.toString(),
+                trade.instrument || "",
+                trade.contracts?.toString() || "",
+                trade.totalPoints?.toString() || "",
+                trade.entryTime || "",
+                trade.exitTime || "",
+                trade.tradeTp?.toString() || "",
+                trade.tradeSl?.toString() || "",
+                `"${(log.notes || "").replace(/"/g, '""')}"`
+              ];
+
+              const tradeSessions = trade.sessions?.filter(s => s.movementType !== 'none') || [];
+              if (tradeSessions.length > 0) {
+                  tradeSessions.forEach(session => {
+                      rows.push([
+                          ...baseRow,
+                          session.sessionName,
+                          session.movementType,
+                          session.direction,
+                          session.tookHighLow || "",
+                          session.targetSession
+                      ]);
+                  });
+              } else {
+                  rows.push([...baseRow, ...Array(5).fill("")]);
+              }
+            }
+          });
+      });
+
+      let csvContent = "data:text/csv;charset=utf-8," 
+        + headers.join(",") + "\n" 
+        + rows.map(e => e.join(",")).join("\n");
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "trade_logs.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } catch (error) {
+      console.error("Failed to generate CSV", error);
+      alert("An error occurred while generating the CSV file.");
+    }
+  };
+
 
   return (
     <div className="border border-foreground">
@@ -144,6 +230,10 @@ export function TradeCalendar() {
            <Button variant="outline" asChild>
                 <Link href="/log-day">Log Day</Link>
            </Button>
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleDownloadCsv}>
+                <Download className="h-4 w-4" />
+                <span className="sr-only">Download CSV</span>
+            </Button>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
