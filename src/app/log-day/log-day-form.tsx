@@ -77,9 +77,9 @@ const SimpleArrowLeft = () => (
 );
 
 
-const TradeDataField = ({ label, children }: { label: string, children: React.ReactNode }) => {
+const TradeDataField = ({ label, children, className }: { label: string, children: React.ReactNode, className?: string }) => {
     return (
-        <div className="space-y-1">
+        <div className={cn("space-y-1", className)}>
             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">{label}</FormLabel>
             <div className='relative'>
                 {children}
@@ -354,9 +354,8 @@ export default function LogDayForm() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                         <div className="flex flex-col space-y-6">
                            <Card className="retro-border">
-                                <CardContent className="p-4">
+                                <CardContent className="p-4 space-y-6">
                                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                                        
                                         <div className="col-span-1 space-y-1">
                                             <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">PNL</FormLabel>
                                             <div onDoubleClick={handlePnlDoubleClick} className="relative">
@@ -430,63 +429,63 @@ export default function LogDayForm() {
                                                 )}
                                             />
                                         </div>
-
-                                        <div className="col-span-2">
+                                    </div>
+                                    
+                                    <FormField
+                                        control={form.control}
+                                        name="trades.0.instrument"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                 <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Instrument</FormLabel>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={(value) => {
+                                                            field.onChange(value);
+                                                            calculatePnl();
+                                                        }}
+                                                        value={field.value}
+                                                        className="flex items-center space-x-2 pt-1"
+                                                    >
+                                                        {instrumentOptions.map((opt) => (
+                                                            <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
+                                                                <FormControl>
+                                                                    <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
+                                                                </FormControl>
+                                                                <FormLabel
+                                                                    htmlFor={opt}
+                                                                    className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-foreground bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-foreground hover:text-background peer-data-[state=checked]:border-foreground peer-data-[state=checked]:bg-foreground peer-data-[state=checked]:text-background"
+                                                                >
+                                                                    {opt}
+                                                                </FormLabel>
+                                                            </FormItem>
+                                                        ))}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <TradeDataField label="Entry">
                                             <FormField
                                                 control={form.control}
-                                                name="trades.0.instrument"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <RadioGroup
-                                                                onValueChange={(value) => {
-                                                                    field.onChange(value);
-                                                                    calculatePnl();
-                                                                }}
-                                                                value={field.value}
-                                                                className="flex items-center space-x-2 pt-2"
-                                                            >
-                                                                {instrumentOptions.map((opt) => (
-                                                                    <FormItem key={opt} className="flex items-center space-x-1 space-y-0">
-                                                                        <FormControl>
-                                                                            <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                                                                        </FormControl>
-                                                                        <FormLabel
-                                                                            htmlFor={opt}
-                                                                            className="flex h-7 cursor-pointer items-center justify-center rounded-none border border-foreground bg-transparent px-2 py-1 text-xs font-medium ring-offset-background hover:bg-foreground hover:text-background peer-data-[state=checked]:border-foreground peer-data-[state=checked]:bg-foreground peer-data-[state=checked]:text-background"
-                                                                        >
-                                                                            {opt}
-                                                                        </FormLabel>
-                                                                    </FormItem>
-                                                                ))}
-                                                            </RadioGroup>
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
+                                                name="trades.0.entryTime"
+                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
                                             />
-                                        </div>
+                                        </TradeDataField>
+                                        <TradeDataField label="Exit">
+                                            <FormField
+                                                control={form.control}
+                                                name="trades.0.exitTime"
+                                                render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
+                                            />
+                                        </TradeDataField>
+                                    </div>
 
-                                        <div className="col-span-1">
-                                            <TradeDataField label="Entry">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.entryTime"
-                                                    render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
-                                                />
-                                            </TradeDataField>
-                                        </div>
-                                        <div className="col-span-1">
-                                            <TradeDataField label="Exit">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="trades.0.exitTime"
-                                                    render={({ field }) => <Input type="time" {...field} className="border-0 p-0 text-base h-auto" />}
-                                                />
-                                            </TradeDataField>
-                                        </div>
-                                        
-                                        <div className="col-span-1">
+                                    <div>
+                                         <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Performance</FormLabel>
+                                         <div className="grid grid-cols-2 gap-4 mt-2">
                                             <TradeDataField label="Contracts">
                                                 <FormField
                                                 control={form.control}
@@ -494,9 +493,7 @@ export default function LogDayForm() {
                                                 render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
-                                        </div>
 
-                                        <div className="col-span-1">
                                             <TradeDataField label="Points">
                                                 <FormField
                                                     control={form.control}
@@ -504,9 +501,7 @@ export default function LogDayForm() {
                                                     render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
-                                        </div>
-                                        
-                                        <div className="col-span-1">
+                                            
                                             <TradeDataField label="TP">
                                                 <FormField
                                                 control={form.control}
@@ -514,9 +509,7 @@ export default function LogDayForm() {
                                                 render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} className="border-0 p-0 text-base h-auto" />}
                                                 />
                                             </TradeDataField>
-                                        </div>
-                                        
-                                        <div className="col-span-1">
+                                            
                                             <TradeDataField label="SL">
                                                 <FormField
                                                 control={form.control}
@@ -688,15 +681,5 @@ export default function LogDayForm() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-
-    
-
-
 
     
