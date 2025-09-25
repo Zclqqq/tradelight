@@ -531,6 +531,40 @@ export default function LogDayForm() {
                                             </TradeDataField>
                                         </div>
                                     </div>
+                                    <div>
+                                        <FormLabel className="text-xs font-medium tracking-widest uppercase text-muted-foreground">Market Grade</FormLabel>
+                                        <FormField
+                                            control={form.control}
+                                            name="marketGrade"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-3 pt-2">
+                                                    <FormControl>
+                                                        <RadioGroup
+                                                            onValueChange={field.onChange}
+                                                            value={field.value}
+                                                            className="grid grid-cols-1 gap-2"
+                                                        >
+                                                            {marketGradeOptions.map((option) => (
+                                                                <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
+                                                                    <FormControl>
+                                                                        <RadioGroupItem value={option.value} id={`grade-${option.value}`} className="peer sr-only" />
+                                                                    </FormControl>
+                                                                    <FormLabel
+                                                                        htmlFor={`grade-${option.value}`}
+                                                                        className="flex-1 flex items-center justify-between rounded-none border border-foreground p-3 cursor-pointer hover:bg-accent/50 peer-data-[state=checked]:bg-accent"
+                                                                    >
+                                                                        <span className="font-bold text-lg">{option.value}</span>
+                                                                        <span className="text-sm text-muted-foreground">{option.label}</span>
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            ))}
+                                                        </RadioGroup>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 </CardContent>
                             </Card>
                             <Card className="retro-border">
@@ -590,44 +624,6 @@ export default function LogDayForm() {
                                     )}
                                 </CardContent>
                             </Card>
-                             <Card className="retro-border">
-                                <CardHeader className="border-b">
-                                    <CardTitle className="font-headline text-base uppercase">Market Grade</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-4">
-                                     <FormField
-                                        control={form.control}
-                                        name="marketGrade"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-3">
-                                                <FormControl>
-                                                    <RadioGroup
-                                                        onValueChange={field.onChange}
-                                                        value={field.value}
-                                                        className="grid grid-cols-1 gap-2"
-                                                    >
-                                                        {marketGradeOptions.map((option) => (
-                                                            <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
-                                                                <FormControl>
-                                                                    <RadioGroupItem value={option.value} id={`grade-${option.value}`} className="peer sr-only" />
-                                                                </FormControl>
-                                                                <FormLabel
-                                                                    htmlFor={`grade-${option.value}`}
-                                                                    className="flex-1 flex items-center justify-between rounded-none border border-foreground p-3 cursor-pointer hover:bg-accent/50 peer-data-[state=checked]:bg-accent"
-                                                                >
-                                                                    <span className="font-bold text-lg">{option.value}</span>
-                                                                    <span className="text-sm text-muted-foreground">{option.label}</span>
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                        ))}
-                                                    </RadioGroup>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                        />
-                                </CardContent>
-                           </Card>
                            <Card className="retro-border">
                                 <CardHeader className="border-b">
                                     <CardTitle className="font-headline text-base uppercase">Sessions</CardTitle>
