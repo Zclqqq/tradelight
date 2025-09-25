@@ -51,6 +51,7 @@ const tradeSchema = z.object({
 const dayLogSchema = z.object({
   date: z.date(),
   notes: z.string().optional().default(""),
+  marketGrade: z.enum(["A", "B", "C", "D", "F", ""]).optional().default(""),
   trades: z.array(tradeSchema),
 });
 
@@ -69,6 +70,14 @@ const instrumentPointValues: { [key: string]: number } = {
     "ES": 50,
     "MES": 5,
 };
+
+const marketGradeOptions = [
+    { value: "A", label: "Clean, Strong Trend" },
+    { value: "B", label: "Directional, Some Noise" },
+    { value: "C", label: "Clear Sideways Range" },
+    { value: "D", label: "Choppy, Unpredictable Moves" },
+    { value: "F", label: "Violent Stop Hunt" },
+];
 
 const SimpleArrowLeft = () => (
     <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,6 +125,7 @@ export default function LogDayForm() {
         defaultValues: {
             date: new Date(),
             notes: "",
+            marketGrade: "",
             trades: [{ 
                 instrument: "NQ", 
                 pnl: 0, 
@@ -242,6 +252,7 @@ export default function LogDayForm() {
             const dataWithDefaults = {
                 date: parsedData.date,
                 notes: parsedData.notes || "",
+                marketGrade: parsedData.marketGrade || "",
                 trades: [tradeWithDefaults],
             };
             
@@ -250,6 +261,7 @@ export default function LogDayForm() {
              form.reset({
                 date: date,
                 notes: "",
+                marketGrade: "",
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
@@ -521,7 +533,7 @@ export default function LogDayForm() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card className="flex-1 flex flex-col retro-border">
+                            <Card className="retro-border">
                                 <CardHeader className="border-b">
                                     <CardTitle className="font-headline text-base uppercase">Notes</CardTitle>
                                 </CardHeader>
@@ -578,9 +590,47 @@ export default function LogDayForm() {
                                     )}
                                 </CardContent>
                             </Card>
+                             <Card className="retro-border">
+                                <CardHeader className="border-b">
+                                    <CardTitle className="font-headline text-base uppercase">Market Grade</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4">
+                                     <FormField
+                                        control={form.control}
+                                        name="marketGrade"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-3">
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        value={field.value}
+                                                        className="grid grid-cols-1 gap-2"
+                                                    >
+                                                        {marketGradeOptions.map((option) => (
+                                                            <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
+                                                                <FormControl>
+                                                                    <RadioGroupItem value={option.value} id={`grade-${option.value}`} className="peer sr-only" />
+                                                                </FormControl>
+                                                                <FormLabel
+                                                                    htmlFor={`grade-${option.value}`}
+                                                                    className="flex-1 flex items-center justify-between rounded-none border border-foreground p-3 cursor-pointer hover:bg-accent/50 peer-data-[state=checked]:bg-accent"
+                                                                >
+                                                                    <span className="font-bold text-lg">{option.value}</span>
+                                                                    <span className="text-sm text-muted-foreground">{option.label}</span>
+                                                                </FormLabel>
+                                                            </FormItem>
+                                                        ))}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                        />
+                                </CardContent>
+                           </Card>
                            <Card className="retro-border">
                                 <CardHeader className="border-b">
-                                    <CardTitle className="font-headline text-base uppercase">Seasons</CardTitle>
+                                    <CardTitle className="font-headline text-base uppercase">Sessions</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 pt-4 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium uppercase">
@@ -656,7 +706,7 @@ export default function LogDayForm() {
                                                     name={`trades.0.sessions.${index}.targetSession`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onchange={field.onChange} value={field.value || "none"}>
+                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Target..." /></SelectTrigger>
                                                                 </FormControl>
