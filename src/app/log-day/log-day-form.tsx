@@ -52,6 +52,7 @@ const dayLogSchema = z.object({
   date: z.date(),
   notes: z.string().optional().default(""),
   trades: z.array(tradeSchema),
+  performance: z.enum(["none", "a-plus", "a", "b", "c", "d"]).default("none"),
 });
 
 export type DayLog = z.infer<typeof dayLogSchema>;
@@ -61,6 +62,13 @@ const movementTypeOptions = [ {value: "expansion", label: "Expansion"}, {value: 
 const directionOptions = [{value: "up", label: "Up"}, {value: "down", label: "Down"}, {value: "both", label: "Both"}];
 const tookHighLowOptions = [{value: "took-high", label: "Took High"}, {value: "took-low", label: "Took Low"}, {value: "took-both", label: "Took Both"}];
 const targetSessionOptions = [{value: "asia", label: "Asia"}, {value: "london", label: "London"}, {value: "new-york", label: "New York"}, {value: "previous-day", label: "Previous Day"}];
+const performanceOptions = [
+    { value: "a-plus", label: "A+ Hit TP clean&fast" },
+    { value: "a", label: "A Hit TP" },
+    { value: "b", label: "B Hit TP but Choppy" },
+    { value: "c", label: "C Choppy Hit SL" },
+    { value: "d", label: "D Violent hit SL" },
+];
 
 const instrumentOptions = ["MNQ", "NQ", "ES", "MES"];
 const instrumentPointValues: { [key: string]: number } = {
@@ -116,6 +124,7 @@ export default function LogDayForm() {
         defaultValues: {
             date: new Date(),
             notes: "",
+            performance: "none",
             trades: [{ 
                 instrument: "NQ", 
                 pnl: 0, 
@@ -242,6 +251,7 @@ export default function LogDayForm() {
             const dataWithDefaults = {
                 date: parsedData.date,
                 notes: parsedData.notes || "",
+                performance: parsedData.performance || "none",
                 trades: [tradeWithDefaults],
             };
             
@@ -250,6 +260,7 @@ export default function LogDayForm() {
              form.reset({
                 date: date,
                 notes: "",
+                performance: "none",
                 trades: [{...emptyTrade, sessions: defaultSessions }],
              });
         }
@@ -334,7 +345,7 @@ export default function LogDayForm() {
 
 
   return (
-    <div className="flex flex-col h-screen max-h-screen text-foreground bg-background p-4">
+    <div className="flex flex-col text-foreground bg-background p-4">
         <header className="relative flex-shrink-0 flex items-center justify-between h-12 px-4 md:px-0 border-b">
             <Button variant="ghost" size="icon" asChild className="absolute left-0 top-1/2 -translate-y-1/2">
                 <a href="/" onClick={handleBackClick}>
@@ -348,11 +359,11 @@ export default function LogDayForm() {
             <div className="w-10"></div>
         </header>
 
-        <main className="flex-1 overflow-hidden py-6">
+        <main className="flex-1 overflow-auto py-4">
             <Form {...form}>
                 <form className="h-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                        <div className="flex flex-col space-y-6">
+                        <div className="flex flex-col space-y-4">
                            <Card className="retro-border">
                                 <CardContent className="p-4">
                                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -430,7 +441,36 @@ export default function LogDayForm() {
                                                 )}
                                             />
                                         </div>
-
+                                        <div className="col-span-1">
+                                            <TradeDataField label="Contracts">
+                                                <FormField
+                                                control={form.control}
+                                                name="trades.0.contracts"
+                                                render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
+                                                />
+                                            </TradeDataField>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <FormField
+                                                control={form.control}
+                                                name="performance"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <TradeDataField label="Performance">
+                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
+                                                                <FormControl>
+                                                                    <SelectTrigger className="border-0 p-0 text-base h-auto"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    <SelectItem value="none">-</SelectItem>
+                                                                    {performanceOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </TradeDataField>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
                                         <div className="col-span-2">
                                             <FormField
                                                 control={form.control}
@@ -487,16 +527,6 @@ export default function LogDayForm() {
                                         </div>
                                         
                                         <div className="col-span-1">
-                                            <TradeDataField label="Contracts">
-                                                <FormField
-                                                control={form.control}
-                                                name="trades.0.contracts"
-                                                render={({ field }) => <Input type="number" {...field} value={field.value ?? ''} onChange={(e) => {field.onChange(e.target.valueAsNumber); calculatePnl();}} className="border-0 p-0 text-base h-auto" />}
-                                                />
-                                            </TradeDataField>
-                                        </div>
-
-                                        <div className="col-span-1">
                                             <TradeDataField label="Points">
                                                 <FormField
                                                     control={form.control}
@@ -548,7 +578,7 @@ export default function LogDayForm() {
                                 </CardContent>
                             </Card>
                         </div>
-                        <div className="flex flex-col space-y-6">
+                        <div className="flex flex-col space-y-4">
                             <Card onPaste={handleImagePaste} className="overflow-hidden flex-1 flex flex-col group retro-border">
                                 <CardContent className="p-0 flex-1 flex flex-col relative">
                                     {analysisImage ? (
@@ -587,7 +617,7 @@ export default function LogDayForm() {
                             </Card>
                            <Card className="retro-border">
                                 <CardHeader className="border-b">
-                                    <CardTitle className="font-headline text-base uppercase">Seasons</CardTitle>
+                                    <CardTitle className="font-headline text-base uppercase">Session</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 pt-4 space-y-2">
                                      <div className="grid grid-cols-5 gap-2 text-xs text-muted-foreground font-medium uppercase">
@@ -663,7 +693,7 @@ export default function LogDayForm() {
                                                     name={`trades.0.sessions.${index}.targetSession`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Select onchange={field.onChange} value={field.value || "none"}>
+                                                            <Select onValueChange={field.onChange} value={field.value || "none"}>
                                                                 <FormControl>
                                                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Target..." /></SelectTrigger>
                                                                 </FormControl>
@@ -688,15 +718,5 @@ export default function LogDayForm() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-
-    
-
-
 
     
